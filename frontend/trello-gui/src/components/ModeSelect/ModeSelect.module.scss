@@ -1,0 +1,32 @@
+.wrapper {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-right: 10px;
+        &:hover .select-label {
+         font-weight: 600;
+    }
+}
+.select-label {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #F9F9F9;
+    padding: 0 6px;
+    color: var(--color-green);
+}
+.select-option {
+    height: 31.45px;
+    width: 100px;
+    border: 1px solid var(--color-green);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--color-green);
+    &:hover {
+         border: 2px solid var(--color-green);
+    }
+}

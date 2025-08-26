@@ -1,0 +1,32 @@
+.wrapper {
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.avatar-visible {
+    width: 34px;
+    border-radius: 999px;
+    object-fit: cover;
+    margin-left: -5px;
+    padding: 2px;
+    background-color: rgb(255, 255, 255);
+    position: relative;
+
+}
+.avatar-hide {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background-color: #a9a6b2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-left: -5px;
+    font-size: 13px;
+}
+.hidePosition {
+    position: absolute;
+    right: 1px;
+}

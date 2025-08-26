@@ -1,0 +1,35 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 9px;
+    top: 35px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 /12%) 0px 2px 12px;
+    min-width: 200px;
+    min-height: 150px;
+    border-radius: 4px;
+    z-index: 999;
+    /* Mặc định ẩn */
+    opacity: 0;
+    transform: scale(0.7);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    transform-origin: top center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+/* Khi active (ví dụ có class 'active' khi click) */
+.wrapper.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    background-color: rgb(255, 255, 255);
+}
+.wrapper.activeAvatar {
+    right: 30px;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    background-color: rgb(255, 255, 255);
+}

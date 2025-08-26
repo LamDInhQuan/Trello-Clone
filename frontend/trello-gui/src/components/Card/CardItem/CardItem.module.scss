@@ -1,0 +1,40 @@
+.preventive {
+    height: 100%;
+    background-color: aqua;
+}
+.wrapper {
+    width: 93%;
+    border-radius: 6px;
+    background-color: azure !important;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+.image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.content {
+    margin-top: 12px;
+    font-size: 17px;
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.footer {
+    margin-top: 10px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--color-green);
+}
+.icon {
+    width: 20px;
+}
+.icon2 {
+    width: 17px;
+    margin-top: 2px;
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Xác nhận xóa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      background-color: #dc2626;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Popup overlay */
+    .popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .popup-buttons {
+      margin-top: 15px;
+    }
+
+    .popup-buttons button {
+      margin: 0 10px;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    #confirmYes {
+      background-color: #dc2626;
+      color: white;
+    }
+
+    #confirmNo {
+      background-color: #9ca3af;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Ví dụ xác nhận xóa</h2>
+  <button id="deleteBtn">Xóa mục</button>
+
+  <!-- Popup xác nhận -->
+  <div id="confirmPopup" class="popup hidden">
+    <div class="popup-content">
+      <p>Bạn có chắc chắn muốn xóa không?</p>
+      <div class="popup-buttons">
+        <button id="confirmYes">Xóa</button>
+        <button id="confirmNo">Hủy</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const deleteBtn = document.getElementById("deleteBtn");
+
+    function confirmDelete(callback) {
+      const popup = document.getElementById("confirmPopup");
+      popup.classList.remove("hidden");
+
+      const yesBtn = document.getElementById("confirmYes");
+      const noBtn = document.getElementById("confirmNo");
+
+      yesBtn.onclick = () => {
+        popup.classList.add("hidden");
+        callback(true);
+      };
+
+      noBtn.onclick = () => {
+        popup.classList.add("hidden");
+        callback(false);
+      };
+    }
+
+    deleteBtn.addEventListener("click", () => {
+      confirmDelete((isConfirmed) => {
+        if (isConfirmed) {
+          // Thêm API hoặc xử lý xóa ở đây nếu cần
+        } else {
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+.wrapper {
+    min-width: 20px;
+    padding: 4px 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid transparent;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    + .wrapper {
+        margin-left: 10px;
+    }
+}
+// css khi avatar group = 0
+.avatarGroup {
+    transform: translateX(30px);
+}
+.outline {
+    border: 1px solid #007e75;
+    color: #007e75;
+    &:hover {
+        background-color: #e2eaf3;
+    }
+}
+.left-icon {
+    margin-right: 8px;
+}
+.right-icon {
+    margin-left: 8px;
+}
+.chipHover {
+    height: 31px;
+    &:hover {
+        background-color: #e2eaf3;
+    }
+    font-weight: 500;
+    color: var(--color-green);
+}

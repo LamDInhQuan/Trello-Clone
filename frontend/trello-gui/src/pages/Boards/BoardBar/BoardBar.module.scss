@@ -1,0 +1,30 @@
+.wrapper {
+    width: 100%;
+    height: var( --board-bar-height) ;
+    background-color: rgb(255, 255, 255);
+    align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #9ccbcc;
+}
+.chip-Group {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px;
+}
+.avatar-Group {
+    display: flex;
+    gap: 30px;
+    margin-right: 35px;
+}
+// board-icon
+.icon {
+    width: 24px;
+    color: var(--color-green);
+}
+.icon-invite {
+    width: 20px;
+}
