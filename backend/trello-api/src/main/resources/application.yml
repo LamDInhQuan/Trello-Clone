@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: trello-api
+
+  data:
+    mongodb:
+      uri: mongodb+srv://coladz2812:jJdl6I8vBAQyOrN9@cola.parrxmg.mongodb.net/trello-coladeptrai?retryWrites=true&w=majority&appName=CoLa
+
+server:
+  port: 8017
+
+app:
+  cors:
+    whitelist: http://localhost:3000

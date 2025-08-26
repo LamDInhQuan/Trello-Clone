@@ -1,0 +1,42 @@
+# ========== FRONTEND (ReactJS) ==========
+# dependencies
+frontend/trello-gui/node_modules/
+frontend/trello-gui/.pnp
+frontend/trello-gui/.pnp.js
+
+# production
+frontend/trello-gui/build/
+frontend/trello-gui/dist/
+
+# misc
+frontend/trello-gui/.env
+frontend/trello-gui/.env.local
+frontend/trello-gui/.env.*.local
+frontend/trello-gui/npm-debug.log*
+frontend/trello-gui/yarn-debug.log*
+frontend/trello-gui/yarn-error.log*
+frontend/trello-gui/.vercel
+frontend/trello-gui/.next/
+
+# ========== BACKEND (Spring Boot) ==========
+# compiled class files
+backend/trello-api/target/
+backend/trello-api/build/
+backend/trello-api/out/
+
+# logs
+backend/trello-api/*.log
+
+# environment variables
+backend/trello-api/.env
+backend/trello-api/.env.local
+
+# ========== COMMON ==========
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
