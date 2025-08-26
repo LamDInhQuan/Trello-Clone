@@ -4,11 +4,11 @@ frontend/trello-gui/node_modules/
 frontend/trello-gui/.pnp
 frontend/trello-gui/.pnp.js
 
-# production
+# production build
 frontend/trello-gui/build/
 frontend/trello-gui/dist/
 
-# misc
+# misc (ignore configs & logs)
 frontend/trello-gui/.env
 frontend/trello-gui/.env.local
 frontend/trello-gui/.env.*.local
