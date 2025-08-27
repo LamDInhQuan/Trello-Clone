@@ -33,7 +33,6 @@ function Board() {
                 // Thành công => không gọi lại nữa
                 })
                 .catch((err) => {
-                    console.error('Lỗi khi gọi API:', err);
                     setError('error');
                     retryTimer = setTimeout(fetchData, 3000); // Thử lại sau 3s nếu lỗi
                 });

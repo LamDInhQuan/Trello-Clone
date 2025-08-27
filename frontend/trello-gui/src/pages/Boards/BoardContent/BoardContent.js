@@ -21,6 +21,7 @@ import Icons from '~/components/Icons';
 import { mapOrder, sortByIndex } from '~/utils/sorts';
 import styles from './BoardContent.module.scss';
 import { generatePlaceHolderCard } from '~/utils/formatters';
+import InputSearch from '~/components/InputSearch';
 
 const cx = classNames.bind(styles);
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -29,15 +30,30 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 };
 
 function BoardContent(board) {
-    console.log('render');
+    // state lưu trạng thái của UI add column
+    const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
+    const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
 
+    // lấy nội dung form input add column
+    const [newColumnTitle, setNewColumnTitle] = useState('');
+
+    const addNewColumn = () => {
+        console.log("value : ",newColumnTitle)
+        if (!newColumnTitle) return;
+
+        toggleOpenNewColumnForm();
+        setNewColumnTitle('');
+    };
+    const setInputChangeAddColumn = (e) => {
+        const val = e.target.value;
+        setNewColumnTitle(val);
+    };
     // xử lí dữ liệu board
     // clone object và ghi đè field columnIds
     const boardData = {
         ...board.board,
-        columnOrderIds: board.board.columns.map(item => item._id),
+        columnOrderIds: board.board.columns.map((item) => item._id),
     };
-    console.log('board : ', boardData);
 
     const originalArray = boardData.columns;
     const orderArray = boardData.columnOrderIds;
@@ -59,7 +75,6 @@ function BoardContent(board) {
 
     useEffect(() => {
         // const orderredArray = mapOrder(originalArray, orderArray, key) // lấy mảng từ sort
-        console.log(mapOrder(originalArray, orderArray, key));
         setOderredCards(mapOrder(originalArray, orderArray, key));
     }, [originalArray]);
 
@@ -71,7 +86,6 @@ function BoardContent(board) {
         setItemDragType(
             event.active.data.current.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM : ACTIVE_DRAG_ITEM_TYPE.COLUMN,
         ); // nếu phần tử kéo là carditem thì có columnId trong card , còn column thì ko có
-        console.log(event.active.data.current);
 
         setItemDragData(event.active.data.current);
         // set column nếu đang kéo card
@@ -384,6 +398,7 @@ function BoardContent(board) {
             return newArr;
         });
     };
+
     return (
         <DndContext
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
@@ -410,14 +425,39 @@ function BoardContent(board) {
                             )}
                             {itemDragType === ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM && <CardItem card={itemDragData} />}
                         </DragOverlay>
-                        <div className={cx('add-column')}>
-                            <Button
-                                className={cx('button-add-column')}
-                                leftIcon={<Icons.AddNewColumnIcon className={cx('icon')} />}
-                                onClick={addColumnClick}
-                            >
-                                Add new column
-                            </Button>
+                        <div className={!openNewColumnForm ? cx('add-column') : cx('add-column', 'add-column-toggle')}>
+                            {!openNewColumnForm ? (
+                                <Button
+                                    onClick={toggleOpenNewColumnForm}
+                                    className={cx('button-add-column')}
+                                    leftIcon={<Icons.AddNewColumnIcon className={cx('icon')} />}
+                                    padding={cx('padding-button')}
+                                >
+                                    Add new column
+                                </Button>
+                            ) : (
+                                <div className={cx('input-add-title')}>
+                                    <InputSearch
+                                        title={'Enter column title...'}
+                                        label_search_className={cx('label-search')}
+                                        searchInput_className={cx('searchInput')}
+                                        autoFocus={true}
+                                        hasValue={newColumnTitle !== ''}
+                                        onChange={setInputChangeAddColumn}
+                                        value={newColumnTitle}
+                                    />
+                                    <div className={cx('wrapper-button-add-column2')}>
+                                        {/* // onMouseDown xảy ra trước blur input */}
+                                        <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                            Add Column
+                                        </Button>
+                                        <Button
+                                            onClick={toggleOpenNewColumnForm}
+                                            leftIcon={<Icons.CloseIcon className={cx('icon2')} />}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

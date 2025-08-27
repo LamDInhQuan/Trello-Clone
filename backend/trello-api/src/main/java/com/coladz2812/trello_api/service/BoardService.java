@@ -53,6 +53,7 @@ public class BoardService {
 
     public Document getBoardAndColumnByIdBoard(String id){
         Document document =  boardRepository.getBoardAndColumnByIdBoard(id);
+        log.error("document : "+document.toJson());
         if(document == null || document.isEmpty()){
             throw new AppException(ErrorCode.BOARD_NOT_FOUND);
         }

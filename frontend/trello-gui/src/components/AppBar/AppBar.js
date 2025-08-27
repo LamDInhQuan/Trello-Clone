@@ -13,10 +13,16 @@ import InputSearch from '../InputSearch';
 import { faAngleDown, faBell, faCircle, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
 import { Tooltip } from 'react-tooltip';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
 function AppBar() {
+    const [inputSearch, setInputSearch] = useState('');
+    const setOnChangeInputSearch = (e) => {
+        setInputSearch(e.target.value);
+    };
+
     return (
         <>
             <div className={cx('wrapper')}>
@@ -34,12 +40,12 @@ function AppBar() {
                     <ButtonDropDownMenu rightIcon={<FontAwesomeIcon icon={faAngleDown} />}>
                         TEMPLATES
                     </ButtonDropDownMenu>
-                    <Button leftIcon={<Icons.CreateIcon className={cx('icon')} />} outline>
+                    <Button leftIcon={<Icons.CreateIcon className={cx('icon')} />} outline onClick={() => {alert(inputSearch)}}>
                         Create
                     </Button>
                 </div>
                 <div className={cx('search-andMode')}>
-                    <InputSearch />
+                    <InputSearch title={'Search...'} value={inputSearch} onChange={setOnChangeInputSearch} />
                     <ModeSelect />
                     <Tippy content="inbox" arrow={true}>
                         <span className={cx('faBell-icon')}>

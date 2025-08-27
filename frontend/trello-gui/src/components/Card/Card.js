@@ -12,6 +12,8 @@ import Button from '../Button';
 import Icons from '../Icons';
 import CardItem from './CardItem';
 import { mapOrder } from '~/utils/sorts';
+import InputSearch from '../InputSearch';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -38,6 +40,26 @@ function Card({ title = 'Column Title', items = [] }) {
     const orderArray = items.cardOrderIds;
     const key = '_id';
     const orderredArray = mapOrder(originalArray, orderArray, key);
+
+    // state lưu trạng thái của UI add card
+    const [openNewCardForm, setOpenNewCardForm] = useState(false);
+    const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
+
+    // lấy nội dung form input add column
+    const [newColumnTitle, setNewColumnTitle] = useState('');
+
+    const addNewColumn = () => {
+        console.log('value : ', newColumnTitle);
+        if (!newColumnTitle) return;
+
+        toggleOpenNewCardForm();
+        setNewColumnTitle('');
+    };
+    const setInputChangeAddColumn = (e) => {
+        const val = e.target.value;
+        setNewColumnTitle(val);
+    };
+
     return (
         <div className={cx('preventive')} ref={setNodeRef} style={dndKitCardStyles}>
             <ButtonDropDownMenu
@@ -46,10 +68,12 @@ function Card({ title = 'Column Title', items = [] }) {
                 magin={15}
                 className={cx('button_menu')}
             ></ButtonDropDownMenu>
-            <div className={cx('wrapper')} {...attributes} {...listeners}>
-                <div className={cx('scroll-inner')}>
+            <div className={cx('wrapper')}>
+                <div className={cx('scroll-inner')} {...attributes} {...listeners}>
                     <div className={cx('column-title')}>
-                        <h4 className={cx('title')}>{title}</h4>
+                        <h4 className={cx('title')} onClick={addNewColumn}>
+                            {title}
+                        </h4>
                     </div>
                     <SortableContext items={orderArray} strategy={verticalListSortingStrategy}>
                         <div className={cx('list-card')}>
@@ -60,10 +84,42 @@ function Card({ title = 'Column Title', items = [] }) {
                     </SortableContext>
                 </div>
                 <div className={cx('footer')}>
-                    <Button className={cx('button-add')} leftIcon={<Icons.AddCardIcon className={cx('icon')} />}>
-                        Add new card
-                    </Button>
-                    <FontAwesomeIcon icon={faList} className={cx('icon-2')} />
+                    {!openNewCardForm ? (
+                        <>
+                            <Button
+                                onClick={(e) => {
+                                    toggleOpenNewCardForm();
+                                }}
+                                className={cx('button-add')}
+                                leftIcon={<Icons.AddCardIcon className={cx('icon')} />}
+                            >
+                                Add new card
+                            </Button>
+                            <FontAwesomeIcon icon={faList} className={cx('icon-2')} />
+                        </>
+                    ) : (
+                        <div className={cx('input-add-title')}>
+                            <InputSearch
+                                title={'Enter card title...'}
+                                label_search_className={cx('label-search')}
+                                searchInput_className={cx('searchInput')}
+                                autoFocus={true}
+                                hasValue={newColumnTitle !== ''}
+                                onChange={setInputChangeAddColumn}
+                                value={newColumnTitle}
+                            />
+                            <div className={cx('wrapper-button-add-column2')}>
+                                {/* // onMouseDown xảy ra trước blur input */}
+                                <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                    Add Card
+                                </Button>
+                                <Button
+                                    onClick={toggleOpenNewCardForm}
+                                    leftIcon={<Icons.CloseIcon className={cx('icon2')} />}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

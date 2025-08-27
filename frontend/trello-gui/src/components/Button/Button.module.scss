@@ -13,6 +13,10 @@
         margin-left: 10px;
     }
 }
+.wrapper:hover {
+  cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
+
 // css khi avatar group = 0
 .avatarGroup {
     transform: translateX(30px);
@@ -27,13 +31,21 @@
 .left-icon {
     margin-right: 8px;
 }
+.left-icon:hover {
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
 .right-icon {
     margin-left: 8px;
+}
+
+.right-icon:hover {
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
 }
 .chipHover {
     height: 31px;
     &:hover {
         background-color: #e2eaf3;
+        cursor: pointer; /* đổi thành con trỏ bàn tay */
     }
     font-weight: 500;
     color: var(--color-green);

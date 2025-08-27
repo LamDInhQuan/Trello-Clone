@@ -15,14 +15,14 @@ function Button(
         outline = false,
         imgSrc = false,
         avatarGroup = false,
-        className = false,
+        className = '',
         chipHover = false,
         onClick,
+        padding = false,
         ...props
     },
     ref,
 ) {
-    let Comp = 'button';
     const [avatar, setAvatar] = useState('');
     const handleSetAvatar = () => {
         console.log('Image load error, set fallback');
@@ -45,22 +45,24 @@ function Button(
 
     const classes = cx('wrapper', { outline, [className]: className, chipHover, avatarGroup });
     return (
-        <Comp className={classes} ref={ref} onClick={onClick} {...props}>
-            {leftIcon && <span className={cx('left-icon')}>{leftIcon}</span>}
+        <button className={classes} ref={ref}  onClick={onClick} {...props}>
+            {leftIcon && <span className={cx('left-icon', padding)}>{leftIcon}</span>}
             {children}
-            {rightIcon && <span className={cx('right-icon')}>{rightIcon}</span>}
-        </Comp>
+            {rightIcon && <span className={cx('right-icon', padding)}>{rightIcon}</span>}
+        </button>
     );
 }
 
-export default memo(forwardRef(Button), (prevProps, nextProps) => {
-    return (
-        prevProps.className === nextProps.className &&
-        prevProps.leftIcon === nextProps.leftIcon &&
-        prevProps.rightIcon === nextProps.rightIcon &&
-        prevProps.outline === nextProps.outline &&
-        prevProps.avatarGroup === nextProps.avatarGroup &&
-        prevProps.chipHover === nextProps.chipHover && 
-        prevProps.imgSrc === nextProps.imgSrc
-    );
+export default memo(forwardRef(Button), (prev, next) => {
+  return (
+    prev.className === next.className &&
+    prev.leftIcon === next.leftIcon &&
+    prev.rightIcon === next.rightIcon &&
+    prev.outline === next.outline &&
+    prev.avatarGroup === next.avatarGroup &&
+    prev.chipHover === next.chipHover &&
+    prev.imgSrc === next.imgSrc &&
+    prev.children === next.children &&
+    prev.onClick === next.onClick
+  );
 });

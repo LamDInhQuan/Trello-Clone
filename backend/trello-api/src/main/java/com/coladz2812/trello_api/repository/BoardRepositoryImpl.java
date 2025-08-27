@@ -118,8 +118,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 // group laị các dòng column theo boardID để về obj board
                 new Document("$group", new Document()
                         .append("_id", "$_id")
-                        .append("name", new Document("$first", "$name"))
+                        .append("title", new Document("$first", "$title"))
                         .append("columns", new Document("$push", "$columns"))
+                        .append("scope", new Document("$first", "$scope"))
                 )
         );
         // chạy aggregation
