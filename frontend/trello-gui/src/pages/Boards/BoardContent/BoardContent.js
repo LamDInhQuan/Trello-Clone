@@ -11,6 +11,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import classNames from 'classnames/bind';
+import { toast } from 'react-toastify'
 // src
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { mockData } from '~/apis/mock-data';
@@ -39,8 +40,10 @@ function BoardContent(board) {
 
     const addNewColumn = () => {
         console.log("value : ",newColumnTitle)
-        if (!newColumnTitle) return;
-
+        if (!newColumnTitle) {
+            toast.error("Please enter column title !")
+            return;
+        }
         toggleOpenNewColumnForm();
         setNewColumnTitle('');
     };

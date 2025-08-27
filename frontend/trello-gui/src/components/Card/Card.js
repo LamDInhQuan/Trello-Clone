@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faList } from '@fortawesome/free-solid-svg-icons';
 import { verticalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
+import { toast } from 'react-toastify';
 // src
 import styles from './Card.module.scss';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
@@ -14,6 +14,7 @@ import CardItem from './CardItem';
 import { mapOrder } from '~/utils/sorts';
 import InputSearch from '../InputSearch';
 import { useState } from 'react';
+
 
 const cx = classNames.bind(styles);
 
@@ -50,7 +51,12 @@ function Card({ title = 'Column Title', items = [] }) {
 
     const addNewColumn = () => {
         console.log('value : ', newColumnTitle);
-        if (!newColumnTitle) return;
+         if (!newColumnTitle) {
+                    toast.error("Please enter card title !",{
+                        position : 'bottom-right'
+                    })
+                    return;
+                }
 
         toggleOpenNewCardForm();
         setNewColumnTitle('');

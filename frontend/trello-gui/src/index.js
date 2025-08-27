@@ -4,11 +4,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalAppStyle from './components/GlobalAppStyle';
 
+// cấu hình react toastify
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <GlobalAppStyle>
             <App />
+            <ToastContainer position='bottom-left' theme='colored'/>
         </GlobalAppStyle>
     </React.StrictMode>,
 );
