@@ -98,28 +98,43 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         .append("as", "columns")
                 ),
                 // phân rã obj ra để nối với bảng card
-                new Document("$unwind", "$columns"),
+                // path chỉ định mảng nào trong document bạn muốn tách.
+                new Document("$unwind", new Document("path", "$columns")
+                        .append("preserveNullAndEmptyArrays", true)),
+                // Nếu dùng preserveNullAndEmptyArrays: true cho $unwind, board vẫn tồn tại →
+                // $group tạo mảng columns gồm null hoặc mảng rỗng.
+
                 // thực hiện join các obj đã tách lẻ với bảng card
                 new Document("$lookup", new Document()
                         .append("from", "card")
                         // tạo biến ảo columns
                         .append("let", new Document("columnId", "$columns._id"))
                         .append("pipeline", Arrays.asList( // một đường ống có thể là một mảng ( match , lookup ,... )
-                                new Document("$match", new Document("$expr",
-                                        // $eq luôn nhận một array 2 phần tử: [giá trị1, giá trị2]
-                                        // $$columnId là của biến let , $columnId là của bảng card
-                                        new Document("$eq", Arrays.asList("$$columnId", "$columnId"))
-                                                )
+                                        new Document("$match", new Document("$expr",
+                                                // $eq luôn nhận một array 2 phần tử: [giá trị1, giá trị2]
+                                                // $$columnId là của biến let , $columnId là của bảng card
+                                                new Document("$eq", Arrays.asList("$$columnId", "$columnId"))
+                                        )
                                         )
                                 )
                         )
-                        .append("as","columns.cards") // lưu cards trong columns
+                        .append("as", "columns.cards") // lưu cards trong columns
                 ),
                 // group laị các dòng column theo boardID để về obj board
                 new Document("$group", new Document()
                         .append("_id", "$_id")
                         .append("title", new Document("$first", "$title"))
-                        .append("columns", new Document("$push", "$columns"))
+                        .append("columns", new Document("$push", new Document("$cond",
+                                // $cond: [ <condition>, <then>, <else> ] trong $push là một mảng 3 phần tử:
+                                Arrays.asList(
+                                        // $ifNull → trả _id nếu có, trả false nếu không có , so sánh
+                                        // mảng 2 giá trị là id hoặc false
+                                        new Document("$ifNull", Arrays.asList("$columns._id", false)),
+                                        "$columns",  // nếu điều kiện đúng → push column này
+                                        "$$REMOVE"   // nếu điều kiện sai → bỏ, không push
+                                )
+                        )))
+                        .append("columnOrderIds", new Document("$first", "$columnOrderIds"))
                         .append("scope", new Document("$first", "$scope"))
                 )
         );

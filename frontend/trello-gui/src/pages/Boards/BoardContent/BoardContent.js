@@ -11,7 +11,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import classNames from 'classnames/bind';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 // src
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { mockData } from '~/apis/mock-data';
@@ -39,9 +39,9 @@ function BoardContent(board) {
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
     const addNewColumn = () => {
-        console.log("value : ",newColumnTitle)
+        console.log('value : ', newColumnTitle);
         if (!newColumnTitle) {
-            toast.error("Please enter column title !")
+            toast.error('Please enter column title !');
             return;
         }
         toggleOpenNewColumnForm();
@@ -58,8 +58,8 @@ function BoardContent(board) {
         columnOrderIds: board.board.columns.map((item) => item._id),
     };
 
-    const originalArray = boardData.columns;
-    const orderArray = boardData.columnOrderIds;
+    const originalArray = boardData.columns || [];
+    const orderArray = boardData.columnOrderIds || [];
     const key = '_id';
 
     // dữ liệu dc sắp xếp theo order
@@ -416,9 +416,8 @@ function BoardContent(board) {
                     <div className={cx('scroll-inner')}>
                         {/* SortableContext yêu cầu nhận 1 mảng item ko phải là mảng object ( chuỗi , số , ...) */}
 
-                        {oderredCards.map((card) => (
-                            <Card key={card._id} title={card.title} items={card} />
-                        ))}
+                        {oderredCards?.length > 0 &&
+                            oderredCards.map((card) => <Card key={card._id} title={card.title} items={card} />)}
 
                         {/* DragOverlay nằm tách chỗ chứa phần tử dc kéo  */}
                         <DragOverlay dropAnimation={customDropAnimation}>

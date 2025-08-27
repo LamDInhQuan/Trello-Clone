@@ -37,8 +37,8 @@ function Card({ title = 'Column Title', items = [] }) {
     };
 
     // mảng
-    const originalArray = items.cards;
-    const orderArray = items.cardOrderIds;
+    const originalArray = items.cards || [];
+    const orderArray = items.cardOrderIds || [];
     const key = '_id';
     const orderredArray = mapOrder(originalArray, orderArray, key);
 

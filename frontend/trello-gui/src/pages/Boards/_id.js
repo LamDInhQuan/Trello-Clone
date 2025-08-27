@@ -22,7 +22,7 @@ function Board() {
     useEffect(() => {
         console.log('call api');
         let retryTimer;
-        const boardId = '6861b28cbafa0a09a4c3ffae';
+        const boardId = '68af4b814b6913bb70d835bb';
 
         const fetchData = () => {
             fetchBoardDetailsAPI(boardId)
