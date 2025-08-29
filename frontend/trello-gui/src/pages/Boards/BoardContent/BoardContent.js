@@ -30,7 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD_ITEM: 'ACTIVE_DRAG_ITEM_TYPE_CARD-ITEM',
 };
 
-function BoardContent(board) {
+function BoardContent({ board, createNewColumn, createNewCard }) {
     // state lưu trạng thái của UI add column
     const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
     const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
@@ -39,11 +39,14 @@ function BoardContent(board) {
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
     const addNewColumn = () => {
-        console.log('value : ', newColumnTitle);
         if (!newColumnTitle) {
             toast.error('Please enter column title !');
             return;
         }
+        createNewColumn({
+            boardId: board._id,
+            title: newColumnTitle,
+        });
         toggleOpenNewColumnForm();
         setNewColumnTitle('');
     };
@@ -54,8 +57,8 @@ function BoardContent(board) {
     // xử lí dữ liệu board
     // clone object và ghi đè field columnIds
     const boardData = {
-        ...board.board,
-        columnOrderIds: board.board.columns.map((item) => item._id),
+        ...board,
+        columnOrderIds: board.columns.map((item) => item._id),
     };
 
     const originalArray = boardData.columns || [];
@@ -85,12 +88,16 @@ function BoardContent(board) {
     // bắt đầu kéo , xác định id phần tử kéo , loại ( card , cardItem ) , data của thẻ kéo
 
     const handelDragStart = (event) => {
+        console.log('keos : ', event);
         setItemDragId(event.active.id);
-        setItemDragType(
-            event.active.data.current.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM : ACTIVE_DRAG_ITEM_TYPE.COLUMN,
-        ); // nếu phần tử kéo là carditem thì có columnId trong card , còn column thì ko có
 
-        setItemDragData(event.active.data.current);
+        const currentData = event?.active?.data?.current;
+        if (!currentData) return;
+
+        const isCard = currentData.columnId !== undefined && currentData.columnId !== null;
+        setItemDragType(isCard ? ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM : ACTIVE_DRAG_ITEM_TYPE.COLUMN);
+
+        setItemDragData(currentData);
         // set column nếu đang kéo card
 
         if (event?.active?.data?.current?.columnId) {
@@ -100,6 +107,7 @@ function BoardContent(board) {
     // handelDragEnd : trigger khi kéo xog 1 phần tử  ( thả )
     // active : kéo và over : thả vào
     const handelDragEnd = (event) => {
+        console.log(event);
         const { active, over } = event;
         if (!active || !over) return;
 
@@ -110,6 +118,9 @@ function BoardContent(board) {
                 id: activeCardId,
                 data: { current: dataActiveCardId },
             } = active; // giải mã object
+            // check placeholder trong cards
+            const isPlaceHolder = dataActiveCardId.cards?.some((c) => c.FE_PlaceHolderCard);
+            if (isPlaceHolder) return; // bỏ qua card placeholder
             const {
                 id: overCardId,
                 data: { current: dataOverCardId },
@@ -417,7 +428,9 @@ function BoardContent(board) {
                         {/* SortableContext yêu cầu nhận 1 mảng item ko phải là mảng object ( chuỗi , số , ...) */}
 
                         {oderredCards?.length > 0 &&
-                            oderredCards.map((card) => <Card key={card._id} title={card.title} items={card} />)}
+                            oderredCards.map((card) => (
+                                <Card key={card._id} title={card.title} items={card} createNewCard={createNewCard} />
+                            ))}
 
                         {/* DragOverlay nằm tách chỗ chứa phần tử dc kéo  */}
                         <DragOverlay dropAnimation={customDropAnimation}>

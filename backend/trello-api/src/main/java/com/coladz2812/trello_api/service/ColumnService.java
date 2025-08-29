@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,11 +38,20 @@ public class ColumnService {
     @Transactional
     public ColumnResponse addColumn(ColumnRequest request) {
         Column column = columnMapper.toColumn(request);
+
+        // tự xử lý ID
+        if (ObjectId.isValid(request.getBoardId())) {
+            column.setBoardId(new ObjectId(request.getBoardId()));
+        } else {
+            throw new AppException(ErrorCode.INVALID_OBJECT_ID);
+        }
         Board board = boardRepository.findById(request.getBoardId().toString()).orElseThrow(() -> new AppException(ErrorCode.BOARD_NOT_FOUND));
         Column savedColumn = columnRepository.save(column);
         board.getColumnOrderIds().add(savedColumn.getColumnId());
         boardRepository.save(board);
-        return columnMapper.toColumnResponse(savedColumn);
+        ColumnResponse columnResponse = columnMapper.toColumnResponse(savedColumn) ;
+        columnResponse.setBoardId(column.getBoardId().toString());
+        return columnResponse ;
     }
 
     public ColumnResponse getColumnById(String id) {

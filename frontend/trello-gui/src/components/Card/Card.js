@@ -15,10 +15,9 @@ import { mapOrder } from '~/utils/sorts';
 import InputSearch from '../InputSearch';
 import { useState } from 'react';
 
-
 const cx = classNames.bind(styles);
 
-function Card({ title = 'Column Title', items = [] }) {
+function Card({ title = 'Column Title', items = [], createNewCard }) {
     //  Khi bạn gọi useSortable() trong mỗi Card, tức là:
     //✅ Card đó đã đăng ký vào hệ thống kéo-thả của DndKit, và được phép tham gia kéo-thả.
     // DndKit context (SortableContext)	Xác định phần tử để theo dõi vị trí, thứ tự
@@ -51,13 +50,17 @@ function Card({ title = 'Column Title', items = [] }) {
 
     const addNewColumn = () => {
         console.log('value : ', newColumnTitle);
-         if (!newColumnTitle) {
-                    toast.error("Please enter card title !",{
-                        position : 'bottom-right'
-                    })
-                    return;
-                }
-
+        if (!newColumnTitle) {
+            toast.error('Please enter card title !', {
+                position: 'bottom-right',
+            });
+            return;
+        }
+        createNewCard({
+            boardId: items.boardId,
+            columnId: items._id,
+            title: newColumnTitle,
+        });
         toggleOpenNewCardForm();
         setNewColumnTitle('');
     };

@@ -4,10 +4,15 @@ import com.coladz2812.trello_api.dto.request.CardRequest;
 import com.coladz2812.trello_api.dto.response.CardResponse;
 import com.coladz2812.trello_api.model.Card;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CardMapper {
+    @Mapping(target = "boardId", ignore = true)
+    @Mapping(target = "columnId", ignore = true)
     Card toCard(CardRequest cardRequest);
 
+    @Mapping(target = "boardId", ignore = true)
+    @Mapping(target = "columnId", ignore = true)
     CardResponse toCardResponse(Card card);
 }

@@ -54,7 +54,8 @@ public class CorsConfig {
                 }
 
 
-                corsConfiguration.addAllowedMethod("*");
+                corsConfiguration.addAllowedMethod("*"); // GET, POST, PUT, DELETE, OPTIONS...
+                corsConfiguration.addAllowedHeader("*"); // mọi header
                 corsConfiguration.setAllowCredentials(true);
                 return corsConfiguration;
             }

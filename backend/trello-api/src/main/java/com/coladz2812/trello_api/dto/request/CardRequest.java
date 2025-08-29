@@ -18,8 +18,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardRequest {
     String cardId ;
-    ObjectId boardId ;
-    ObjectId columnId ;
+    String boardId ;
+    String columnId ;
     @Size(min = 3, max = 20, message = "CARD_TITLE_CHARACTER")
     String title;
     @Size(min = 3, max = 255, message = "CARD_DESCRIPTION_CHARACTER")

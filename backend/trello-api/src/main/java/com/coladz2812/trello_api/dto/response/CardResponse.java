@@ -14,8 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardResponse {
-    Object boardId;
-    Object columnId;
+    String cardId ;
+    String boardId;
+    String columnId;
     String title;
     String description;
     Date createdAt;
