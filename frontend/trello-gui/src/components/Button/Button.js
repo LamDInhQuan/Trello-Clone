@@ -15,7 +15,7 @@ function Button(
         outline = false,
         imgSrc = false,
         avatarGroup = false,
-        className = '',
+        className = false,
         chipHover = false,
         onClick,
         padding = false,

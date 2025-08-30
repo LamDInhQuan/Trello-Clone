@@ -7,7 +7,7 @@ import AppBar from '~/components/AppBar';
 import BoardContent from './BoardContent';
 import BoardBar from './BoardBar';
 import { useEffect, useState } from 'react';
-import { createNewCardApi, createNewColumnApi, fetchBoardDetailsAPI } from '~/apis';
+import { createNewCardApi, createNewColumnApi, fetchBoardDetailsAPI, updateColumnOrderIds } from '~/apis';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { generatePlaceHolderCard } from '~/utils/formatters';
@@ -31,7 +31,6 @@ function Board() {
                     const newColumns = board.result.columns.map((col) => {
                         if (!col.cards || col.cards.length === 0) {
                             const placeholder = generatePlaceHolderCard(col);
-                            console.log('placeholder : ', placeholder);
                             return {
                                 ...col,
                                 cards: [placeholder],
@@ -40,12 +39,10 @@ function Board() {
                         }
                         return col; // giữ nguyên nếu đã có cards
                     });
-                    console.log('newColumns', newColumns);
                     const newBoard = {
                         ...board.result,
                         columns: newColumns,
                     };
-                    console.log('newboard : ', newBoard);
                     setBoard(newBoard);
 
                     setError(null); // reset lỗi nếu có trước đó
@@ -64,7 +61,6 @@ function Board() {
     }, []);
 
     const createNewColumn = async (newColumnData) => {
-        console.log('createNewColumn');
         const createdColumn = await createNewColumnApi(newColumnData);
 
         const columnNew = {
@@ -74,7 +70,6 @@ function Board() {
             cardOrderIds: [],
         };
         delete columnNew.columnId; // xóa columnId
-        console.log('columnNew', columnNew);
         const placeHolderCard = generatePlaceHolderCard(columnNew);
         columnNew.cards = [placeHolderCard];
         columnNew.cardOrderIds = [placeHolderCard._id];
@@ -89,7 +84,6 @@ function Board() {
 
     const createNewCard = async (newCardData) => {
         const createdCard = await createNewCardApi(newCardData);
-        console.log('createdCard', createdCard);
         // clone board và các array bên trong
         const newBoard = {
             ...board,
@@ -106,6 +100,19 @@ function Board() {
         columnOfCard.cards.push(createdCard.result);
         columnOfCard.cardOrderIds.push(createdCard.result.cardId);
         setBoard(newBoard);
+    };
+
+    const moveColumnByColumnOrderIds = async (boardId, orderedCards) => {
+        const newBoard = { ...board };
+        newBoard.columns = orderedCards;
+        newBoard.columnOrderIds = orderedCards.map((col) => col._id);
+        setBoard(newBoard);
+        try {
+            console.log("call api updateColumnOrderIds")
+            await updateColumnOrderIds(boardId, newBoard.columnOrderIds);
+        } catch (err) {
+            console.error('API cập nhật thất bại:', err);
+        }
     };
 
     if (error) {
@@ -131,7 +138,12 @@ function Board() {
         <div className={cx('wrapper')}>
             <AppBar />
             <BoardBar board={board} />
-            <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} />
+            <BoardContent
+                board={board}
+                createNewColumn={createNewColumn}
+                createNewCard={createNewCard}
+                moveColumnByColumnOrderIds={moveColumnByColumnOrderIds}
+            />
         </div>
     );
 }

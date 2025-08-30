@@ -1,6 +1,7 @@
 package com.coladz2812.trello_api.controller;
 
 import com.coladz2812.trello_api.dto.request.BoardRequest;
+import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.dto.response.StudentResponse;
@@ -48,17 +49,18 @@ public class BoardController {
         return apiResponse ;
     }
 
-    @GetMapping("/getListBoardAndStudentInBoard")
-    public ApiResponse<List<Document>> getListBoardAndStudentInBoard() {
-        List<Document> boardResponses = boardService.getListBoardAndStudentInBoard();
-        ApiResponse<List<Document>> apiResponse = ApiResponse.<List<Document>>builder().result(boardResponses).build();
-        return apiResponse ;
-    }
 
     @GetMapping("/getBoardAndColumnByIdBoard/{id}")
     public ApiResponse<Document> getListBoardAndColumn(@PathVariable String id ) {
         Document boardResponse = boardService.getBoardAndColumnByIdBoard(id);
         ApiResponse<Document> apiResponse = ApiResponse.<Document>builder().result(boardResponse).build();
+        return apiResponse ;
+    }
+
+    @PutMapping("/updateBoardByColumnIds/{id}")
+    public ApiResponse<BoardResponse> updateBoardByColumnIds(@PathVariable String id , @Valid @RequestBody BoardRequestUpdate request) {
+        var boardResponse = boardService.updateBoardByColumnIds(id,request);
+        ApiResponse<BoardResponse> apiResponse = ApiResponse.<BoardResponse>builder().result(boardResponse).build();
         return apiResponse ;
     }
 }

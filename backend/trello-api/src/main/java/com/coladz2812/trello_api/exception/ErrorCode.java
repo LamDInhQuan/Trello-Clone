@@ -20,7 +20,8 @@ public enum ErrorCode {
     CARD_TITLE_CHARACTER(1011,"Tiêu đề card phải từ 3 - 50 kí tự ",HttpStatus.BAD_REQUEST),
     CARD_DESCRIPTION_CHARACTER(1012,"Mô tả của card phải từ 3 - 250 kí tự ",HttpStatus.BAD_REQUEST),
     CARD_NOT_FOUND(1013,"Không tìm thấy card bằng id ",HttpStatus.NOT_FOUND),
-    INVALID_OBJECT_ID(9997,"Object ID ko hợp lệ",HttpStatus.FORBIDDEN)
+    INVALID_OBJECT_ID(9997,"Object ID ko hợp lệ",HttpStatus.FORBIDDEN) ,
+    UPDATE_COLUMNORDERIDS_NOT_NULL(1014,"Dữ liệu ColumnOrderIds không được để trống",HttpStatus.BAD_REQUEST)
     ;
 
 

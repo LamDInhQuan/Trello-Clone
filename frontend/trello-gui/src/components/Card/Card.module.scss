@@ -14,12 +14,13 @@
     margin-top: -10px;
     width: 240px;
     height: fit-content;
-    max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 50px);
+    max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 30px);
     background-color: var(--color-green) !important;
     border-radius: 6px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    
 }
 .scroll-inner {
     display: flex;
@@ -49,7 +50,7 @@
     align-items: center;
     gap: 10px;
     max-height: calc(
-        100vh - var(--app-bar-height) - var(--board-bar-height) - var(--column-card-title) - var(--footer-card) - 70px
+        100vh - var(--app-bar-height) - var(--board-bar-height) - var(--column-card-title) - var(--footer-card) - 80px
     );
     overflow-y: auto;
     overflow-x: hidden;
@@ -119,6 +120,7 @@
     justify-content: flex-start;
     flex-direction: column;
     gap  : 10px;
+    height: 80px;
 }
 .wrapper-button-add-column2 {
     display: flex;

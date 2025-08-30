@@ -30,7 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD_ITEM: 'ACTIVE_DRAG_ITEM_TYPE_CARD-ITEM',
 };
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColumnOrderIds }) {
     // state lưu trạng thái của UI add column
     const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
     const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
@@ -58,16 +58,15 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
     // clone object và ghi đè field columnIds
     const boardData = {
         ...board,
-        columnOrderIds: board.columns.map((item) => item._id),
     };
 
     const originalArray = boardData.columns || [];
     const orderArray = boardData.columnOrderIds || [];
+
     const key = '_id';
 
     // dữ liệu dc sắp xếp theo order
     const [oderredCards, setOderredCards] = useState([]);
-
     // xử lí phần tử được kéo ( chỉ có thể column hoặc carditem )
     const [itemDragId, setItemDragId] = useState();
     const [itemDragType, setItemDragType] = useState();
@@ -202,6 +201,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
                 const newColumnIndex = oderredCards.findIndex((item) => item._id === over.id);
                 // đổi chỗ vị trí khi kéo thả
                 const newOddredCards = sortByIndex(oderredCards, oldColumnIndex, newColumnIndex);
+                moveColumnByColumnOrderIds(board._id, newOddredCards);
                 setOderredCards(newOddredCards);
             }
         }

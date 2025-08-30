@@ -1,7 +1,7 @@
 .wrapper {
     width: 100%;
     background-color: rgb(255, 255, 255);
-    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height));
+    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) );
     padding-bottom: 5px;
     padding-left: 13px;
     padding-right: 13px;
@@ -16,7 +16,7 @@
     overflow-x: auto !important ;
     overflow-y: hidden;
     box-sizing: border-box;
-
+    transform: translateY(-5px);
     /* Scrollbar Styles for WebKit (Chrome, Edge, Safari) */
     &::-webkit-scrollbar {
         height: 7px; /* Chiều cao thanh scroll ngang */
@@ -83,12 +83,14 @@
     flex-direction: column;
     align-items: center;
     gap : 10px ;
+
 }
 .wrapper-button-add-column2{
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     margin-right: 45px;
+    
 }
 // css cho input add column ( input search )
 .label-search {
@@ -143,7 +145,7 @@
 
 // button-add-column
 .button-add-column2 {
-    background-color: #efdda8;
+    background-color: #3806de;
     color: #fff;
   /* Box shadow */
   box-shadow: 0 4px 6px rgba(54, 54, 50, 0.2);

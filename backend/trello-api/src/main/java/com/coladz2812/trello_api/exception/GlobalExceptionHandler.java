@@ -37,8 +37,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
-
+        Object target = ex.getBindingResult().getTarget(); // object đã bind xong
+        if (target == null) {
+            log.error("Target object is null → request body không map được vào DTO");
+        } else {
+            log.error("Validation failed on object: {}", target);
+        }
         if (fieldErrors.size() == 1) {
+            log.error(fieldErrors.get(0).getDefaultMessage());
             ErrorCode errorCode;
             try {
                 errorCode = ErrorCode.valueOf(fieldErrors.get(0).getDefaultMessage());
@@ -46,7 +52,7 @@ public class GlobalExceptionHandler {
                 errorCode = ErrorCode.INVALID_KEY;
             }
             String field = fieldErrors.get(0).getField();
-            return ResponseEntity.status(ErrorCode.INVALID_KEY.getHttpStatusCode()).body(ApiResponse.builder()
+            return ResponseEntity.status(errorCode.getHttpStatusCode()).body(ApiResponse.builder()
                     .code(errorCode.getCode())
                     .message(validateSizeConstraints(field)
                             ? errorCode.getMessageCode() + " , " + messageCheckCountCharacters
@@ -89,6 +95,9 @@ public class GlobalExceptionHandler {
     public boolean validateSizeConstraints(String fieldError) {
         boolean check = false;
         Object requestObject = requestContext.getRequestContext();
+        if(requestObject == null){
+            return false;
+        }
         log.error("obj : " + requestObject);
         Class<?> objectClass = requestObject.getClass(); // eps kiểu requestcontext sang class
         for (Field field : objectClass.getDeclaredFields()) {
