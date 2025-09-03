@@ -1,6 +1,13 @@
 .preventive {
     height: 100%;
 }
+.card--overlay {
+  margin: 0 !important;          /* bỏ margin để không bị tụt */
+  pointer-events: none;          /* overlay không bắt event */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* tuỳ chọn: cho cảm giác đang nổi */
+  z-index: 9999;                 /* luôn nổi trên cùng */
+}
+
 .button_menu {
     position: relative;
     top: 30px;
@@ -14,7 +21,7 @@
     margin-top: -10px;
     width: 240px;
     height: fit-content;
-    max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 30px);
+    max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 40px);
     background-color: var(--color-green) !important;
     border-radius: 6px;
     display: flex;
@@ -50,7 +57,7 @@
     align-items: center;
     gap: 10px;
     max-height: calc(
-        100vh - var(--app-bar-height) - var(--board-bar-height) - var(--column-card-title) - var(--footer-card) - 80px
+        100vh - var(--app-bar-height) - var(--board-bar-height) - var(--column-card-title) - var(--footer-card) - 90px
     );
     overflow-y: auto;
     overflow-x: hidden;

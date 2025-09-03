@@ -3,6 +3,7 @@ package com.coladz2812.trello_api.configuration;
 
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,15 @@ public class CorsConfig {
 
     @Value("${app.cors.whitelist}")
     private String whitelist;
+    private List<String> lstWhiteList ;
+
+    @PostConstruct
+    public void init() {
+        lstWhiteList = Arrays.stream(whitelist.split(","))
+                .map(String::trim)
+                .toList();
+        log.info("Whitelist domains = {}", lstWhiteList);
+    }
 
     //Là một Servlet Filter do Spring cung cấp (thực thi giao thức CORS) và có nhiệm vụ chặn mọi
     // HTTP request trước khi chúng vào tới controller hay bất kỳ filter nào khác trong filter chain.
@@ -46,7 +57,7 @@ public class CorsConfig {
 
                 if (orgin.isEmpty()) { // chấp nhận postman
                     corsConfiguration.addAllowedOriginPattern("*");
-                } else if (orgin.get().equals(whitelist)) {
+                } else if (lstWhiteList.contains(orgin.get())) {
                     corsConfiguration.addAllowedOrigin(orgin.get());
                 } else {
                     log.error("Blocked CORS request from origin: {}", orgin.get());

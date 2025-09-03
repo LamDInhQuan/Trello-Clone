@@ -90,13 +90,10 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColum
         console.log('keos : ', event);
         setItemDragId(event.active.id);
 
-        const currentData = event?.active?.data?.current;
-        if (!currentData) return;
-
-        const isCard = currentData.columnId !== undefined && currentData.columnId !== null;
-        setItemDragType(isCard ? ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM : ACTIVE_DRAG_ITEM_TYPE.COLUMN);
-
-        setItemDragData(currentData);
+        setItemDragType(
+            event.active.data.current.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM : ACTIVE_DRAG_ITEM_TYPE.COLUMN,
+        ); // nếu phần tử kéo là carditem thì có columnId trong card , còn column thì ko có
+        setItemDragData(event.active.data.current);
         // set column nếu đang kéo card
 
         if (event?.active?.data?.current?.columnId) {
@@ -117,9 +114,6 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColum
                 id: activeCardId,
                 data: { current: dataActiveCardId },
             } = active; // giải mã object
-            // check placeholder trong cards
-            const isPlaceHolder = dataActiveCardId.cards?.some((c) => c.FE_PlaceHolderCard);
-            if (isPlaceHolder) return; // bỏ qua card placeholder
             const {
                 id: overCardId,
                 data: { current: dataOverCardId },
@@ -201,8 +195,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColum
                 const newColumnIndex = oderredCards.findIndex((item) => item._id === over.id);
                 // đổi chỗ vị trí khi kéo thả
                 const newOddredCards = sortByIndex(oderredCards, oldColumnIndex, newColumnIndex);
-                moveColumnByColumnOrderIds(board._id, newOddredCards);
                 setOderredCards(newOddredCards);
+                moveColumnByColumnOrderIds(board._id, newOddredCards);
             }
         }
 
@@ -228,6 +222,9 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColum
             id: activeCardId,
             data: { current: dataActiveCardId },
         } = active; // giải mã object
+        // check placeholder trong cards
+            const isPlaceHolder = dataActiveCardId.cards?.some((c) => c.FE_PlaceHolderCard);
+            if (isPlaceHolder) return; // bỏ qua card placeholder
         const {
             id: overCardId,
             data: { current: dataOverCardId },
@@ -359,59 +356,6 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumnByColum
         },
         [itemDragType, oderredCards],
     );
-
-    const addColumnClick = () => {
-        const column = {
-            _id: 'column-id-05',
-            boardId: 'board-id-01',
-            title: 'Done Column 05',
-            cardOrderIds: ['card-id-14', 'card-id-15', 'card-id-16'],
-            cards: [
-                {
-                    _id: 'card-id-14',
-                    boardId: 'board-id-01',
-                    columnId: 'column-id-05',
-                    title: 'Title of card 14',
-                    description: null,
-                    cover: null,
-                    memberIds: [],
-                    comments: [],
-                    attachments: [],
-                },
-                {
-                    _id: 'card-id-12',
-                    boardId: 'board-id-15',
-                    columnId: 'column-id-05',
-                    title: 'Title of card 15',
-                    description: null,
-                    cover: null,
-                    memberIds: [],
-                    comments: [],
-                    attachments: [],
-                },
-                {
-                    _id: 'card-id-13',
-                    boardId: 'board-id-16',
-                    columnId: 'column-id-05',
-                    title: 'Title of card 16',
-                    description: null,
-                    cover: null,
-                    memberIds: [],
-                    comments: [],
-                    attachments: [],
-                },
-            ],
-        };
-        setOderredCards((prev) => {
-            const newArr = prev.map((column) => ({
-                ...column,
-                cards: [...column.cards],
-            }));
-
-            newArr.splice(prev.length, 0, column);
-            return newArr;
-        });
-    };
 
     return (
         <DndContext

@@ -16,7 +16,6 @@
     overflow-x: auto !important ;
     overflow-y: hidden;
     box-sizing: border-box;
-    transform: translateY(-5px);
     /* Scrollbar Styles for WebKit (Chrome, Edge, Safari) */
     &::-webkit-scrollbar {
         height: 7px; /* Chiều cao thanh scroll ngang */
