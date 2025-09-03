@@ -7,10 +7,11 @@ import AppBar from '~/components/AppBar';
 import BoardContent from './BoardContent';
 import BoardBar from './BoardBar';
 import { useEffect, useState } from 'react';
-import { createNewCardApi, createNewColumnApi, fetchBoardDetailsAPI, updateColumnOrderIds } from '~/apis';
+import { createNewCardApi, createNewColumnApi, fetchBoardDetailsAPI, updateCardOrderIdsInSameColumn, updateColumnOrderIds } from '~/apis';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { generatePlaceHolderCard } from '~/utils/formatters';
+import { mapOrder } from '~/utils/sorts';
 
 const cx = classNames.bind(styles);
 
@@ -27,8 +28,12 @@ function Board() {
         const fetchData = () => {
             fetchBoardDetailsAPI(boardId)
                 .then((board) => {
+                    // sắp xếp luôn các columns trước khi đưa xuống các component con
+                    const boardResult = board.result
+                    boardResult.columns = mapOrder(boardResult.columns, boardResult.columnOrderIds, '_id')
+
                     // thêm thẻ ảo cho column mới tạo
-                    const newColumns = board.result.columns.map((col) => {
+                    const newColumns = boardResult.columns.map((col) => {
                         if (!col.cards || col.cards.length === 0) {
                             const placeholder = generatePlaceHolderCard(col);
                             return {
@@ -36,11 +41,14 @@ function Board() {
                                 cards: [placeholder],
                                 cardOrderIds: [placeholder._id],
                             };
+                        } else {
+                            // sắp xếp luôn các cards trước khi đưa xuống các component con
+                            col.cards = mapOrder(col.cards, col.cardOrderIds, '_id')
                         }
                         return col; // giữ nguyên nếu đã có cards
                     });
                     const newBoard = {
-                        ...board.result,
+                        ...boardResult ,
                         columns: newColumns,
                     };
                     setBoard(newBoard);
@@ -108,8 +116,31 @@ function Board() {
         newBoard.columnOrderIds = orderedCards.map((col) => col._id);
         setBoard(newBoard);
         try {
-            console.log("call api updateColumnOrderIds")
+            console.log('call api updateColumnOrderIds');
+            console.log("orderedCards",orderedCards)
+            console.log("columnOrderIds",newBoard.columnOrderIds)
             await updateColumnOrderIds(boardId, newBoard.columnOrderIds);
+        } catch (err) {
+            console.error('API cập nhật thất bại:', err);
+        }
+    };
+
+    const moveCardInTheSameColumn = async (columnId, orderedCards, orderedCardIds) => {
+        const newBoard = {
+            ...board,
+            columns: [...board.columns], // clone array column
+            columnOrderIds: [...board.columnOrderIds], // clone array columnOrderIds
+        };
+        // tìm cột chứa card
+        const columnOfCard = newBoard.columns.find((col) => col._id === columnId);
+        if (!columnOfCard.cards) columnOfCard.cards = [];
+        if (!columnOfCard.cardOrderIds) columnOfCard.cardOrderIds = [];
+        columnOfCard.cards = orderedCards;
+        columnOfCard.cardOrderIds = orderedCardIds;
+        setBoard(newBoard);
+        try {
+            console.log('call api updateCardOrderIdsInSameColumn');
+            await updateCardOrderIdsInSameColumn(columnId, orderedCardIds);
         } catch (err) {
             console.error('API cập nhật thất bại:', err);
         }
@@ -143,6 +174,7 @@ function Board() {
                 createNewColumn={createNewColumn}
                 createNewCard={createNewCard}
                 moveColumnByColumnOrderIds={moveColumnByColumnOrderIds}
+                moveCardInTheSameColumn = {moveCardInTheSameColumn}
             />
         </div>
     );

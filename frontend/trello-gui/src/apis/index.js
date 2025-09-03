@@ -24,3 +24,9 @@ import { API_ROOT } from "~/utils/constants";
        const response = await axios.put(`${API_ROOT}/board/updateBoardByColumnIds/${boardId}`,{columnOrderIds})
        return response.data
  }
+
+    // update columnOrderIds 
+ export const updateCardOrderIdsInSameColumn = async (columnId,cardOrderIds) => {
+       const response = await axios.put(`${API_ROOT}/column/updateColumnByCardOrderIdsInTheSameColumn/${columnId}`,{cardOrderIds})
+       return response.data
+ }

@@ -17,7 +17,7 @@ import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function Card({ title = 'Column Title', items = [], createNewCard   }) {
+function Card({ title = 'Column Title', items = [], createNewCard }) {
     //  Khi bạn gọi useSortable() trong mỗi Card, tức là:
     //✅ Card đó đã đăng ký vào hệ thống kéo-thả của DndKit, và được phép tham gia kéo-thả.
     // DndKit context (SortableContext)	Xác định phần tử để theo dõi vị trí, thứ tự
@@ -33,15 +33,12 @@ function Card({ title = 'Column Title', items = [], createNewCard   }) {
         transform: CSS.Translate.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : undefined, // đang kéo làm mờ phần tử kéo
-        
     };
 
     // mảng
-    const originalArray = items.cards || [];
     const orderArray = items.cardOrderIds || [];
-    const key = '_id';
-    const orderredArray = mapOrder(originalArray, orderArray, key);
-
+    const orderredArray = items.cards || [];
+ 
     // state lưu trạng thái của UI add card
     const [openNewCardForm, setOpenNewCardForm] = useState(false);
     const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);

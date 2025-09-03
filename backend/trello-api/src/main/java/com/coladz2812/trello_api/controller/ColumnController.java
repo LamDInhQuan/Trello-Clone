@@ -1,6 +1,8 @@
 package com.coladz2812.trello_api.controller;
 
+import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
 import com.coladz2812.trello_api.dto.request.ColumnRequest;
+import com.coladz2812.trello_api.dto.request.ColumnRequestUpdate;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.dto.response.ColumnResponse;
@@ -35,6 +37,13 @@ public class ColumnController {
     public ApiResponse<ColumnResponse> getBoardById(@PathVariable String id) {
         var boardResponse = columnService.getColumnById(id);
         ApiResponse<ColumnResponse> apiResponse = ApiResponse.<ColumnResponse>builder().result(boardResponse).build();
+        return apiResponse ;
+    }
+
+    @PutMapping("/updateColumnByCardOrderIdsInTheSameColumn/{id}")
+    public ApiResponse<ColumnResponse> updateColumnByCardOrderIdsInTheSameColumn(@PathVariable String id , @Valid @RequestBody ColumnRequestUpdate request) {
+        var columnResponse = columnService.updateColumnByCardOrderIdsInTheSameColumn(id,request);
+        ApiResponse<ColumnResponse> apiResponse = ApiResponse.<ColumnResponse>builder().result(columnResponse).build();
         return apiResponse ;
     }
 }

@@ -2,6 +2,7 @@ package com.coladz2812.trello_api.service;
 
 import com.coladz2812.trello_api.dto.request.BoardRequest;
 import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
+import com.coladz2812.trello_api.dto.request.ColumnRequestUpdate;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
@@ -69,4 +70,6 @@ public class BoardService {
         board.setUpdatedAt(new Date());
         return boardMapper.toBoardResponse(boardRepository.save(board));
     }
+
+
 }

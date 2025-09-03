@@ -1,6 +1,8 @@
 package com.coladz2812.trello_api.service;
 
 import com.coladz2812.trello_api.dto.request.ColumnRequest;
+import com.coladz2812.trello_api.dto.request.ColumnRequestUpdate;
+import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.dto.response.ColumnResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
@@ -17,6 +19,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -57,5 +60,11 @@ public class ColumnService {
     public ColumnResponse getColumnById(String id) {
         Optional<Column> column = columnRepository.findById(id);
         return columnMapper.toColumnResponse(column.orElseThrow(() -> new AppException(ErrorCode.BOARD_NOT_FOUND)));
+    }
+    public ColumnResponse updateColumnByCardOrderIdsInTheSameColumn(String columnId , ColumnRequestUpdate request) {
+        Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
+        column.setCardOrderIds(request.getCardOrderIds());
+        column.setUpdateAt(new Date());
+        return columnMapper.toColumnResponse(columnRepository.save(column));
     }
 }
