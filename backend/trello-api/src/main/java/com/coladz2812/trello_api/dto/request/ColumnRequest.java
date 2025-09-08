@@ -17,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ColumnRequest {
     String columnId ;
-    ObjectId boardId ;
+    String boardId ;
     @Size(min = 3, max = 20, message = "COLUMN_TITLE_CHARACTER")
     String title;
     List<String> cardOrderIds;

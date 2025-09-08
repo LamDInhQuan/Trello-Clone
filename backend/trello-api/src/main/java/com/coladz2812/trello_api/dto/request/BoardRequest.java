@@ -26,7 +26,7 @@ public class BoardRequest {
     String slug;
     @Size(min = 3, max = 255, message = "BOARD_DESCRIPTION_CHARACTER")
     String description;
-    List<Column> columnOrderIds;
+    List<String> columnOrderIds;
     Date createdAt;
     Date updatedAt;
     Boolean _destroy;

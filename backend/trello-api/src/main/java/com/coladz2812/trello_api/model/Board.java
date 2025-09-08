@@ -24,7 +24,7 @@ public class Board {
     String title ;
     String slug ;
     String description ;
-    List<Column> columnOrderIds = List.of();
+    List<String> columnOrderIds = List.of();
     Date createdAt = new Date() ;
     Date updatedAt  ;
     Boolean _destroy = false ;

@@ -15,7 +15,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ColumnResponse {
     String columnId ;
-    Object boardId ;
+    String boardId ;
     String title;
     List<String> cardOrderIds ;
     Date createdAt ;

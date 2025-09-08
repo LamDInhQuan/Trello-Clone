@@ -29,11 +29,10 @@ function ButtonDropDownMenu({
     rightIcon = false,
     calcPosition = false,
     magin = false,
-    className = false
+    className = false,
+    menuItems,
 }) {
-
     const [hide, setHide] = useState(false);
-
     const handleClick = () => {
         setHide((prev) => !prev);
     };
@@ -54,7 +53,7 @@ function ButtonDropDownMenu({
     );
 
     return (
-        <div className={cx('menu-dropDown',className)} ref={divRef} style={imgSrc ? { minWidth: '30px' } : {}}>
+        <div className={cx('menu-dropDown', className)} ref={divRef} style={imgSrc ? { minWidth: '30px' } : {}}>
             <Button
                 ref={imgRef}
                 onClick={handleClick}
@@ -66,29 +65,26 @@ function ButtonDropDownMenu({
                 {children}
             </Button>
             {/*  ẩn hiện menumenu */}
-            {
-                <MenuDropDownCustom
-                    className={cx2('wrapper', { active: hide })}
-                    ref={dropdownRef}
-                    position={imgSrc || calcPosition ? position : false}
-                >
-                    <MenuDropDownCustomItem leftIcon={<Icons.CutIcon className={cx3('icon')} />}>
-                        Cut
-                    </MenuDropDownCustomItem>
-                    <MenuDropDownCustomItem leftIcon={<Icons.CopyIcon className={cx3('icon')} />}>
-                        Copy
-                    </MenuDropDownCustomItem>
-                    <MenuDropDownCustomItem leftIcon={<Icons.PasteIcon className={cx3('icon')} />}>
-                        Paste
-                    </MenuDropDownCustomItem>
-                    <MenuDropDownCustomItem leftIcon={<Icons.RemoveIcon className={cx3('icon')} />}>
-                        Remove this column
-                    </MenuDropDownCustomItem>
-                    <MenuDropDownCustomItem leftIcon={<Icons.CloudIcon className={cx3('icon')} />}>
-                        Archive this column
-                    </MenuDropDownCustomItem>
-                </MenuDropDownCustom>
-            }
+            <MenuDropDownCustom
+                className={cx2('wrapper', { active: hide })}
+                ref={dropdownRef}
+                position={imgSrc || calcPosition ? position : false}
+            >
+                {menuItems
+                    ? menuItems.map((item, key) => {
+                          const Icon = item.icon;
+                          return (
+                              <MenuDropDownCustomItem
+                                  key={key}
+                                  leftIcon={<Icon className={cx('icon3')} />}
+                                  onClick={item.onClick}
+                              >
+                                  {item.label}
+                              </MenuDropDownCustomItem>
+                          );
+                      })
+                    : []}
+            </MenuDropDownCustom>
             {/*  ẩn hiện menumenu */}
         </div>
     );

@@ -20,7 +20,7 @@ public class BoardResponse {
     String title;
     String slug;
     String description;
-    List<Column> columnOrderIds;
+    List<String> columnOrderIds;
     Date createdAt ;
     Date updatedAt;
     Boolean _destroy ;

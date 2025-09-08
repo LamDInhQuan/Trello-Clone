@@ -4,9 +4,9 @@ export const uppercaseFirstLetter = (value) => { // viết hoa chữ cái đầu
 }
 export const generatePlaceHolderCard = (column) => { // trả về obj PlaceHolderCard 
     return {
-        _id : `${column}-placeholder-card`,
+        _id : `${column._id}-placeholder-card`,
         boardId : column.boardId ,
-        columnId : column.columnId ,
+        columnId : column._id ,
         FE_PlaceHolderCard : true 
     }
 }

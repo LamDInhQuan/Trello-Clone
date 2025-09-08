@@ -7,7 +7,7 @@
     top: -11px;
     left: 7px;
     font-size: 14px;
-    background: #F9F9F9;
+    background: #f9f9f9;
     padding: 0 6px;
     color: var(--color-green);
     pointer-events: none;
@@ -27,15 +27,29 @@
     &:hover {
         border: 2px solid var(--color-green);
     }
-    &:focus + .label-search {
-        opacity: 1;
-        top: -10px;
-        font-size: 12px;
-        opacity: 1;
-        font-weight: 600;
-        transform: translateY(0) scale(1);
-    }
     &:focus::placeholder {
         color: transparent;
     }
 }
+.searchInput:focus + .label-search {
+    opacity: 1;
+    top: -10px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(0) scale(1);
+}
+.searchInput.hasValueInInput + .label-search {
+    opacity: 1;
+    top: -10px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(0) scale(1);
+}
+.searchInput.hasValue + .label-search {
+    opacity: 1;
+    top: 1px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(0) scale(1);
+}
+

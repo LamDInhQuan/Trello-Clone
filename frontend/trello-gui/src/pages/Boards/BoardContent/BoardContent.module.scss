@@ -1,7 +1,7 @@
 .wrapper {
     width: 100%;
     background-color: rgb(255, 255, 255);
-    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height));
+    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) );
     padding-bottom: 5px;
     padding-left: 13px;
     padding-right: 13px;
@@ -12,11 +12,10 @@
     display: flex;
     align-items: flex-start;
     position: relative;
-    gap: 12px;
+    gap: 13px;
     overflow-x: auto !important ;
     overflow-y: hidden;
     box-sizing: border-box;
-
     /* Scrollbar Styles for WebKit (Chrome, Edge, Safari) */
     &::-webkit-scrollbar {
         height: 7px; /* Chiều cao thanh scroll ngang */
@@ -38,25 +37,135 @@
 }
 // icon
 .add-column {
-    position: relative;
-    top: 30px;
-    margin-top: -10px;
-    height: fit-content;
-    max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 50px);
-    background-color: #659a91;
+    margin-top: 20px;
+    height: 40px;
+    background-color: #7ccfc4;
     border-radius: 6px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    padding: 2px 40px 2px 0;
-
+    padding: 2px 0px 2px 0;
+    width: 240px;
+    max-width: 260px;
+}
+.add-column:hover {
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
+.add-column-toggle {
+    height: 90px;
 }
 .icon {
     width: 22px;
     color: white;
 }
+.icon:hover {
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
 .button-add-column {
     background-color: transparent;
     color: white;
-    width: max-content;
+    width: 100%; /* ăn hết chiều ngang cha */
+    height: 100%; /* ăn hết chiều cao cha */
+    display: flex; /* căn icon + text */
+    align-items: center;
+    justify-content: flex-start;
+    border: none;
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
+.button-add-column:hover {
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
+}
+// input-add-title
+.input-add-title {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap : 10px ;
+
+}
+.wrapper-button-add-column2{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-right: 45px;
+    
+}
+// css cho input add column ( input search )
+.label-search {
+    position: absolute;
+    z-index: 1;
+    top: -11px;
+    left: 16px;
+    font-size: 14px;
+    background: #7ccfc4;
+    padding: 0 6px;
+    color: #fff;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(5px) scale(0.85);
+}
+.searchInput {
+    margin-top: 9px;
+    height: 32px;
+    width: 220px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 0 8px;
+    color: #fff;
+    font-weight: 500;
+
+    &::placeholder {
+        color: #fff; /* placeholder trắng mặc định */
+        font-size: 14px;
+    }
+    &:hover {
+        border: 2px solid #fff;
+    }
+    &:focus + .label-search {
+        opacity: 1;
+        top: 1px;
+        font-size: 12px;
+        opacity: 1;
+        font-weight: 600;
+        transform: translateY(0) scale(1);
+    }
+    &:focus::placeholder {
+        color: #fff;
+    }
+}
+
+// button có padding thì margin tùy chỉnh
+.padding-button {
+    margin-top: 4px;
+}
+
+// button-add-column
+.button-add-column2 {
+    background-color: #3806de;
+    color: #fff;
+  /* Box shadow */
+  box-shadow: 0 4px 6px rgba(54, 54, 50, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+.button-add-column2:hover {
+    background-color: #f7db85;
+}
+.icon2 {
+    width: 18px;
+    color: white;
+}
+.icon2:hover {
+    color: rgb(241, 73, 73);
+}
+
+// css focus cho add column 
+.searchInput.hasValue + .label-search {
+    opacity: 1;
+    top: -17px;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateY(0) scale(1);
 }

@@ -17,6 +17,7 @@ import AddNewColumnIcon from './AddNewColumnIcon';
 import GroupIcon from './GroupIcon';
 import MessageIcon from './MessageIcon';
 import AttachIcon from './AttachIcon';
+import CloseIcon from './CloseIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -37,8 +38,8 @@ const Icons = {
     AddNewColumnIcon,
     GroupIcon ,
     MessageIcon ,
-    AttachIcon
-
+    AttachIcon ,
+    CloseIcon
 };
 
 export default Icons;
