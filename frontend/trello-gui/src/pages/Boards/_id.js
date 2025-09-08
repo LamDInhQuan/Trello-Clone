@@ -7,7 +7,14 @@ import AppBar from '~/components/AppBar';
 import BoardContent from './BoardContent';
 import BoardBar from './BoardBar';
 import { useEffect, useState } from 'react';
-import { createNewCardApi, createNewColumnApi, fetchBoardDetailsAPI, updateCardOrderIdsInSameColumn, updateColumnOrderIds } from '~/apis';
+import {
+    createNewCardApi,
+    createNewColumnApi,
+    fetchBoardDetailsAPI,
+    updateCardOrderIdsInSameColumn,
+    updateCardOrderIdsInTwoColumn,
+    updateColumnOrderIds,
+} from '~/apis';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { generatePlaceHolderCard } from '~/utils/formatters';
@@ -29,8 +36,9 @@ function Board() {
             fetchBoardDetailsAPI(boardId)
                 .then((board) => {
                     // sắp xếp luôn các columns trước khi đưa xuống các component con
-                    const boardResult = board.result
-                    boardResult.columns = mapOrder(boardResult.columns, boardResult.columnOrderIds, '_id')
+                    const boardResult = board.result;
+                    console.log(boardResult);
+                    boardResult.columns = mapOrder(boardResult.columns, boardResult.columnOrderIds, '_id');
 
                     // thêm thẻ ảo cho column mới tạo
                     const newColumns = boardResult.columns.map((col) => {
@@ -43,12 +51,12 @@ function Board() {
                             };
                         } else {
                             // sắp xếp luôn các cards trước khi đưa xuống các component con
-                            col.cards = mapOrder(col.cards, col.cardOrderIds, '_id')
+                            col.cards = mapOrder(col.cards, col.cardOrderIds, '_id');
                         }
                         return col; // giữ nguyên nếu đã có cards
                     });
                     const newBoard = {
-                        ...boardResult ,
+                        ...boardResult,
                         columns: newColumns,
                     };
                     setBoard(newBoard);
@@ -105,8 +113,16 @@ function Board() {
         const columnOfCard = newBoard.columns.find((col) => col._id === createdCard.result.columnId);
         if (!columnOfCard.cards) columnOfCard.cards = [];
         if (!columnOfCard.cardOrderIds) columnOfCard.cardOrderIds = [];
-        columnOfCard.cards.push(createdCard.result);
-        columnOfCard.cardOrderIds.push(createdCard.result.cardId);
+        if (columnOfCard) {
+            if (columnOfCard.cards.some((card) => card.FE_PlaceHolderCard)) {
+                columnOfCard.cards = [createdCard.result];
+                columnOfCard.cardOrderIds = [createdCard.result.cardId];
+            } else {
+                columnOfCard.cards.push(createdCard.result);
+                columnOfCard.cardOrderIds.push(createdCard.result.cardId);
+            }
+        }
+        console.log(columnOfCard);
         setBoard(newBoard);
     };
 
@@ -117,8 +133,8 @@ function Board() {
         setBoard(newBoard);
         try {
             console.log('call api updateColumnOrderIds');
-            console.log("orderedCards",orderedCards)
-            console.log("columnOrderIds",newBoard.columnOrderIds)
+            // console.log('orderedCards', orderedCards);
+            // console.log('columnOrderIds', newBoard.columnOrderIds);
             await updateColumnOrderIds(boardId, newBoard.columnOrderIds);
         } catch (err) {
             console.error('API cập nhật thất bại:', err);
@@ -141,6 +157,44 @@ function Board() {
         try {
             console.log('call api updateCardOrderIdsInSameColumn');
             await updateCardOrderIdsInSameColumn(columnId, orderedCardIds);
+        } catch (err) {
+            console.error('API cập nhật thất bại:', err);
+        }
+    };
+
+    const moveCardInTwoColumns = async (cardId, prevColumn, nextColumn) => {
+        const newBoard = {
+            ...board,
+            columns: [...board.columns], // clone array column
+            columnOrderIds: [...board.columnOrderIds], // clone array columnOrderIds
+        };
+        // console.log('prevColumn', prevColumn);
+        // console.log('nextColumn', nextColumn);
+        const FE_PlaceHolderCard = prevColumn.cards.find((card) => card.FE_PlaceHolderCard);
+        // tìm cột chứa card
+        const prevIndex = newBoard.columns.findIndex((col) => col._id === prevColumn._id);
+        if (prevIndex !== -1) {
+            newBoard.columns[prevIndex] = prevColumn;
+        }
+        const nextIndex = newBoard.columns.findIndex((col) => col._id === nextColumn._id);
+        if (nextIndex !== -1) {
+            newBoard.columns[nextIndex] = nextColumn;
+        }
+        setBoard(newBoard);
+        // console.log("cardId",cardId)
+        // console.log("prevColumn._id,",prevColumn._id,)
+        // console.log("prevColumn.cardOrderIds",prevColumn.cardOrderIds)
+        // console.log("nextColumn._id",nextColumn._id)
+        // console.log("nextColumn.cardOrderIds",nextColumn.cardOrderIds)
+        try {
+            console.log('call api moveCardInTwoColumns');
+            updateCardOrderIdsInTwoColumn(
+                cardId,
+                prevColumn._id,
+                FE_PlaceHolderCard ? [] : prevColumn.cardOrderIds,
+                nextColumn._id,
+                nextColumn.cardOrderIds,
+            );
         } catch (err) {
             console.error('API cập nhật thất bại:', err);
         }
@@ -174,7 +228,8 @@ function Board() {
                 createNewColumn={createNewColumn}
                 createNewCard={createNewCard}
                 moveColumnByColumnOrderIds={moveColumnByColumnOrderIds}
-                moveCardInTheSameColumn = {moveCardInTheSameColumn}
+                moveCardInTheSameColumn={moveCardInTheSameColumn}
+                moveCardInTwoColumns={moveCardInTwoColumns}
             />
         </div>
     );

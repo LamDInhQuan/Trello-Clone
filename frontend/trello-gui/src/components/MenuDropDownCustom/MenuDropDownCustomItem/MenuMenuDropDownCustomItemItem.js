@@ -8,10 +8,10 @@ import Icons from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
-function MenuDropDownCustomItem({ children, leftIcon }) {
+function MenuDropDownCustomItem({ children, leftIcon, onClick }) {
     return (
         <div className={cx('wrapper')}>
-            <Button className={cx('buttonItem')} leftIcon={leftIcon}>
+            <Button className={cx('buttonItem')} leftIcon={leftIcon} onClick={onClick}>
                 {children}
             </Button>
         </div>

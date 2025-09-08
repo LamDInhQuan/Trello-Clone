@@ -5,6 +5,7 @@ import { faAngleDown, faList } from '@fortawesome/free-solid-svg-icons';
 import { verticalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { toast } from 'react-toastify';
+import { useConfirm } from 'material-ui-confirm';
 // src
 import styles from './Card.module.scss';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
@@ -38,7 +39,7 @@ function Card({ title = 'Column Title', items = [], createNewCard }) {
     // mảng
     const orderArray = items.cardOrderIds || [];
     const orderredArray = items.cards || [];
- 
+
     // state lưu trạng thái của UI add card
     const [openNewCardForm, setOpenNewCardForm] = useState(false);
     const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
@@ -67,15 +68,34 @@ function Card({ title = 'Column Title', items = [], createNewCard }) {
         setNewColumnTitle(val);
     };
 
+    const confirmDeleteColumn = useConfirm();
+    const handelDeleteColumn = () => {
+        console.log('delete column');
+        confirmDeleteColumn({
+            title: 'Delete Column ?',
+            description: 'This action will permanently delete your Column and its Cards ! Are you sure ?',
+        })
+            .then(console.log())
+            .catch(() => {});
+    };
+
+    const menuHandelColumnItem = [
+        { label: 'Cut', icon: Icons.CutIcon, onClick: () => console.log('Cut') },
+        { label: 'Copy', icon: Icons.CopyIcon, onClick: () => console.log('Copy') },
+        { label: 'Paste', icon: Icons.PasteIcon, onClick: () => console.log('Paste') },
+        { label: 'Remove', icon: Icons.RemoveIcon, onClick: () => console.log('Remove') },
+    ];
     return (
         <div className={cx('preventive')} ref={setNodeRef} style={dndKitCardStyles}>
             <ButtonDropDownMenu
                 rightIcon={<FontAwesomeIcon icon={faAngleDown} className={cx('icon-dropDown')} />}
                 calcPosition
                 magin={15}
+                deleteOnClick={handelDeleteColumn}
                 className={cx('button_menu')}
+                menuItems={menuHandelColumnItem}
             ></ButtonDropDownMenu>
-            <div className={cx('wrapper')}>
+            <div className={cx('wrapper')} data-column-id={items._id}>
                 <div className={cx('scroll-inner')} {...attributes} {...listeners}>
                     <div className={cx('column-title')}>
                         <h4 className={cx('title')} onClick={addNewColumn}>

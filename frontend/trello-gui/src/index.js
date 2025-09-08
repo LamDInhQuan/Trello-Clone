@@ -8,12 +8,25 @@ import GlobalAppStyle from './components/GlobalAppStyle';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// cấu hình MUI dialog
+import { ConfirmProvider } from 'material-ui-confirm';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <GlobalAppStyle>
-            <App />
-            <ToastContainer position='bottom-left' theme='colored'/>
+            <ConfirmProvider
+                defaultOptions={{
+                    dialogProps: {
+                        maxWidth: 'xs',
+                    },
+                    confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+                    allowClose: false,
+                }}
+            >
+                <App />
+                <ToastContainer position="bottom-left" theme="colored" />
+            </ConfirmProvider>
         </GlobalAppStyle>
     </React.StrictMode>,
 );
