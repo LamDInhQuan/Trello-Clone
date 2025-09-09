@@ -14,11 +14,11 @@ import Icons from '../Icons';
 import CardItem from './CardItem';
 import { mapOrder } from '~/utils/sorts';
 import InputSearch from '../InputSearch';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function Card({ title = 'Column Title', items = [], createNewCard }) {
+function Card({ title = 'Column Title', id, items = [], createNewCard, deleteColumnDetails }) {
     //  Khi bạn gọi useSortable() trong mỗi Card, tức là:
     //✅ Card đó đã đăng ký vào hệ thống kéo-thả của DndKit, và được phép tham gia kéo-thả.
     // DndKit context (SortableContext)	Xác định phần tử để theo dõi vị trí, thứ tự
@@ -70,86 +70,135 @@ function Card({ title = 'Column Title', items = [], createNewCard }) {
 
     const confirmDeleteColumn = useConfirm();
     const handelDeleteColumn = () => {
-        console.log('delete column');
-        confirmDeleteColumn({
-            title: 'Delete Column ?',
-            description: 'This action will permanently delete your Column and its Cards ! Are you sure ?',
-        })
-            .then(console.log())
-            .catch(() => {});
+        // đóng dropdown
+        setMenuDropDownHide(true);
+
+        // clear focus khỏi button dropdown
+        document.activeElement?.blur();
+
+        // gọi confirm sau 1 tick để root kịp update
+        setTimeout(() => {
+            confirmDeleteColumn({
+                title: 'Delete Column ?',
+                description: 'This action will permanently delete your Column and its Cards ! Are you sure ?',
+            })
+                .then(() => {
+                    console.log('confirmed delete', id);
+                    deleteColumnDetails(id);
+                })
+                .catch(() => {});
+        }, 0);
     };
 
+    const [overlay, setOverlay] = useState();
+    const [menuDropDownHide, setMenuDropDownHide] = useState(false);
+    useEffect(() => {
+        if (menuDropDownHide) {
+            // reset lại sau khi ép ẩn
+            setMenuDropDownHide(false);
+        }
+        if (overlay) {
+            // reset lại sau khi ép ẩn
+            setOverlay(false);
+        }
+    }, [menuDropDownHide, overlay]);
+    // custom hàm callback
+    const handelMenuClick = (callback) => () => {
+        if (callback) {
+            callback();
+        }
+        setMenuDropDownHide(true);
+    };
     const menuHandelColumnItem = [
-        { label: 'Cut', icon: Icons.CutIcon, onClick: () => console.log('Cut') },
-        { label: 'Copy', icon: Icons.CopyIcon, onClick: () => console.log('Copy') },
-        { label: 'Paste', icon: Icons.PasteIcon, onClick: () => console.log('Paste') },
-        { label: 'Remove', icon: Icons.RemoveIcon, onClick: () => console.log('Remove') },
+        {
+            label: 'Add new column',
+            icon: Icons.AddCardIcon,
+            onClick: handelMenuClick(() => toggleOpenNewCardForm()),
+        },
+        { label: 'Cut', icon: Icons.CutIcon, onClick: handelMenuClick(() => console.log('Cut')) },
+        { label: 'Copy', icon: Icons.CopyIcon, onClick: handelMenuClick(() => console.log('Copy')) },
+        { label: 'Paste', icon: Icons.PasteIcon, onClick: handelMenuClick(() => console.log('Paste')) },
+        {
+            label: 'Remove this column',
+            icon: Icons.RemoveIcon,
+            onClick: handelMenuClick(() => handelDeleteColumn()),
+        },
     ];
+
     return (
-        <div className={cx('preventive')} ref={setNodeRef} style={dndKitCardStyles}>
-            <ButtonDropDownMenu
-                rightIcon={<FontAwesomeIcon icon={faAngleDown} className={cx('icon-dropDown')} />}
-                calcPosition
-                magin={15}
-                deleteOnClick={handelDeleteColumn}
-                className={cx('button_menu')}
-                menuItems={menuHandelColumnItem}
-            ></ButtonDropDownMenu>
-            <div className={cx('wrapper')} data-column-id={items._id}>
-                <div className={cx('scroll-inner')} {...attributes} {...listeners}>
-                    <div className={cx('column-title')}>
-                        <h4 className={cx('title')} onClick={addNewColumn}>
-                            {title}
-                        </h4>
-                    </div>
-                    <SortableContext items={orderArray} strategy={verticalListSortingStrategy}>
-                        <div className={cx('list-card')}>
-                            {orderredArray.map((item) => {
-                                return <CardItem key={item._id} card={item} />;
-                            })}
+        <>
+            {/* Overlay */}
+            <div className={cx('overlay', { active: overlay })} onClick={() => setOverlay(false)} />
+            <div className={cx('preventive')} ref={setNodeRef} style={dndKitCardStyles}>
+                <ButtonDropDownMenu
+                    rightIcon={<FontAwesomeIcon icon={faAngleDown} className={cx('icon-dropDown')} />}
+                    calcPosition
+                    magin={15}
+                    deleteOnClick={handelDeleteColumn}
+                    className={cx('button_menu')}
+                    menuItems={menuHandelColumnItem}
+                    onClickMenu={(isOpen) => {
+                        setOverlay(isOpen);
+                    }}
+                    hideFromParent={menuDropDownHide}
+                ></ButtonDropDownMenu>
+
+                <div className={cx('wrapper')} data-column-id={items._id}>
+                    <div className={cx('scroll-inner')} {...attributes} {...listeners}>
+                        <div className={cx('column-title')}>
+                            <h4 className={cx('title')} onClick={addNewColumn}>
+                                {title}
+                            </h4>
                         </div>
-                    </SortableContext>
-                </div>
-                <div className={cx('footer')}>
-                    {!openNewCardForm ? (
-                        <>
-                            <Button
-                                onClick={(e) => {
-                                    toggleOpenNewCardForm();
-                                }}
-                                className={cx('button-add')}
-                                leftIcon={<Icons.AddCardIcon className={cx('icon')} />}
-                            >
-                                Add new card
-                            </Button>
-                            <FontAwesomeIcon icon={faList} className={cx('icon-2')} />
-                        </>
-                    ) : (
-                        <div className={cx('input-add-title')}>
-                            <InputSearch
-                                title={'Enter card title...'}
-                                label_search_className={cx('label-search')}
-                                searchInput_className={cx('searchInput')}
-                                autoFocus={true}
-                                hasValue={newColumnTitle !== ''}
-                                onChange={setInputChangeAddColumn}
-                                value={newColumnTitle}
-                            />
-                            <div className={cx('wrapper-button-add-column2')}>
-                                {/* // onMouseDown xảy ra trước blur input */}
-                                <Button className={cx('button-add-column2')} onClick={addNewColumn}>
-                                    Add Card
-                                </Button>
-                                <Button
-                                    onClick={toggleOpenNewCardForm}
-                                    leftIcon={<Icons.CloseIcon className={cx('icon2')} />}
-                                />
+                        <SortableContext items={orderArray} strategy={verticalListSortingStrategy}>
+                            <div className={cx('list-card')}>
+                                {orderredArray.map((item) => {
+                                    return <CardItem key={item._id} card={item} />;
+                                })}
                             </div>
-                        </div>
-                    )}
+                        </SortableContext>
+                    </div>
+                    <div className={cx('footer')}>
+                        {!openNewCardForm ? (
+                            <>
+                                <Button
+                                    onClick={(e) => {
+                                        toggleOpenNewCardForm();
+                                    }}
+                                    className={cx('button-add')}
+                                    leftIcon={<Icons.AddCardIcon className={cx('icon')} />}
+                                >
+                                    Add new card
+                                </Button>
+                                <FontAwesomeIcon icon={faList} className={cx('icon-2')} />
+                            </>
+                        ) : (
+                            <div className={cx('input-add-title')}>
+                                <InputSearch
+                                    title={'Enter card title...'}
+                                    label_search_className={cx('label-search')}
+                                    searchInput_className={cx('searchInput')}
+                                    autoFocus={true}
+                                    hasValue={newColumnTitle !== ''}
+                                    onChange={setInputChangeAddColumn}
+                                    value={newColumnTitle}
+                                />
+                                <div className={cx('wrapper-button-add-column2')}>
+                                    {/* // onMouseDown xảy ra trước blur input */}
+                                    <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                        Add Card
+                                    </Button>
+                                    <Button
+                                        onClick={toggleOpenNewCardForm}
+                                        leftIcon={<Icons.CloseIcon className={cx('icon2')} />}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

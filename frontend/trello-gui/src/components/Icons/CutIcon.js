@@ -6,7 +6,6 @@ function CutIcon({ className }) {
                 focusable="false"
                 ariahidden="true"
                 viewBox="0 0 24 24"
-                tabIndex="-1"
                 title="ContentCut"
                 fill="currentColor"
             >

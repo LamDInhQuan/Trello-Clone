@@ -10,9 +10,9 @@ function useClickOutSide(ref, callBack, hide = false) {
                 callBack();
             }
         }
-        document.addEventListener('mousedown', clickOutSide);
+        document.addEventListener('click', clickOutSide);
         return () => {
-            document.removeEventListener('mousedown', clickOutSide);
+            document.removeEventListener('click', clickOutSide);
         };
     }, [ref, callBack, hide]);
 }

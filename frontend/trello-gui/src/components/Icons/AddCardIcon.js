@@ -5,7 +5,6 @@ function AddCardIcon({ className }) {
                 className={className}
                 aria-hidden="true"
                 viewBox="0 0 24 24"
-                tabIndex="-1"
                 title="AddCard"
                 fill="currentColor"
             >

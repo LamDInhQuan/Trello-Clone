@@ -63,4 +63,11 @@ public class BoardController {
         ApiResponse<BoardResponse> apiResponse = ApiResponse.<BoardResponse>builder().result(boardResponse).build();
         return apiResponse ;
     }
+    @DeleteMapping("/deleteColumn/{boardId}/column/{columnId}")
+    public ApiResponse<String> updateColumnByCardOrderIdsInTheSameColumn(@PathVariable String boardId , @PathVariable String columnId) {
+        String response = boardService.deleteOneColumnInBoard(boardId,columnId);
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder().result(response).build();
+        return apiResponse ;
+    }
+
 }

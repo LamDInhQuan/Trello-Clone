@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import {
     createNewCardApi,
     createNewColumnApi,
+    deleteColumnInBoard,
     fetchBoardDetailsAPI,
     updateCardOrderIdsInSameColumn,
     updateCardOrderIdsInTwoColumn,
@@ -19,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import { mapOrder } from '~/utils/sorts';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -200,6 +202,24 @@ function Board() {
         }
     };
 
+    const deleteColumnDetails = (columnId) => {
+        const newBoard = {
+            ...board,
+        };
+        newBoard.columns = newBoard.columns.filter((col) => col._id !== columnId);
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== columnId);
+        setBoard(newBoard);
+        // Gọi API xoá trên server
+        deleteColumnInBoard(newBoard._id, columnId)
+            .then((result) => {
+                console.log('Xoá column thành công:', result.result);
+                toast.success(result.result, { position: 'bottom-right' });
+                // cập nhật state board nếu cần
+            })
+            .catch((err) => {
+                console.error('API xoá thất bại:', err);
+            });
+    };
     if (error) {
         return (
             <div className={cx('status-wrapper')}>
@@ -230,6 +250,7 @@ function Board() {
                 moveColumnByColumnOrderIds={moveColumnByColumnOrderIds}
                 moveCardInTheSameColumn={moveCardInTheSameColumn}
                 moveCardInTwoColumns={moveCardInTwoColumns}
+                deleteColumnDetails={deleteColumnDetails}
             />
         </div>
     );

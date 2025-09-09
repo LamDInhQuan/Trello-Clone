@@ -2,19 +2,38 @@
     height: 100%;
 }
 .card--overlay {
-  margin: 0 !important;          /* bỏ margin để không bị tụt */
-  pointer-events: none;          /* overlay không bắt event */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* tuỳ chọn: cho cảm giác đang nổi */
-  z-index: 9999;                 /* luôn nổi trên cùng */
+    margin: 0 !important; /* bỏ margin để không bị tụt */
+    pointer-events: none; /* overlay không bắt event */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* tuỳ chọn: cho cảm giác đang nổi */
+    z-index: 9999; /* luôn nổi trên cùng */
+}
+// khi bật button menu dropdown hiện overlay
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: none;
+    z-index: 50;
+}
+
+.overlay.active {
+    display: block;
+    pointer-events: auto; /* chỉ chặn click */
 }
 
 .button_menu {
     position: relative;
     top: 30px;
     z-index: 99;
-    left: 202px;
-    width: 1px;
+    left: 200px;
+    width: 30px;
+    height: 30px;
 }
+.button_menu:hover {
+    background-color: #d8d0d090;
+    border-radius: 50%;
+}
+
 .wrapper {
     position: relative;
     top: 3px;
@@ -27,7 +46,6 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    
 }
 .scroll-inner {
     display: flex;
@@ -94,6 +112,7 @@
 // icon
 .icon-dropDown {
     color: white;
+    transform: translateX(-12px);
 }
 .icon {
     width: 22px;
@@ -126,7 +145,7 @@
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    gap  : 10px;
+    gap: 10px;
     height: 80px;
 }
 .wrapper-button-add-column2 {

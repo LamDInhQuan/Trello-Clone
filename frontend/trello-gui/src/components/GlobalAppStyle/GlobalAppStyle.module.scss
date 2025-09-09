@@ -6,6 +6,8 @@
     // card
     --column-card-title: 50px;
     --footer-card: 40px;
+    // column 
+    --menu-height-column : 1px ;
 }
 /* Áp box-sizing cho mọi phần tử và cả pseudo-elements */
 *,
@@ -81,4 +83,7 @@ html *::-webkit-scrollbar-track {
   margin: 0 !important;
   flex: unset !important;
   white-space: normal !important; /* cho phép xuống dòng nếu nội dung dài */
+}
+#root[aria-hidden="true"] {
+  aria-hidden: false !important;
 }

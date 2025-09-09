@@ -37,6 +37,7 @@ function BoardContent({
     moveColumnByColumnOrderIds,
     moveCardInTheSameColumn,
     moveCardInTwoColumns,
+    deleteColumnDetails,
 }) {
     // state lưu trạng thái của UI add column
     const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
@@ -115,7 +116,7 @@ function BoardContent({
         let { active, over } = event;
         if (!active) return;
 
-        // xử lí trường hợp khi event có over null 
+        // xử lí trường hợp khi event có over null
         if (!over && activeOverCard.columnId !== oldColumnWhenDragginCard._id) {
             // console.log('xử lí lần 2 ');
             // console.log(oderredCards);
@@ -149,14 +150,15 @@ function BoardContent({
                     // console.log('Thả xuống đáy');
                 }
             }
-        } else if (!over) { // một lỗi nữa là bỏ qua trường hợp !over và kéo cùng một cột => return luôn 
+        } else if (!over) {
+            // một lỗi nữa là bỏ qua trường hợp !over và kéo cùng một cột => return luôn
             // console.log('activeOverCard.columnId == oldColumnWhenDragginCard._id nên không thỏa mãn ');
             return;
         }
 
         // xử lí kết thúc kéo card
         if (itemDragType === ACTIVE_DRAG_ITEM_TYPE.CARD_ITEM) {
-            console.log('Xử lí kéo card ');
+            // console.log('Xử lí kéo card ');
             const {
                 id: activeCardId,
                 data: { current: dataActiveCardId },
@@ -182,7 +184,7 @@ function BoardContent({
             // console.log('oldColumnWhenDragginCardEnd', oldColumnWhenDragginCardEnd._id);
 
             if (overCardId.includes('-placeholder-card')) {
-                console.log('lỗi kéo thẻ placeholder card ');
+                // console.log('lỗi kéo thẻ placeholder card ');
                 columnOver = { ...columnOver, _id: dataOverCardId.columnId }; // gán lại id phải clone lại obj
                 // console.log('columnOver', columnOver);
             }
@@ -190,7 +192,7 @@ function BoardContent({
             // oldColumnWhenDragginCard === columnActive
             // Xử lí kéo card trên 2 cột
             if (oldColumnWhenDragginCardEnd._id !== columnOver._id) {
-                console.log('Xử lí kéo card trên 2 cột');
+                // console.log('Xử lí kéo card trên 2 cột');
                 setOderredCards((prev) => {
                     // clone lại prev và cập nhật các card
                     const cloneOrderedCards = prev.map((column) => ({
@@ -253,18 +255,18 @@ function BoardContent({
                     return cloneOrderedCards;
                 });
             } else {
-                console.log('Xử lí kéo card trên cùng 1 cột ');
-                console.log(dataOverCardId);
+                // console.log('Xử lí kéo card trên cùng 1 cột ');
+                // console.log(dataOverCardId);
                 const oldCardIndex = oldColumnWhenDragginCard.cards.findIndex((card) => card._id === itemDragId);
                 const newCardIndex = columnOver.cards.findIndex((card) => card._id === overCardId);
                 const newOrderedCards = sortByIndex(oldColumnWhenDragginCard.cards, oldCardIndex, newCardIndex);
                 const newOrderedCardsIds = newOrderedCards.map((card) => card._id);
                 // vì ở lần call api board từ backend lên mảng cards chưa được sắp xếp theo mảng cardOrderIds
                 // nên dẫn tới lần gọi đầu tiên gây rối loạn thứ tự , các lần kéo tiếp theo bình thường
-                console.log('oldColumnWhenDraggin ', oldColumnWhenDragginCard);
-                console.log('oldColumnWhenDragginCard ', oldColumnWhenDragginCard.cards);
-                console.log('oldCardIndex ', oldCardIndex);
-                console.log('newCardIndex ', newCardIndex);
+                // console.log('oldColumnWhenDraggin ', oldColumnWhenDragginCard);
+                // console.log('oldColumnWhenDragginCard ', oldColumnWhenDragginCard.cards);
+                // console.log('oldCardIndex ', oldCardIndex);
+                // console.log('newCardIndex ', newCardIndex);
                 // set mảng
                 setOderredCards((prev) => {
                     // clone mang orderedCards
@@ -287,7 +289,7 @@ function BoardContent({
 
         // xử lí kết thúc kéo column
         if (itemDragType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
-            console.log('Xử lí kéo column ');
+            // console.log('Xử lí kéo column ');
             if (active.id !== over?.id) {
                 // lấy vị trí lúc kéo
                 const oldColumnIndex = oderredCards.findIndex((item) => item._id === active.id);
@@ -370,14 +372,13 @@ function BoardContent({
                     cloneColumnActive.cards = cloneColumnActive.cards.filter((item) => item._id !== activeCardId);
                     cloneColumnActive.cardOrderIds = cloneColumnActive.cards.map((id) => id);
                     if (!cloneColumnActive.cards?.length) {
-                        console.log('Het card ');
+                        // console.log('Het card ');
 
                         // tạo PlaceHolderCard và add vào mảng
                         const placeHolderCard = generatePlaceHolderCard(cloneColumnActive);
                         // cloneColumnActive.cards.splice(0, 0, placeHolderCard);
                         // hoặc
                         cloneColumnActive.cards = [placeHolderCard];
-                        
                     }
                     cloneColumnActive.cardOrderIds = cloneColumnActive.cards.map((card) => card._id);
                 }
@@ -499,7 +500,14 @@ function BoardContent({
 
                         {oderredCards?.length > 0 &&
                             oderredCards.map((card) => (
-                                <Card key={card._id} title={card.title} items={card} createNewCard={createNewCard} />
+                                <Card
+                                    key={card._id}
+                                    title={card.title}
+                                    items={card}
+                                    createNewCard={createNewCard}
+                                    id={card._id}
+                                    deleteColumnDetails={deleteColumnDetails}
+                                />
                             ))}
 
                         {/* DragOverlay nằm tách chỗ chứa phần tử dc kéo  */}

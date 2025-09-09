@@ -19,6 +19,9 @@ root.render(
                 defaultOptions={{
                     dialogProps: {
                         maxWidth: 'xs',
+                        disableEnforceFocus: true, // 🔥 tắt ép focus
+                        disableAutoFocus: true, // 🔥 tắt tự động focus
+                        disableRestoreFocus: true,
                     },
                     confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
                     allowClose: false,

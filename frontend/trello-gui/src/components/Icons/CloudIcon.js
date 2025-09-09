@@ -6,7 +6,6 @@ function CloudIcon({ className }) {
                 focusable="false"
                 ariahidden="true"
                 viewBox="0 0 24 24"
-                tabIndex="-1"
                 title="Cloud"
                 fill="currentColor"
             >

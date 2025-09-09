@@ -25,6 +25,7 @@ public enum ErrorCode {
     UPDATE_CARDORDERIDS_NOT_NULL(1015,"Dữ liệu CardOrderIds không được để trống",HttpStatus.BAD_REQUEST) ,
     COLUMNID_NOT_NULL(1016,"ColumnId không được để trống",HttpStatus.BAD_REQUEST),
     CARDID_NOT_NULL(1017,"CardId không được để trống",HttpStatus.BAD_REQUEST),
+    REMOVE_COLUMN_FAILED(1018,"Xóa column thất bại",HttpStatus.BAD_REQUEST),
     ;
 
 
