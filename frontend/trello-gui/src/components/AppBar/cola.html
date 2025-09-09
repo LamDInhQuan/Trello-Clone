@@ -1,109 +1,136 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Xác nhận xóa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Column with Dropdown</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    button {
-      padding: 8px 16px;
-      border: none;
-      background-color: #dc2626;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    /* Popup overlay */
-    .popup {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
+      font-family: sans-serif;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+      gap: 20px;
+      padding: 30px;
+      background: #f5f5f5;
     }
 
-    .popup-content {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    .column {
+      width: 250px;
+      min-height: 300px;
+      background: #eee;
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+      cursor: grab;
+      transition: transform 0.2s ease;
     }
 
-    .popup-buttons {
-      margin-top: 15px;
+    .column.dragging {
+      opacity: 0.6;
+      cursor: grabbing;
     }
 
-    .popup-buttons button {
-      margin: 0 10px;
+    .dropdownBtn {
+      background: #3498db;
+      color: white;
       padding: 6px 12px;
       border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
     }
 
-    #confirmYes {
-      background-color: #dc2626;
-      color: white;
-    }
-
-    #confirmNo {
-      background-color: #9ca3af;
-      color: white;
-    }
-
-    .hidden {
+    .dropdownMenu {
+      position: absolute;
+      top: 40px;
+      left: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       display: none;
+      z-index: 100;
+    }
+
+    .dropdownMenu.active {
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+      display: none;
+      z-index: 50;
+    }
+
+    .overlay.active {
+      display: block;
     }
   </style>
 </head>
 <body>
-
-  <h2>Ví dụ xác nhận xóa</h2>
-  <button id="deleteBtn">Xóa mục</button>
-
-  <!-- Popup xác nhận -->
-  <div id="confirmPopup" class="popup hidden">
-    <div class="popup-content">
-      <p>Bạn có chắc chắn muốn xóa không?</p>
-      <div class="popup-buttons">
-        <button id="confirmYes">Xóa</button>
-        <button id="confirmNo">Hủy</button>
-      </div>
+  <div class="column" draggable="true" id="column1">
+    <div class="dropdownBtn" id="dropdownBtn">Menu ▼</div>
+    <div class="dropdownMenu" id="dropdownMenu">
+      <div>Option 1</div>
+      <div>Option 2</div>
     </div>
   </div>
 
+  <div class="column" draggable="true" id="column2">
+    <h3>Another Column</h3>
+    <p>Some content here...</p>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
   <script>
-    const deleteBtn = document.getElementById("deleteBtn");
+    const btn = document.getElementById("dropdownBtn");
+    const menu = document.getElementById("dropdownMenu");
+    const overlay = document.getElementById("overlay");
+    const column1 = document.getElementById("column1");
 
-    function confirmDelete(callback) {
-      const popup = document.getElementById("confirmPopup");
-      popup.classList.remove("hidden");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("active");
+      overlay.classList.toggle("active");
+    });
 
-      const yesBtn = document.getElementById("confirmYes");
-      const noBtn = document.getElementById("confirmNo");
+    overlay.addEventListener("click", () => {
+      menu.classList.remove("active");
+      overlay.classList.remove("active");
+    });
 
-      yesBtn.onclick = () => {
-        popup.classList.add("hidden");
-        callback(true);
-      };
+    // Khi bắt đầu drag → tắt menu
+    column1.addEventListener("dragstart", () => {
+      column1.classList.add("dragging");
+      menu.classList.remove("active");
+      overlay.classList.remove("active");
+    });
 
-      noBtn.onclick = () => {
-        popup.classList.add("hidden");
-        callback(false);
-      };
-    }
+    column1.addEventListener("dragend", () => {
+      column1.classList.remove("dragging");
+    });
 
-    deleteBtn.addEventListener("click", () => {
-      confirmDelete((isConfirmed) => {
-        if (isConfirmed) {
-          // Thêm API hoặc xử lý xóa ở đây nếu cần
-        } else {
+    // Kéo thả position (giả lập như dnd-kit)
+    const columns = document.querySelectorAll(".column");
+    let dragSrcEl = null;
+
+    columns.forEach(col => {
+      col.addEventListener("dragstart", (e) => {
+        dragSrcEl = col;
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/html", col.outerHTML);
+      });
+
+      col.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
+
+      col.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (dragSrcEl !== col) {
+          col.insertAdjacentElement("beforebegin", dragSrcEl);
         }
       });
     });

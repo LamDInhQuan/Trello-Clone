@@ -8,7 +8,10 @@ import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.mapper.BoardMapper;
 import com.coladz2812.trello_api.model.Board;
+import com.coladz2812.trello_api.model.Column;
 import com.coladz2812.trello_api.repository.BoardRepository;
+import com.coladz2812.trello_api.repository.CardRepository;
+import com.coladz2812.trello_api.repository.ColumnRepository;
 import com.github.slugify.Slugify;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,8 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class BoardService {
+    private final CardRepository cardRepository;
+    private final ColumnRepository columnRepository;
     BoardRepository boardRepository ;
     BoardMapper boardMapper ;
     Slugify slugify ;
@@ -71,5 +76,25 @@ public class BoardService {
         return boardMapper.toBoardResponse(boardRepository.save(board));
     }
 
-
+    public String deleteOneColumnInBoard(String boardId ,String columnId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(()-> new AppException(ErrorCode.BOARD_NOT_FOUND));
+        Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
+        board.getColumnOrderIds().remove(columnId);
+        boardRepository.save(board); // rất quan trọng
+        if(board.getColumnOrderIds().contains(column.getColumnId())){
+            throw new AppException(ErrorCode.REMOVE_COLUMN_FAILED);
+        }
+        columnRepository.delete(column);
+        cardRepository.deleteAllById(column.getCardOrderIds());
+        // Kiểm tra còn tồn tại không
+        List<String> cards = column.getCardOrderIds();
+        boolean existsColumnInColumn = columnRepository.existsById(columnId);
+        boolean existsCards = cards.stream().allMatch(item -> cardRepository.existsById(item));
+        log.error("existsColumnInColumn "+existsColumnInColumn);
+        log.error("existsCards "+existsCards);
+        if (existsColumnInColumn && existsCards) {
+            throw new AppException(ErrorCode.REMOVE_COLUMN_FAILED);
+        }
+        return "Xóa column thành công";
+    }
 }

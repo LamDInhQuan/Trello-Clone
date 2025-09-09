@@ -6,7 +6,6 @@ function RemoveIcon({ className }) {
                 focusable="false"
                 aria-hidden="true"
                 viewBox="0 0 24 24"
-                tabIndex="-1"
                 title="DeleteForever"
                 fill="currentColor"
             >

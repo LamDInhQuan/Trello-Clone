@@ -50,3 +50,9 @@ export const updateCardOrderIdsInTwoColumn = async (
     });
     return response.data;
 };
+
+// update columnOrderIds
+export const deleteColumnInBoard = async (boardId, columnId) => {
+    const response = await axios.delete(`${API_ROOT}/board/deleteColumn/${boardId}/column/${columnId}`);
+    return response.data;
+};

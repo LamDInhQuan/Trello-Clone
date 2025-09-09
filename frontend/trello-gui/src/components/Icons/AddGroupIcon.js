@@ -6,7 +6,6 @@ function AddGroupIcon({ className }) {
                 focusable="false"
                 aria-hidden="true"
                 viewBox="0 0 24 24"
-                tabIndex="-1"
                 title="GroupAdd"
                 fill="currentColor"
             >

@@ -6,7 +6,7 @@ import styles from './MenuAppBar.module.scss';
 
 // src
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from '~/components/Button';
 import Icons from '~/components/Icons';
 import MenuDropDownCustom from '~/components/MenuDropDownCustom';
@@ -31,11 +31,30 @@ function ButtonDropDownMenu({
     magin = false,
     className = false,
     menuItems,
+    onClickMenu = false,
+    hideFromParent = false,
 }) {
     const [hide, setHide] = useState(false);
+    useEffect(() => {
+        if (hideFromParent) {
+            setHide(false);
+        }
+    }, [hideFromParent]);
     const handleClick = () => {
-        setHide((prev) => !prev);
+        setHide((prev) => {
+            const newPrev = !prev;
+            return newPrev; // chỉ setState nội bộ
+        });
     };
+
+    // gọi callback cha **trong event handler riêng**
+    const handleClickSafe = () => {
+        handleClick(); // setHide
+        if (onClickMenu) {
+            onClickMenu(!hide); // callback của cha
+        }
+    };
+
     const dropdownRef = useRef();
     const imgRef = useRef();
     // lấy tọa độ menu
@@ -56,7 +75,7 @@ function ButtonDropDownMenu({
         <div className={cx('menu-dropDown', className)} ref={divRef} style={imgSrc ? { minWidth: '30px' } : {}}>
             <Button
                 ref={imgRef}
-                onClick={handleClick}
+                onClick={handleClickSafe}
                 className={imgSrc ? cx('avatar') : cx('button')}
                 imgSrc={imgSrc || false}
                 leftIcon={leftIcon}
@@ -76,7 +95,7 @@ function ButtonDropDownMenu({
                           return (
                               <MenuDropDownCustomItem
                                   key={key}
-                                  leftIcon={<Icon className={cx('icon3')} />}
+                                  leftIcon={<Icon className={cx3('icon')} />}
                                   onClick={item.onClick}
                               >
                                   {item.label}
