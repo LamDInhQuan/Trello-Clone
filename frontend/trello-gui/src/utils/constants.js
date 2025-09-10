@@ -1,1 +1,1 @@
-export const API_ROOT = 'http://localhost:8017'
+export const API_ROOT = process.env.REACT_APP_API_URL
