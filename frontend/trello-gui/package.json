@@ -32,7 +32,7 @@
   },
   "scripts": {
   "start": "cross-env REACT_APP_API_URL=http://localhost:8017 react-app-rewired start",
-  "build": "cross-env REACT_APP_API_URL=https://trello-api.onrender.com react-app-rewired build",
+  "build": "cross-env REACT_APP_API_URL=https://trello-api-2-r6pt.onrender.com react-app-rewired build",
   "test": "react-app-rewired test",
   "eject": "react-app-rewired eject"
 }
