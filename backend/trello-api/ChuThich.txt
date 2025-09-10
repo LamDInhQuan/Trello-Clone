@@ -1,0 +1,25 @@
+'File .jar là gì?
+
+    - .jar = Java ARchive → một file nén (giống .zip) chứa:
+    - Bytecode .class (code Java đã dịch).
+    - Các thư viện (dependencies) mà project cần.
+    - File cấu hình (ví dụ application.properties, META-INF/MANIFEST.MF).
+
+ 👉 Nói đơn giản: file .jar chính là ứng dụng Java đã đóng gói, có thể mang đi chạy ở bất cứ đâu có Java Runtime (JRE/JDK).'
+
+ 🔹 File .jar trong Spring Boot
+
+    - Khi bạn chạy: mvn clean package
+        + Maven sẽ tạo ra một file .jar “fat jar” hoặc “uber jar” chứa toàn bộ ứng dụng Spring Boot
+        (cả project của bạn + dependency).
+
+    - Ví dụ: target/trello-clone-backend-0.0.1-SNAPSHOT.jar
+
+    - Bạn có thể chạy trực tiếp: java -jar target/trello-clone-backend-0.0.1-SNAPSHOT.jar
+
+ Quy trình dùng Dockerfile này
+    - Build Maven để tạo file .jar: mvn clean package
+         → ra file trong target/trello-api-0.0.1-SNAPSHOT.jar.
+    - Build Docker image: "docker build -t trello-api ."
+    - Run container: "docker run -p 8017:8017 trello-api" hoặc "docker run -it -p 8017:8017 --name=api-container trello-api"
+    - App Spring Boot sẽ chạy ở http://localhost:8017.
