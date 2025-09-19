@@ -23,6 +23,9 @@ import { mapOrder, sortByIndex } from '~/utils/sorts';
 import styles from './BoardContent.module.scss';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import InputSearch from '~/components/InputSearch';
+import { createNewColumnApi } from '~/apis';
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -31,14 +34,15 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 };
 
 function BoardContent({
-    board,
-    createNewColumn,
-    createNewCard,
     moveColumnByColumnOrderIds,
     moveCardInTheSameColumn,
     moveCardInTwoColumns,
-    deleteColumnDetails,
 }) {
+    const dispatch = useDispatch();
+    // Không dùng state của component nữa mà dùng state của Redux
+    // const [board, setBoard] = useState();
+    const board = useSelector(selectCurrentActiveBoard);
+
     // state lưu trạng thái của UI add column
     const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
     const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
@@ -46,15 +50,39 @@ function BoardContent({
     // lấy nội dung form input add column
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
-    const addNewColumn = () => {
+    const addNewColumn = async () => {
         if (!newColumnTitle) {
             toast.error('Please enter column title !');
             return;
         }
-        createNewColumn({
+        const createdColumn = await createNewColumnApi({
             boardId: board._id,
             title: newColumnTitle,
         });
+        const newBoard = {
+            ...board,
+            columns: [...board.columns], // clone array column
+            columnOrderIds: [...board.columnOrderIds], // clone array columnOrderIds
+        };
+        const columnNew = {
+            ...createdColumn.result,
+            _id: createdColumn.result.columnId, // dùng cho frontend
+            cards: [],
+            cardOrderIds: [],
+        };
+        delete columnNew.columnId; // xóa columnId
+        const placeHolderCard = generatePlaceHolderCard(columnNew);
+        columnNew.cards = [placeHolderCard];
+        columnNew.cardOrderIds = [placeHolderCard._id];
+        // gán _id cho column mới nếu cần
+        // push cho phép chỉnh sửa phần tử của mảng còn concat cho phép tạo ra một mảng truyền vào
+        // và ghép với mảng cũ thành 1 mảng mới
+        newBoard.columns.push(columnNew);
+        newBoard.columnOrderIds.push(columnNew._id);
+        // hoặc
+        // newBoard.columns = newBoard.columns.concat([columnNew])
+        // newBoard.columnOrderIds = newBoard.columnOrderIds.concat([columnNew._id])
+        dispatch(updateCurrentActiveBoard(newBoard));
         toggleOpenNewColumnForm();
         setNewColumnTitle('');
     };
@@ -504,9 +532,7 @@ function BoardContent({
                                     key={card._id}
                                     title={card.title}
                                     items={card}
-                                    createNewCard={createNewCard}
                                     id={card._id}
-                                    deleteColumnDetails={deleteColumnDetails}
                                 />
                             ))}
 

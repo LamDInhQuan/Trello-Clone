@@ -18,6 +18,8 @@ import GroupIcon from './GroupIcon';
 import MessageIcon from './MessageIcon';
 import AttachIcon from './AttachIcon';
 import CloseIcon from './CloseIcon';
+import LockIcon from './LockIcon';
+import ErrorOutline from './ErrorOutline';
 
 const Icons = {
     MenuBarIcon,
@@ -36,10 +38,12 @@ const Icons = {
     RemoveIcon,
     CloudIcon,
     AddNewColumnIcon,
-    GroupIcon ,
-    MessageIcon ,
-    AttachIcon ,
-    CloseIcon
+    GroupIcon,
+    MessageIcon,
+    AttachIcon,
+    CloseIcon,
+    LockIcon,
+    ErrorOutline,
 };
 
 export default Icons;

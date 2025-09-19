@@ -1,0 +1,118 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* full chiều cao màn hình */
+    width: 100%; /* full chiều rộng */
+
+    /* ảnh nền gif */
+    background-image: url('../../../assets/images/Login/hinh-nen-may-tinh-4k-1.jpg');
+    background-size: cover; /* căng full màn hình */
+    background-position: center; /* canh giữa */
+    background-repeat: no-repeat;
+}
+
+.formLogin {
+    max-height: 70%;
+    height: auto;
+    width: 20%;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.9); /* trắng trong suốt */
+
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+    /* hiệu ứng zoom */
+    animation: zoomIn 0.4s ease forwards;
+    transform: scale(0.8); /* trạng thái ban đầu */
+    opacity: 0; /* ẩn ban đầu */
+}
+
+@keyframes zoomIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.icons {
+    display: flex;
+    gap: 10px;
+}
+.icon {
+    color: rgb(255, 255, 255);
+    background-color: rgb(33, 33, 229);
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    font-size: 15px;
+    border-radius: 999px;
+}
+.formLogin input {
+    border: 1px solid #ccc; /* xám nhạt */
+    border-radius: 5px;
+    height: 45px;
+    width: 270px;
+    margin-left: 1%;
+    padding: 5px;
+    outline: none; /* bỏ viền xanh mặc định khi focus */
+    color: rgb(6, 6, 164) !important;
+}
+.formLogin input:hover {
+    border: 1px solid transparent; /* xanh lá khi focus */
+    box-shadow: 0 0 3px rgba(76, 111, 175, 0.5);
+}
+.formLogin input:focus {
+    border: 1px solid #12305d; /* xanh lá khi focus */
+    box-shadow: 0 0 3px rgba(76, 111, 175, 0.5);
+}
+.btnLogin {
+    background-color: rgb(33, 33, 229);
+    height: 40px;
+    width: 98%;
+    margin-left: 1%;
+    color: white;
+    display: flex;
+    justify-content: center; /* căn ngang */
+    align-items: center; /* căn dọc */
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.formLogin > p:nth-of-type(1) {
+    font-size: 15px;
+    color: #797474; /* xám nhạt */
+}
+.formLogin > p:nth-of-type(2) {
+    font-size: 13px;
+    margin-top: 5px;
+}
+.register-link {
+    font-size: 13px;
+    color: rgb(6, 6, 164) !important;
+    text-decoration: none;
+}
+// css lại component search
+.labelSearch {
+    background: rgba(235, 232, 246, 0.9) !important; /* trắng trong suốt */
+    font-size: 12px !important;
+    color: rgb(6, 6, 164) !important;
+}
+// lỗi input error
+.searchInputError {
+    border: 1px solid #fa1900 !important; /* đỏ tươi */
+    &::placeholder {
+        color: rgb(197, 10, 10) !important;
+    }
+}
+.labelSearchError {
+    background: rgba(235, 232, 246, 0.9) !important; /* trắng trong suốt */
+    font-size: 12px !important;
+    color: rgb(197, 10, 10) !important;
+}

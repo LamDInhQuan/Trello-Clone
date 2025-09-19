@@ -1,11 +1,14 @@
 //thuư viện ngoài
-import Button from '~/components/Button';
-import styles from './BoardBar.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+// src
 import Icons from '~/components/Icons';
 import AvatarGroup from '~/components/AvatarGroup';
-// src
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
+import Button from '~/components/Button';
+import styles from './BoardBar.module.scss';
 
 const cx = classNames.bind(styles);
 const avatars = [
@@ -36,9 +39,13 @@ const DriveIcon = <Icons.DriveIcon className={cx('icon')} />;
 const AutomationIcon = <Icons.AutomationIcon className={cx('icon')} />;
 const FilterIcon = <Icons.FilterIcon className={cx('icon')} />;
 const maxAvatarVisible = 4;
-function BoardBar({ board }) {
-    const title = board?.title 
-    const scope = board?.scope
+function BoardBar() {
+    const dispatch = useDispatch();
+    // Không dùng state của component nữa mà dùng state của Redux
+    // const [board, setBoard] = useState();
+    const board = useSelector(selectCurrentActiveBoard);
+    const title = board?.title;
+    const scope = board?.scope;
     return (
         <>
             <div className={cx('wrapper')}>

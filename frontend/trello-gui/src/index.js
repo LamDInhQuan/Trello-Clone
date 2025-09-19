@@ -11,27 +11,36 @@ import 'react-toastify/dist/ReactToastify.css';
 // cấu hình MUI dialog
 import { ConfirmProvider } from 'material-ui-confirm';
 
+// cấu hình Redux Store
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+
+// cấu hình react-router-dom với BrowserRouter
+import { BrowserRouter } from 'react-router-dom';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <GlobalAppStyle>
-            <ConfirmProvider
-                defaultOptions={{
-                    dialogProps: {
-                        maxWidth: 'xs',
-                        disableEnforceFocus: true, // 🔥 tắt ép focus
-                        disableAutoFocus: true, // 🔥 tắt tự động focus
-                        disableRestoreFocus: true,
-                    },
-                    confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
-                    allowClose: false,
-                }}
-            >
-                <App />
-                <ToastContainer position="bottom-left" theme="colored" />
-            </ConfirmProvider>
-        </GlobalAppStyle>
-    </React.StrictMode>,
+    <BrowserRouter basename='/'>
+        <Provider store={store}>
+            <GlobalAppStyle>
+                <ConfirmProvider
+                    defaultOptions={{
+                        dialogProps: {
+                            maxWidth: 'xs',
+                            disableEnforceFocus: true, // 🔥 tắt ép focus
+                            disableAutoFocus: true, // 🔥 tắt tự động focus
+                            disableRestoreFocus: true,
+                        },
+                        confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+                        allowClose: false,
+                    }}
+                >
+                    <App />
+                    <ToastContainer position="bottom-left" theme="colored" />
+                </ConfirmProvider>
+            </GlobalAppStyle>
+        </Provider>
+    </BrowserRouter>,
 );
 
 // If you want to start measuring performance in your app, pass a function
