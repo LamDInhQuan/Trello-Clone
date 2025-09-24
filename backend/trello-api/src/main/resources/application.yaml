@@ -11,4 +11,4 @@ server:
 
 app:
   cors:
-    whitelist: https://trello-web-plum.vercel.app
+    whitelist: https://trello-web-plum.vercel.app , http://localhost:3000

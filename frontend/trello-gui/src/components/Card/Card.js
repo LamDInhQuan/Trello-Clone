@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useConfirm } from 'material-ui-confirm';
 // src
 import styles from './Card.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
 import Button from '../Button';
 import Icons from '../Icons';
@@ -21,6 +22,7 @@ import { createNewCardApi, deleteColumnInBoard } from '~/apis';
 import { useForm } from 'react-hook-form';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 
 function Card({ title = 'Column Title', id, items = [] }) {
     // console.log('render card');
@@ -70,11 +72,16 @@ function Card({ title = 'Column Title', id, items = [] }) {
             });
             return;
         }
-        const createdCard = await createNewCardApi({
-            boardId: items.boardId,
-            columnId: items._id,
-            title: newColumnTitle,
-        });
+        let createdCard;
+        try {
+            createdCard = await createNewCardApi({
+                boardId: items.boardId,
+                columnId: items._id,
+                title: newColumnTitle,
+            });
+        } catch (error) {
+            return 
+        }
         // clone board và các array bên trong
         const newBoard = {
             ...board,
@@ -87,7 +94,7 @@ function Card({ title = 'Column Title', id, items = [] }) {
         };
         console.log(newBoard);
         // gán _id cho card mới nếu cần
-        createdCard.result._id = createdCard.result.cardId;
+        createdCard.result._id = createdCard.result?.cardId;
         // tìm cột chứa card
         const columnOfCard = newBoard.columns.find((col) => col._id === createdCard.result.columnId);
         if (!columnOfCard.cards) columnOfCard.cards = [];
@@ -238,8 +245,8 @@ function Card({ title = 'Column Title', id, items = [] }) {
                                     {...register('columnTitleInput')}
                                 />
                                 <div className={cx('wrapper-button-add-column2')}>
-                                    {/* // onMouseDown xảy ra trước blur input */}
-                                    <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                    
+                                    <Button className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`} onClick={addNewColumn}>
                                         Add Card
                                     </Button>
                                     <Button

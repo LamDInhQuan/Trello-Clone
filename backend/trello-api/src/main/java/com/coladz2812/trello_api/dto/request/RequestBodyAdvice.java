@@ -21,7 +21,7 @@ public class RequestBodyAdvice extends RequestBodyAdviceAdapter {
         this.requestContext = requestContext;
     }
 
-    private List<?> lstDto = List.of(new BoardRequest(), new StudentRequest(),
+    private List<?> lstDto = List.of(new BoardRequest(),
             new ColumnRequest(), new CardRequest() ,new BoardRequestUpdate());
 
     // supports() là phương thức quyết định xem RequestBodyAdvice (ở đây là

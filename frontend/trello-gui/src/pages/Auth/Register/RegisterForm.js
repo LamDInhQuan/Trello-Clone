@@ -1,5 +1,6 @@
 //thuư viện ngoài
 import styles from './Register.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -21,6 +22,7 @@ import {
 } from '~/utils/validators';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 
 function RegisterForm() {
     // useForm Nó là một custom hook của thư viện react-hook-form.
@@ -103,7 +105,7 @@ function RegisterForm() {
                     />
                     <FieldErrorAlert errors={errors} fieldName="confirmPassword" />
 
-                    <Button className={cx('btnLogin')}>Register</Button>
+                    <Button className={`${cx('btnLogin')} ${cx2('interceptor-loading')}`}>Register</Button>
                     <p>Already have an account?</p>
                     <Link to="/login" className={cx('register-link')}>
                         Log in?

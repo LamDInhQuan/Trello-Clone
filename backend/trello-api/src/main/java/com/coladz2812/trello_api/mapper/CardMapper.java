@@ -10,6 +10,9 @@ import org.mapstruct.Mapping;
 public interface CardMapper {
     @Mapping(target = "boardId", ignore = true)
     @Mapping(target = "columnId", ignore = true)
+    @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target = "_destroy", ignore = true)
     Card toCard(CardRequest cardRequest);
 
     @Mapping(target = "boardId", ignore = true)

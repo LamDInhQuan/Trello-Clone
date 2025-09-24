@@ -6,8 +6,8 @@
     // card
     --column-card-title: 50px;
     --footer-card: 40px;
-    // column 
-    --menu-height-column : 1px ;
+    // column
+    --menu-height-column: 1px;
 }
 /* Áp box-sizing cho mọi phần tử và cả pseudo-elements */
 *,
@@ -71,19 +71,24 @@ html *::-webkit-scrollbar-track {
 /* React-Toastify custom */
 /* Custom React-Toastify */
 :global(.Toastify__toast) {
-  font-size: 14px !important;
-  padding: 6px 12px !important;
-  min-height: 40px !important;
-  width: auto !important;        /* co theo nội dung */
-  min-width: 240px !important;   /* giữ tối thiểu */
-  max-width: none !important;    /* bỏ giới hạn chiều dài */
+    font-size: 14px !important;
+    padding: 8px 20px !important;
+    min-height: 40px !important;
+    width: auto !important; /* co theo nội dung */
+    min-width: 240px !important; /* giữ tối thiểu */
+    max-width: 400px !important; /* giới hạn chiều ngang một chút để buộc xuống dòng */
+
+    z-index: 1 !important; /* hạ z-index */
 }
 
 :global(.Toastify__toast-body) {
-  margin: 0 !important;
-  flex: unset !important;
-  white-space: normal !important; /* cho phép xuống dòng nếu nội dung dài */
+    white-space: normal !important; /* cho phép xuống dòng */
+    word-break: break-word !important; /* tự ngắt khi dài */
 }
-#root[aria-hidden="true"] {
-  aria-hidden: false !important;
+:global(.Toastify__close-button > svg) {
+    width: 16px !important;
+    height: 16px !important;
+}
+#root[aria-hidden='true'] {
+    aria-hidden: false !important;
 }

@@ -1,7 +1,6 @@
 package com.coladz2812.trello_api.mapper;
 
 import com.coladz2812.trello_api.dto.request.BoardRequest;
-import com.coladz2812.trello_api.dto.request.StudentRequest;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.model.Board;
 import org.mapstruct.Mapper;

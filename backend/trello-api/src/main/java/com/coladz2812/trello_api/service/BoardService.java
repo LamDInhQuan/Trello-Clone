@@ -56,9 +56,7 @@ public class BoardService {
         return boardMapper.toListBoardResponse(boards);
     }
 
-    public List<Document> getListBoardAndStudentInBoard(){
-        return boardRepository.getListBoardAndStudentInBoard();
-    }
+
 
     public Document getBoardAndColumnByIdBoard(String id){
         Document document =  boardRepository.getBoardAndColumnByIdBoard(id);

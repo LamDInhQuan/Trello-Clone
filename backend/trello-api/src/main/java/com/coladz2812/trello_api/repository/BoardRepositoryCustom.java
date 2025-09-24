@@ -11,7 +11,7 @@ import java.util.List;
 public interface BoardRepositoryCustom {
     public List<Board> findBoardByScope(String scope,String title);
 
-    public List<Document> getListBoardAndStudentInBoard();
+//    public List<Document> getListBoardAndStudentInBoard();
 
     public Document getBoardAndColumnByIdBoard(String id);
 }

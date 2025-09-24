@@ -26,6 +26,12 @@ public enum ErrorCode {
     COLUMNID_NOT_NULL(1016,"ColumnId không được để trống",HttpStatus.BAD_REQUEST),
     CARDID_NOT_NULL(1017,"CardId không được để trống",HttpStatus.BAD_REQUEST),
     REMOVE_COLUMN_FAILED(1018,"Xóa column thất bại",HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_NULL(1019,"Email không được để trống",HttpStatus.BAD_REQUEST),
+    PASSWORD_NOT_NULL(1020,"Password không được để trống",HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_VALID(1021,"Email không hợp lệ",HttpStatus.BAD_REQUEST),
+    PASSWORD_NOT_VALID(1022,"Password không hợp lệ",HttpStatus.BAD_REQUEST),
+    ROLE_NOT_VALID(1023,"Role không hợp lệ",HttpStatus.BAD_REQUEST) ,
+    EMAIL_EXISTS(1023,"Email đã tồn tại ",HttpStatus.BAD_REQUEST)
     ;
 
 

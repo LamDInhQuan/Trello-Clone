@@ -64,23 +64,23 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     // lấy danh sách board và student có trong board
-    @Override
-    public List<Document> getListBoardAndStudentInBoard() {
-        // lọc dữ liệu
-
-        // join 2 bảng
-        LookupOperation lookupOperation = Aggregation.lookup("student", "_id", "boardId", "board_Student");
-        // Lấy các trường quan trọng
-        ProjectionOperation projectionOperation = Aggregation.project("_id", "title", "scope", "columnOrderIds", "board_Student");
-
-        // tạo đường ống
-        Aggregation aggregation = Aggregation.newAggregation(lookupOperation, projectionOperation);
-
-        // lấy kết quả
-        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(aggregation, "board", Document.class);
-
-        return aggregationResults.getMappedResults();
-    }
+//    @Override
+//    public List<Document> getListBoardAndStudentInBoard() {
+//        // lọc dữ liệu
+//
+//        // join 2 bảng
+//        LookupOperation lookupOperation = Aggregation.lookup("student", "_id", "boardId", "board_Student");
+//        // Lấy các trường quan trọng
+//        ProjectionOperation projectionOperation = Aggregation.project("_id", "title", "scope", "columnOrderIds", "board_Student");
+//
+//        // tạo đường ống
+//        Aggregation aggregation = Aggregation.newAggregation(lookupOperation, projectionOperation);
+//
+//        // lấy kết quả
+//        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(aggregation, "board", Document.class);
+//
+//        return aggregationResults.getMappedResults();
+//    }
 
     @Override
     public Document getBoardAndColumnByIdBoard(String id) {

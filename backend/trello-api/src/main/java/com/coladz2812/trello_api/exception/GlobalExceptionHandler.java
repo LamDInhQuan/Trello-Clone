@@ -1,15 +1,8 @@
 package com.coladz2812.trello_api.exception;
 
 import com.coladz2812.trello_api.dto.request.RequestContext;
-import com.coladz2812.trello_api.dto.request.StudentRequest;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
-import com.mongodb.MongoSocketWriteException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Field;
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j

@@ -45,7 +45,7 @@ function Board() {
     // useParams là hook của react-router-dom (v6 trở lên).
     // Nó trả về một object chứa các tham số động (route parameters) từ URL.
     // Mỗi key trong object chính là tên biến bạn định nghĩa trong Route.
-    const { boardId} = useParams() 
+    const { boardId } = useParams();
     // console.log(boardId)
 
     const [error, setError] = useState();
@@ -56,21 +56,17 @@ function Board() {
         // const boardId = '68af4b814b6913bb70d835bb';
         // call API
         dispatch(fetchBoardDetailAPI(boardId));
-    }, [dispatch,boardId]);
+    }, [dispatch, boardId]);
 
     const moveColumnByColumnOrderIds = async (boardId, orderedCards) => {
         const newBoard = { ...board };
         newBoard.columns = orderedCards;
         newBoard.columnOrderIds = orderedCards.map((col) => col._id);
         dispatch(updateCurrentActiveBoard(newBoard));
-        try {
-            console.log('call api updateColumnOrderIds');
-            // console.log('orderedCards', orderedCards);
-            // console.log('columnOrderIds', newBoard.columnOrderIds);
-            await updateColumnOrderIds(boardId, newBoard.columnOrderIds);
-        } catch (err) {
-            console.error('API cập nhật thất bại:', err);
-        }
+        console.log('call api updateColumnOrderIds');
+        // console.log('orderedCards', orderedCards);
+        // console.log('columnOrderIds', newBoard.columnOrderIds);
+        await updateColumnOrderIds(boardId, newBoard.columnOrderIds);
     };
 
     const moveCardInTheSameColumn = async (columnId, orderedCards, orderedCardIds) => {
@@ -90,12 +86,8 @@ function Board() {
         columnOfCard.cards = orderedCards;
         columnOfCard.cardOrderIds = orderedCardIds;
         dispatch(updateCurrentActiveBoard(newBoard));
-        try {
-            console.log('call api updateCardOrderIdsInSameColumn');
-            await updateCardOrderIdsInSameColumn(columnId, orderedCardIds);
-        } catch (err) {
-            console.error('API cập nhật thất bại:', err);
-        }
+        console.log('call api updateCardOrderIdsInSameColumn');
+        await updateCardOrderIdsInSameColumn(columnId, orderedCardIds);
     };
 
     const moveCardInTwoColumns = async (cardId, prevColumn, nextColumn) => {
@@ -122,21 +114,17 @@ function Board() {
         // console.log("prevColumn.cardOrderIds",prevColumn.cardOrderIds)
         // console.log("nextColumn._id",nextColumn._id)
         // console.log("nextColumn.cardOrderIds",nextColumn.cardOrderIds)
-        try {
-            console.log('call api moveCardInTwoColumns');
-            updateCardOrderIdsInTwoColumn(
-                cardId,
-                prevColumn._id,
-                FE_PlaceHolderCard ? [] : prevColumn.cardOrderIds,
-                nextColumn._id,
-                nextColumn.cardOrderIds,
-            );
-        } catch (err) {
-            console.error('API cập nhật thất bại:', err);
-        }
+        console.log('call api moveCardInTwoColumns');
+        updateCardOrderIdsInTwoColumn(
+            cardId,
+            prevColumn._id,
+            FE_PlaceHolderCard ? [] : prevColumn.cardOrderIds,
+            nextColumn._id,
+            nextColumn.cardOrderIds,
+        );
     };
 
-    if (error ) {
+    if (error) {
         return (
             <div className={cx('status-wrapper')}>
                 <div className={cx('error-box')}>
@@ -151,8 +139,8 @@ function Board() {
             </div>
         );
     }
-    if(!board){
-        return null
+    if (!board) {
+        return null;
     }
 
     return (

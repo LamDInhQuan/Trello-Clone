@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios   
 import { API_ROOT } from '~/utils/constants';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import { mapOrder } from '~/utils/sorts';
@@ -13,7 +13,7 @@ const initialState = {
 // các hành động gọi api ( bất đồng bộ ) và cập nhật dữ liệu vào Redux , dùng Middleware createAsyncThunk
 // đi kèm với extraReducers
 export const fetchBoardDetailAPI = createAsyncThunk('activeBoard/fetchBoardDetailAPI', async (boardId) => {
-    const response = await axios.get(`${API_ROOT}/board/getBoardAndColumnByIdBoard/${boardId}`);
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/board/getBoardAndColumnByIdBoard/${boardId}`);
     return response.data;
 });
 

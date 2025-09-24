@@ -1,5 +1,6 @@
 //thuư viện ngoài
 import styles from './Login.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -21,6 +22,7 @@ import {
 import FieldErrorAlert from '~/components/FieldErrorAlert';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 
 function LoginForm() {
     const {
@@ -81,7 +83,7 @@ function LoginForm() {
                         typeInput="password"
                     />
                     <FieldErrorAlert errors={errors} fieldName="password" />
-                    <Button className={cx('btnLogin')}>Login</Button>
+                    <Button className={`${cx('btnLogin')} ${cx2('interceptor-loading')}`}>Login</Button>
                     <p>New to Trello MERN Stack Advanced?</p>
                     <Link to="/register" className={cx('register-link')}>
                         Create account?

@@ -21,44 +21,52 @@ import CardItem from '~/components/Card/CardItem';
 import Icons from '~/components/Icons';
 import { mapOrder, sortByIndex } from '~/utils/sorts';
 import styles from './BoardContent.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import InputSearch from '~/components/InputSearch';
 import { createNewColumnApi } from '~/apis';
 import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 const ACTIVE_DRAG_ITEM_TYPE = {
     COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
     CARD_ITEM: 'ACTIVE_DRAG_ITEM_TYPE_CARD-ITEM',
 };
 
-function BoardContent({
-    moveColumnByColumnOrderIds,
-    moveCardInTheSameColumn,
-    moveCardInTwoColumns,
-}) {
+function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, moveCardInTwoColumns }) {
     const dispatch = useDispatch();
     // Không dùng state của component nữa mà dùng state của Redux
     // const [board, setBoard] = useState();
     const board = useSelector(selectCurrentActiveBoard);
 
+    // lấy nội dung form input add column
+    const { register, watch, setValue } = useForm();
+    const newColumnTitle = watch('columnTitleInput'); // sẽ update liên tục khi gõ
+
     // state lưu trạng thái của UI add column
     const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
-    const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
-
-    // lấy nội dung form input add column
-    const [newColumnTitle, setNewColumnTitle] = useState('');
+    const toggleOpenNewColumnForm = () => {
+        setValue('columnTitleInput', '');
+        setOpenNewColumnForm(!openNewColumnForm);
+    };
 
     const addNewColumn = async () => {
         if (!newColumnTitle) {
             toast.error('Please enter column title !');
             return;
         }
-        const createdColumn = await createNewColumnApi({
-            boardId: board._id,
-            title: newColumnTitle,
-        });
+        let createdColumn;
+        try {
+            createdColumn = await createNewColumnApi({
+                boardId: board._id,
+                title: newColumnTitle,
+            });
+        } catch (error) {
+            return;
+        }
         const newBoard = {
             ...board,
             columns: [...board.columns], // clone array column
@@ -84,12 +92,9 @@ function BoardContent({
         // newBoard.columnOrderIds = newBoard.columnOrderIds.concat([columnNew._id])
         dispatch(updateCurrentActiveBoard(newBoard));
         toggleOpenNewColumnForm();
-        setNewColumnTitle('');
+        setValue('columnTitleInput', '');
     };
-    const setInputChangeAddColumn = (e) => {
-        const val = e.target.value;
-        setNewColumnTitle(val);
-    };
+
     // xử lí dữ liệu board
     // clone object và ghi đè field columnIds
 
@@ -528,12 +533,7 @@ function BoardContent({
 
                         {oderredCards?.length > 0 &&
                             oderredCards.map((card) => (
-                                <Card
-                                    key={card._id}
-                                    title={card.title}
-                                    items={card}
-                                    id={card._id}
-                                />
+                                <Card key={card._id} title={card.title} items={card} id={card._id} />
                             ))}
 
                         {/* DragOverlay nằm tách chỗ chứa phần tử dc kéo  */}
@@ -561,13 +561,16 @@ function BoardContent({
                                         label_search_className={cx('label-search')}
                                         searchInput_className={cx('searchInput')}
                                         autoFocus={true}
+                                        valueInput={newColumnTitle}
                                         hasValue={newColumnTitle !== ''}
-                                        onChange={setInputChangeAddColumn}
-                                        value={newColumnTitle}
+                                        {...register('columnTitleInput')}
                                     />
                                     <div className={cx('wrapper-button-add-column2')}>
                                         {/* // onMouseDown xảy ra trước blur input */}
-                                        <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                        <Button
+                                            className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`}
+                                            onClick={addNewColumn}
+                                        >
                                             Add Column
                                         </Button>
                                         <Button

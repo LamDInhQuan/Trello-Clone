@@ -1,14 +1,12 @@
 package com.coladz2812.trello_api.dto.request;
 
-import com.coladz2812.trello_api.model.Column;
-import com.coladz2812.trello_api.validator.ScopeConstraint;
+import com.coladz2812.trello_api.validator.ValueIn;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +28,7 @@ public class BoardRequest {
     Date createdAt;
     Date updatedAt;
     Boolean _destroy;
-    @ScopeConstraint(message = "SCOPE_ERROR")
+    @ValueIn(values = { "public" , "private"} , message = "SCOPE_ERROR")
     String scope ;
 
 }

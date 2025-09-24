@@ -4,16 +4,13 @@ import com.coladz2812.trello_api.dto.request.BoardRequest;
 import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
-import com.coladz2812.trello_api.dto.response.StudentResponse;
 import com.coladz2812.trello_api.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
