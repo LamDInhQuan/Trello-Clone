@@ -31,7 +31,10 @@ public enum ErrorCode {
     EMAIL_NOT_VALID(1021,"Email không hợp lệ",HttpStatus.BAD_REQUEST),
     PASSWORD_NOT_VALID(1022,"Password không hợp lệ",HttpStatus.BAD_REQUEST),
     ROLE_NOT_VALID(1023,"Role không hợp lệ",HttpStatus.BAD_REQUEST) ,
-    EMAIL_EXISTS(1023,"Email đã tồn tại ",HttpStatus.BAD_REQUEST)
+    EMAIL_EXISTS(1024,"Email đã tồn tại ",HttpStatus.BAD_REQUEST),
+    SUBJECT_EMAIL_NOT_NULL(1025,"Subject email không được để trống",HttpStatus.BAD_REQUEST) ,
+    CONTENT_EMAIL_NOT_NULL(1026,"Content email không được để trống ",HttpStatus.BAD_REQUEST),
+    SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST)
     ;
 
 

@@ -10,7 +10,7 @@ import CreateIcon from './CreateIcon';
 import AddCardIcon from './AddCardIcon';
 import CutIcon from './CutIcon';
 import CopyIcon from './CopyIcon';
-import PasteIcon from './Paste';
+import PasteIcon from './PasteIcon';
 import RemoveIcon from './RemoveIcon';
 import CloudIcon from './CloudIcon';
 import AddNewColumnIcon from './AddNewColumnIcon';
@@ -20,6 +20,8 @@ import AttachIcon from './AttachIcon';
 import CloseIcon from './CloseIcon';
 import LockIcon from './LockIcon';
 import ErrorOutline from './ErrorOutline';
+import InfoOutline from './InfoOutlineIcon';
+import TickOutlineIcon from './TickOutlineIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -44,6 +46,8 @@ const Icons = {
     CloseIcon,
     LockIcon,
     ErrorOutline,
+    InfoOutline ,
+    TickOutlineIcon
 };
 
 export default Icons;

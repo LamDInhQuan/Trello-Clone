@@ -28,6 +28,7 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
@@ -125,22 +126,10 @@ function Board() {
     };
 
     if (error) {
-        return (
-            <div className={cx('status-wrapper')}>
-                <div className={cx('error-box')}>
-                    <FontAwesomeIcon icon={faTriangleExclamation} className={cx('error-icon')} />
-                    <h2 className={cx('error-title')}>Không thể tải bảng làm việc</h2>
-                    <p className={cx('error-message')}>Vui lòng kiểm tra kết nối hoặc đảm bảo server đang hoạt động.</p>
-                </div>
-                <div className={cx('icon-box')}>
-                    <FontAwesomeIcon icon={faSpinner} className={cx('spinner')} />
-                    <h2 className={cx('loading-title')}>Đang tải bảng làm việc...</h2>
-                </div>
-            </div>
-        );
+        return <Loading/>
     }
     if (!board) {
-        return null;
+        return null
     }
 
     return (

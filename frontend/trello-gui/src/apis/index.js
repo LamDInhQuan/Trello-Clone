@@ -1,4 +1,5 @@
-import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios   
+import { toast } from 'react-toastify';
+import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios
 import { API_ROOT } from '~/utils/constants';
 
 // boards
@@ -21,15 +22,20 @@ export const createNewCardApi = async (newCardData) => {
 
 // update columnOrderIds
 export const updateColumnOrderIds = async (boardId, columnOrderIds) => {
-    const response = await authorizedAxiosInstance.put(`${API_ROOT}/board/updateBoardByColumnIds/${boardId}`, { columnOrderIds });
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/board/updateBoardByColumnIds/${boardId}`, {
+        columnOrderIds,
+    });
     return response.data;
 };
 
 // update columnOrderIds
 export const updateCardOrderIdsInSameColumn = async (columnId, cardOrderIds) => {
-    const response = await authorizedAxiosInstance.put(`${API_ROOT}/column/updateColumnByCardOrderIdsInTheSameColumn/${columnId}`, {
-        cardOrderIds,
-    });
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/column/updateColumnByCardOrderIdsInTheSameColumn/${columnId}`,
+        {
+            cardOrderIds,
+        },
+    );
     return response.data;
 };
 
@@ -39,20 +45,33 @@ export const updateCardOrderIdsInTwoColumn = async (
     prevColumnId,
     prevCardOrderIds,
     nextColumnId,
-    nextCardOrderIds    ,
+    nextCardOrderIds,
 ) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/column/updateCardOrderIdsInTwoColumn`, {
         cardId,
         prevColumnId,
         prevCardOrderIds,
         nextColumnId,
-        nextCardOrderIds    ,
+        nextCardOrderIds,
     });
     return response.data;
 };
 
 // update columnOrderIds
 export const deleteColumnInBoard = async (boardId, columnId) => {
-    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/board/deleteColumn/${boardId}/column/${columnId}`);
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/board/deleteColumn/${boardId}/column/${columnId}`,
+    );
     return response.data;
+};
+
+// User
+export const registerUserAPI = async (data) => {
+    
+        const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/register`, data);
+        toast.success(
+            'Tài khoản đã tạo thành công ! Vui lòng kiểm tra email và xác thực tài khoản của bạn trước khi đăng nhập !',
+        );
+        return response.data;
+  
 };

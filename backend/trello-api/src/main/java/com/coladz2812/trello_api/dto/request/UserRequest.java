@@ -33,7 +33,7 @@ public class UserRequest {
     String displayName ;
     String avatar ;
     @ValueIn(values = { "admin" , "user"},message = "ROLE_NOT_VALID")
-    List<String> roles ;
+    List<String> roles = List.of("user");;
     Boolean isActive ;
     String verifyToken ;
     Date createAt ;

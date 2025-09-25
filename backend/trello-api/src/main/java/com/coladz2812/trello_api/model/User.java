@@ -26,7 +26,7 @@ public class User {
     String username ;
     String password ;
     String displayName ;
-    String avatar ;
+    String avatar = null;
     List<String> roles ;
     Boolean isActive = false;
     String verifyToken ;

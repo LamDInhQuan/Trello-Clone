@@ -3,7 +3,7 @@ import styles from './Login.module.scss';
 import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 // src
@@ -20,6 +20,9 @@ import {
     EMAIL_RULE_MESSAGE,
 } from '~/utils/validators';
 import FieldErrorAlert from '~/components/FieldErrorAlert';
+import TickOutlineIcon from '~/components/Icons/TickOutlineIcon';
+import InfoOutlineIcon from '~/components/Icons/InfoOutlineIcon';
+
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(stylesInterceptorLoading);
@@ -35,6 +38,9 @@ function LoginForm() {
     const inputEmail = watch('email'); // sẽ update liên tục khi gõ
     const inputPassword = watch('password');
 
+    let [searchParams] = useSearchParams();
+    const registerEmail = searchParams.get('registerEmail');
+    const verifiedEmail = searchParams.get('verifiedEmail');
     const submitLogin = (data) => {
         console.log('data', data);
     };
@@ -52,6 +58,28 @@ function LoginForm() {
                         <TrelloIcon className={cx('icon')} />
                     </div>
                     <p>Author: Coladeptrai</p>
+                    {verifiedEmail && (
+                        <div className={cx('verified-email-notice')}>
+                            <TickOutlineIcon className={cx('icon-verified-email')} />
+                            <p>
+                                Your email <b>{verifiedEmail}</b> has been verified.
+                                <br />
+                                Now you can login to enjoy our services!
+                                <br />
+                                Have a good day!
+                            </p>
+                        </div>
+                    )}
+                     {registerEmail && (
+                        <div className={cx('register-email-notice')}>
+                            <InfoOutlineIcon className={cx('icon-register-email')} />
+                            <p>
+                                An email has been send to <b>{registerEmail}</b>
+                                <br />
+                                Please check and verify your account before logging in!
+                            </p>
+                        </div>
+                    )}
                     <InputSearch
                         inputError={!!errors['email']}
                         title={'Enter Email...'}

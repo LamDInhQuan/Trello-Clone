@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import Board from '~/pages/Boards';
 import NotFound from './pages/404';
 import Auth from './pages/Auth';
+import AccountVerification from './pages/Auth/AccountVerification';
 
 function App() {
     return (
@@ -25,8 +26,10 @@ function App() {
             {/* Authentication  */}
             <Route path='/login'element={<Auth/>}/>
              <Route path='/register'element={<Auth/>}/>
+            <Route path='/auth/verify' element={<AccountVerification/>}/>
             {/* 404 not found page */}
             <Route path="*" element={<NotFound />} />
+            
         </Routes>
     );
 }

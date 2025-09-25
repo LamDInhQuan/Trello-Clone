@@ -15,6 +15,8 @@ public interface UserMapper {
     @Mapping(target = "createAt", ignore = true)
     @Mapping(target = "updateAt", ignore = true)
     @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "avatar", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     User toUser(UserRequest request);
 
     @Mapping(target = "id", ignore = true)

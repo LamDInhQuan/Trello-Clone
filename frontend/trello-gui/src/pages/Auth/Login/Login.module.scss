@@ -13,14 +13,14 @@
 }
 
 .formLogin {
-    max-height: 70%;
+    max-height: 90%;
     height: auto;
     width: 20%;
     border-radius: 10px;
 
     background: rgba(255, 255, 255, 0.9); /* trắng trong suốt */
 
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,7 +56,7 @@
     border: 1px solid #ccc; /* xám nhạt */
     border-radius: 5px;
     height: 45px;
-    width: 270px;
+    width: 280px;
     margin-left: 1%;
     padding: 5px;
     outline: none; /* bỏ viền xanh mặc định khi focus */
@@ -115,4 +115,48 @@
     background: rgba(235, 232, 246, 0.9) !important; /* trắng trong suốt */
     font-size: 12px !important;
     color: rgb(197, 10, 10) !important;
+}
+// form verified-email-notice
+.verified-email-notice {
+    display: flex;
+    background-color: #ccf5ef;
+    padding: 4px 2px 10px 10px;
+    gap: 10px;
+    justify-content: flex-start;
+}
+.icon-verified-email {
+    color: #21a749;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+}
+.verified-email-notice > p {
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.4; /* khoảng cách dòng thoáng hơn */
+    letter-spacing: 0.3px; /* optional, chữ hơi rộng ra */
+    color: #333; /* màu chữ dịu mắt */
+}
+
+// form verified-email-notice
+.register-email-notice {
+    display: flex;
+    background-color: #cce5f5;
+    padding: 4px 5px 10px 10px;
+    gap: 10px;
+    justify-content: flex-start;
+}
+.icon-register-email {
+    color: #2186a7;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+}
+.register-email-notice > p {
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5; /* khoảng cách dòng thoáng hơn */
+    letter-spacing: 0.3px; /* optional, chữ hơi rộng ra */
+    color: #0f0e0e; /* màu chữ dịu mắt */
+  
 }

@@ -4,10 +4,10 @@ import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoa
 import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // src
-import { Icons } from 'react-toastify';
+import { Icons, toast } from 'react-toastify';
 import Button from '~/components/Button';
 import FieldErrorAlert from '~/components/FieldErrorAlert';
 import LockIcon from '~/components/Icons/LockIcon';
@@ -20,6 +20,7 @@ import {
     PASSWORD_RULE,
     PASSWORD_RULE_MESSAGE,
 } from '~/utils/validators';
+import { registerUserAPI } from '~/apis';
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(stylesInterceptorLoading);
@@ -41,8 +42,13 @@ function RegisterForm() {
     const inputPassword = watch('password');
     const inputConfirmPassword = watch('confirmPassword');
 
+    const navigate = useNavigate(); // Khi gọi, nó trả về một hàm navigate để bạn dùng đi chuyển trang bằng code.
     const submitLogin = (data) => {
-        console.log('data', data);
+        const { email, password } = data;
+        toast
+            .promise(registerUserAPI({ email, password }), { pending: 'Registration is in progress...' })
+            .then((user) => navigate(`/login?registerEmail=${email}`))
+            .catch(() => {} );
     };
 
     return (
