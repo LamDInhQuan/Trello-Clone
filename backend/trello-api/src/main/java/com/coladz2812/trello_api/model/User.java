@@ -27,7 +27,7 @@ public class User {
     String password ;
     String displayName ;
     String avatar = null;
-    List<String> roles ;
+    List<String> roles = List.of("user");;
     Boolean isActive = false;
     String verifyToken ;
     Date createAt = new Date();

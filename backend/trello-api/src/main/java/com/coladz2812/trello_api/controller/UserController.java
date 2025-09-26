@@ -9,10 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/user")
@@ -23,12 +20,26 @@ import org.springframework.web.bind.annotation.RestController;
 //    this.userRepository = userRepository; }
 public class UserController {
 
-    UserService userService ;
+    UserService userService;
 
     @PostMapping("/register")
-    public ApiResponse<UserResponse> addUser(@RequestBody @Valid UserRequest request){
+    public ApiResponse<UserResponse> addUser(@RequestBody @Valid UserRequest request) {
         var userResponse = userService.addUser(request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(userResponse).build();
-        return  apiResponse ;
+        return apiResponse;
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<UserService.LoginResponse> login(@RequestBody @Valid UserRequest request) {
+        var userResponse = userService.login(request);
+        ApiResponse<UserService.LoginResponse> apiResponse = ApiResponse.<UserService.LoginResponse>builder().result(userResponse).build();
+        return apiResponse;
+    }
+
+    @PostMapping("/verify")
+    public ApiResponse<UserResponse> verifyAccount(@RequestParam String email, @RequestParam String token) {
+        var userResponse = userService.verifyAccount(email, token);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(userResponse).build();
+        return apiResponse;
     }
 }

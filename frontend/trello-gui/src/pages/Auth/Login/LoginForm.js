@@ -3,11 +3,11 @@ import styles from './Login.module.scss';
 import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 // src
-import { Icons } from 'react-toastify';
+import { Icons, toast } from 'react-toastify';
 import Button from '~/components/Button';
 import LockIcon from '~/components/Icons/LockIcon';
 import TrelloIcon from '~/components/Icons/TrelloIcon';
@@ -22,12 +22,16 @@ import {
 import FieldErrorAlert from '~/components/FieldErrorAlert';
 import TickOutlineIcon from '~/components/Icons/TickOutlineIcon';
 import InfoOutlineIcon from '~/components/Icons/InfoOutlineIcon';
-
+import { useDispatch } from 'react-redux';
+import { loginUserAPIRedux } from '~/redux/user/userSlice';
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(stylesInterceptorLoading);
 
 function LoginForm() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -43,6 +47,18 @@ function LoginForm() {
     const verifiedEmail = searchParams.get('verifiedEmail');
     const submitLogin = (data) => {
         console.log('data', data);
+        const { email, password } = data;
+        toast
+            .promise(dispatch(loginUserAPIRedux({ email, password })), { pending: 'Logging in...' })
+            .then((res) => {
+                // kiểm tra đăng nhập không có lỗi điều hướng về route ("/")
+                // console.log(res);
+                if (!res.error) {
+                    toast.success('Đăng nhập thành công!')
+                    navigate('/');
+                }
+            })
+            .catch();
     };
 
     // useForm Nó là một custom hook của thư viện react-hook-form.
@@ -70,7 +86,7 @@ function LoginForm() {
                             </p>
                         </div>
                     )}
-                     {registerEmail && (
+                    {registerEmail && (
                         <div className={cx('register-email-notice')}>
                             <InfoOutlineIcon className={cx('icon-register-email')} />
                             <p>

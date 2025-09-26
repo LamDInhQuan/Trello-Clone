@@ -21,15 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
-    String id ;
     String email ;
     String username ;
-    String password ;
     String displayName ;
     String avatar ;
     List<String> roles ;
     Boolean isActive ;
-    String verifyToken ;
     Date createAt ;
     Date updateAt ;
 }

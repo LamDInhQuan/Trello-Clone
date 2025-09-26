@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    STUDENT_NAME_CHARACTER(1001,"Tên người dùng phải từ 3 - 20 kí tự ",HttpStatus.BAD_REQUEST),
-    ADDRESS_NOT_BLANK(1002,"Địa chỉ không được để trống ",HttpStatus.BAD_REQUEST) ,
-    STUDENT_NOT_FOUND(1003,"Không tìm thấy studen bằng id ",HttpStatus.NOT_FOUND),
+    PASSWORD_NOT_MATCH(1001,"Mật khẩu không khớp! Vui lòng nhập lại!",HttpStatus.BAD_REQUEST),
+    USER_ACCOUNT_NOT_ACTIVE(1002,"Tài khoản email chưa được kích hoạt! Vui lòng xác thực tài khoản!",HttpStatus.BAD_REQUEST) ,
+    USER_EMAIL_NOT_FOUND(1003,"Không tìm thấy email user",HttpStatus.NOT_FOUND),
+    USER_ACCOUNT_ALREADY_ACTIVE(9996,"Tài khoản email đã được kích hoạt!",HttpStatus.BAD_REQUEST) ,
     INVALID_KEY(9998,"Từ khóa ENUM không hợp lệ ",HttpStatus.BAD_REQUEST),
     NOT_CONNECTED_MONGODB(9999,"Không có kết nối đến cơ sở dữ liệu MongoDB",HttpStatus.INTERNAL_SERVER_ERROR),
     BOARD_TITLE_CHARACTER(1004,"Tiêu đề bảng phải từ 3 - 50 kí tự ",HttpStatus.BAD_REQUEST),
@@ -34,7 +35,8 @@ public enum ErrorCode {
     EMAIL_EXISTS(1024,"Email đã tồn tại ",HttpStatus.BAD_REQUEST),
     SUBJECT_EMAIL_NOT_NULL(1025,"Subject email không được để trống",HttpStatus.BAD_REQUEST) ,
     CONTENT_EMAIL_NOT_NULL(1026,"Content email không được để trống ",HttpStatus.BAD_REQUEST),
-    SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST)
+    SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST) ,
+    VERIFY_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST)
     ;
 
 

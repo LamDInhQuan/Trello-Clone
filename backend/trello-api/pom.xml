@@ -100,6 +100,12 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- Jwt        -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.30.1</version>
+        </dependency>
     </dependencies>
 
     <!--    phải viết theo code build bên dưới

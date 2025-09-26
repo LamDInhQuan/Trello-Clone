@@ -33,3 +33,7 @@ brevo:
     name: ${BREVO_EMAIL}
     senderName: Trello Advance MERN Stack
 
+jwt :
+  signerKey : ${SIGNER_KEY}
+  valid-duration : 200 # in second thơig gian có hiệu lực cùa token
+  refreshable-duration : 360 #in second thời gian có thể làm mới token

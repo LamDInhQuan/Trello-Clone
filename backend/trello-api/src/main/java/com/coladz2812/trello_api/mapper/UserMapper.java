@@ -19,6 +19,5 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     User toUser(UserRequest request);
 
-    @Mapping(target = "id", ignore = true)
     UserResponse toUserResponse(User user);
 }

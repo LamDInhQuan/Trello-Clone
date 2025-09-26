@@ -67,11 +67,23 @@ export const deleteColumnInBoard = async (boardId, columnId) => {
 
 // User
 export const registerUserAPI = async (data) => {
-    
-        const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/register`, data);
-        toast.success(
-            'Tài khoản đã tạo thành công ! Vui lòng kiểm tra email và xác thực tài khoản của bạn trước khi đăng nhập !',
-        );
-        return response.data;
-  
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/register`, data);
+    toast.success(
+        'Tài khoản đã tạo thành công ! Vui lòng kiểm tra email và xác thực tài khoản của bạn trước khi đăng nhập !',
+    );
+    return response.data;
+};
+
+// User
+export const loginUserAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/login`, data);
+    return response.data;
+};
+
+// User
+export const verifyUserAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/user/verify?email=${data.email}&token=${data.token}`,
+    );
+    return response.data;
 };

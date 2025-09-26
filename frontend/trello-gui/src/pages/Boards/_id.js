@@ -22,7 +22,7 @@ import { generatePlaceHolderCard } from '~/utils/formatters';
 import { mapOrder } from '~/utils/sorts';
 import { toast } from 'react-toastify';
 import {
-    fetchBoardDetailAPI,
+    fetchBoardDetailAPIRedux,
     updateCurrentActiveBoard,
     selectCurrentActiveBoard,
 } from '~/redux/activeBoard/activeBoardSlice';
@@ -56,7 +56,7 @@ function Board() {
         // console.log('call api');
         // const boardId = '68af4b814b6913bb70d835bb';
         // call API
-        dispatch(fetchBoardDetailAPI(boardId));
+        dispatch(fetchBoardDetailAPIRedux(boardId));
     }, [dispatch, boardId]);
 
     const moveColumnByColumnOrderIds = async (boardId, orderedCards) => {
