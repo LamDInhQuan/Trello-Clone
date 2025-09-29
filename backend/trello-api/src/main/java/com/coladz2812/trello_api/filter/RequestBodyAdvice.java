@@ -1,6 +1,6 @@
-package com.coladz2812.trello_api.dto.request;
+package com.coladz2812.trello_api.filter;
 
-import com.coladz2812.trello_api.model.Card;
+import com.coladz2812.trello_api.dto.request.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -13,6 +13,11 @@ import java.util.List;
 
 @Slf4j
 @ControllerAdvice
+// ChatGPT đã nói:
+//  RequestBodyAdviceAdapter là một cơ chế của Spring MVC để can thiệp, xử lý hoặc thay đổi dữ liệu request trước
+//  khi Spring chuyển nó thành object Java (trong các method @RequestBody).
+//  Nói nôm na: nó giống như một “middleware” trước khi deserialization JSON → object trong controller.
+//  ÁP dụng : Chỉ request body @RequestBody , Trước controller, sau deserialize JSON
 public class RequestBodyAdvice extends RequestBodyAdviceAdapter {
 
     private final RequestContext requestContext;
@@ -22,7 +27,7 @@ public class RequestBodyAdvice extends RequestBodyAdviceAdapter {
     }
 
     private List<?> lstDto = List.of(new BoardRequest(),
-            new ColumnRequest(), new CardRequest() ,new BoardRequestUpdate());
+            new ColumnRequest(), new CardRequest() ,new BoardRequestUpdate(), new UserRequest());
 
     // supports() là phương thức quyết định xem RequestBodyAdvice (ở đây là
     // lớp RequestBodyAdviceAdapter bạn tạo) có được áp dụng cho một request cụ thể hay không.

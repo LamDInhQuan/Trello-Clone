@@ -2,11 +2,45 @@ import { configureStore } from '@reduxjs/toolkit';
 import { activeBoardReducer } from './activeBoard/activeBoardSlice';
 import { userReducer } from './user/userSlice';
 
+// Redux Persist là một thư viện mở rộng của Redux dùng để tự động lưu trữ trạng thái của store vào
+// bộ nhớ trình duyệt (localStorage, sessionStorage hoặc AsyncStorage trên React Native) và tự động
+// khôi phục khi reload trang.
+// Mục đích chính:
+// - Giữ lại dữ liệu người dùng giữa các lần F5 trang web (ví dụ: user login, theme, cart…).
+// - Giảm việc phải fetch lại dữ liệu từ server khi reload.
+
+// cấu hình redux persist
+import { combineReducers } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // default là localstorage
+
+// Cấu hình persist
+const rootPersistConfig = {
+    key: 'root', // key của cái persist do ta chỉ định , cứ để mặc định là root
+    storage: storage, // Biến storage ở trên - lưu vào localstorage
+    whitelist: ['user'], // định nghĩa các slice được phép duy trì qua mỗi lần f5 trình duyệt
+    // blackist : ['user'] // định nghĩa các slice ko được phép duy trì qua mỗi lần f5 trình duyệt
+};
+
+// Combine các reducers trong dự án của chúng ta ở đây
+// Hàm Redux bình thường để gộp nhiều slice reducer thành 1 reducer tổng.
+const reducers = combineReducers({
+    activeBoard: activeBoardReducer,
+    user: userReducer,
+});
+
+// Thực hiện persist Reducer
+// Mục đích: Biến một reducer thông thường thành reducer “có khả năng persist”.
+// Tham số:
+//  - config → cấu hình persist (ví dụ: lưu ở đâu, slice nào được lưu, slice nào bị bỏ qua…)
+//  - reducer → reducer gốc của bạn.
+//  - Trả về: Một reducer mới “đã được persist” để đưa vào configureStore.
+const persistedReducers = persistReducer(rootPersistConfig, reducers);
+
 export const store = configureStore({
-    reducer: {
-      activeBoard : activeBoardReducer ,
-      user : userReducer
-    },
+    reducer: persistedReducers,
+    // fix warning error khi implement redux-persist
+    middleware: (getDefaltMiddleware) => getDefaltMiddleware({ serializableCheck: false }),
 });
 
 // 🧩 Tóm tắt Redux

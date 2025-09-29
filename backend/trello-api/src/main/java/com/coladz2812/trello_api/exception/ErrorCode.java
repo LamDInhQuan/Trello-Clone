@@ -36,7 +36,10 @@ public enum ErrorCode {
     SUBJECT_EMAIL_NOT_NULL(1025,"Subject email không được để trống",HttpStatus.BAD_REQUEST) ,
     CONTENT_EMAIL_NOT_NULL(1026,"Content email không được để trống ",HttpStatus.BAD_REQUEST),
     SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST) ,
-    VERIFY_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST)
+    VERIFY_ACCOUNT_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST),
+    TOKEN_IS_EXPIRED(4006,"Token đã hết hạn! Vui lòng refresh token!",HttpStatus.GONE) ,
+    DOMAIN_CORS_BLOCK(4007,"Domain này không có quyền truy cập!",HttpStatus.FORBIDDEN)
+    ;
     ;
 
 

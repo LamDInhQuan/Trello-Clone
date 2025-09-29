@@ -1,6 +1,6 @@
 package com.coladz2812.trello_api.exception;
 
-import com.coladz2812.trello_api.dto.request.RequestContext;
+import com.coladz2812.trello_api.filter.RequestContext;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;

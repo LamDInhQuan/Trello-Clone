@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios   
+import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios
 import { API_ROOT } from '~/utils/constants';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import { mapOrder } from '~/utils/sorts';
@@ -43,29 +43,34 @@ export const activeBoardSlice = createSlice({
             let board = action.payload.result;
             // xử lý dữ liệu nếu cần thiết ....
             // sắp xếp luôn các columns trước khi đưa xuống các component con
-            board.columns = mapOrder(board.columns, board.columnOrderIds, '_id');
+            if (board) {
+                board.columns = mapOrder(board?.columns, board?.columnOrderIds, '_id');
 
-            // thêm thẻ ảo cho column mới tạo
-            const newColumns = board.columns.map((col) => {
-                if (!col.cards || col.cards.length === 0) {
-                    const placeholder = generatePlaceHolderCard(col);
-                    return {
-                        ...col,
-                        cards: [placeholder],
-                        cardOrderIds: [placeholder._id],
-                    };
-                } else {
-                    // sắp xếp luôn các cards trước khi đưa xuống các component con
-                    col.cards = mapOrder(col.cards, col.cardOrderIds, '_id');
-                }
-                return col; // giữ nguyên nếu đã có cards
-            });
-            const newBoard = {
-                ...board,
-                columns: newColumns,
-            };
-            // update lại dữ liệu của currentActiveBoard
-            state.currentActiveBoard = newBoard;
+                // thêm thẻ ảo cho column mới tạo
+                const newColumns = board.columns.map((col) => {
+                    if (!col.cards || col.cards.length === 0) {
+                        const placeholder = generatePlaceHolderCard(col);
+                        return {
+                            ...col,
+                            cards: [placeholder],
+                            cardOrderIds: [placeholder._id],
+                        };
+                    } else {
+                        // sắp xếp luôn các cards trước khi đưa xuống các component con
+                        col.cards = mapOrder(col.cards, col.cardOrderIds, '_id');
+                    }
+                    return col; // giữ nguyên nếu đã có cards
+                });
+                const newBoard = {
+                    ...board,
+                    columns: newColumns,
+                };
+                // update lại dữ liệu của currentActiveBoard
+                state.currentActiveBoard = newBoard;
+            } else {
+                // Nếu board undefined → tránh crash
+                state.currentActiveBoard = null;
+            }
         });
     },
 });
@@ -79,7 +84,7 @@ export const { updateCurrentActiveBoard } = activeBoardSlice.actions;
 // Selectors : là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liêu từ trong kho
 // redux store ra sử dụng
 export const selectCurrentActiveBoard = (state) => {
-    return state.activeBoard.currentActiveBoard;
+    return state.activeBoard?.currentActiveBoard;
 };
 
 // file dưới là activeBoardSlice nhưng chúng ta sẽ export 1 thứ tên là Reducer

@@ -18,27 +18,45 @@ import { store } from './redux/store';
 // cấu hình react-router-dom với BrowserRouter
 import { BrowserRouter } from 'react-router-dom';
 
+// cấu hình Redux-persist
+import { PersistGate } from 'redux-persist/integration/react';
+// Đối tượng persistor được tạo ra từ persistStore.
+// Tham số: store → Redux store của bạn (do configureStore hoặc createStore tạo ra).
+// Chức năng:
+//   - Theo dõi store: Khi state thay đổi, tự động lưu các slice được whitelist vào 
+//      storage (localStorage, sessionStorage, v.v.).
+//   - Khôi phục dữ liệu (rehydrate): Khi app reload, persistor đọc dữ liệu từ storage và 
+//      đưa vào store.
+//   - Cho phép thao tác thủ công: bạn có thể gọi persistor.flush() để ép lưu state ngay,
+//      hoặc persistor.purge() để xóa dữ liệu persist.
+// Lưu ý: persistStore phải nhận store đã được wrap bằng persistReducer nếu bạn muốn slice 
+// được persist.
+import { persistStore } from 'redux-persist';
+
+const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter basename='/'>
+    <BrowserRouter basename="/">
         <Provider store={store}>
-            <GlobalAppStyle>
-                <ConfirmProvider
-                    defaultOptions={{
-                        dialogProps: {
-                            maxWidth: 'xs',
-                            disableEnforceFocus: true, // 🔥 tắt ép focus
-                            disableAutoFocus: true, // 🔥 tắt tự động focus
-                            disableRestoreFocus: true,
-                        },
-                        confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
-                        allowClose: false,
-                    }}
-                >
-                    <App />
-                    <ToastContainer position="bottom-left" theme="colored" />
-                </ConfirmProvider>
-            </GlobalAppStyle>
+            <PersistGate persistor={persistor}>
+                <GlobalAppStyle>
+                    <ConfirmProvider
+                        defaultOptions={{
+                            dialogProps: {
+                                maxWidth: 'xs',
+                                disableEnforceFocus: true, // 🔥 tắt ép focus
+                                disableAutoFocus: true, // 🔥 tắt tự động focus
+                                disableRestoreFocus: true,
+                            },
+                            confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+                            allowClose: false,
+                        }}
+                    >
+                        <App />
+                        <ToastContainer position="bottom-left" theme="colored" />
+                    </ConfirmProvider>
+                </GlobalAppStyle>
+            </PersistGate>
         </Provider>
     </BrowserRouter>,
 );

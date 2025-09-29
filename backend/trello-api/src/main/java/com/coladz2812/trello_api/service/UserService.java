@@ -3,6 +3,7 @@ package com.coladz2812.trello_api.service;
 import com.coladz2812.trello_api.dto.request.EmailRequest;
 import com.coladz2812.trello_api.dto.request.UserRequest;
 import com.coladz2812.trello_api.dto.response.UserResponse;
+import com.coladz2812.trello_api.dto.response.VerifyTokenResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.mapper.UserMapper;
@@ -10,7 +11,11 @@ import com.coladz2812.trello_api.model.User;
 import com.coladz2812.trello_api.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -37,7 +43,9 @@ public class UserService {
 
     @NonFinal
     // Record là kiểu đặc biệt để định nghĩa DTO bất biến chỉ với 1 dòng, không cần getter/setter/toString thủ công.
-    public record LoginResponse(String token, UserResponse user) {}
+    public record LoginResponse(String token, UserResponse user) {
+    }
+
 
     UserRepository userRepository;
     UserMapper userMapper;
@@ -46,11 +54,11 @@ public class UserService {
 
     @NonFinal
     @Value("${jwt.signer-key}")
-    private String signerKey ;
+    private String signerKey;
 
     @NonFinal
     @Value("${jwt.valid-duration}")
-    private long duration ;
+    private long duration;
 
     public UserResponse addUser(UserRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(9);
@@ -83,19 +91,19 @@ public class UserService {
         return userMapper.toUserResponse(userResponse);
     }
 
-    public UserResponse verifyAccount(String email , String token ){
-        log.error("email "+email);
+    public UserResponse verifyAccount(String email, String token) {
+        log.error("email " + email);
         // check lỗi không đúng email
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
-            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND) ;
+            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
         // check lỗi tài khoản email đã được xác thực
-        if(user.getIsActive()){
-            throw new AppException(ErrorCode.USER_ACCOUNT_ALREADY_ACTIVE) ;
+        if (user.getIsActive()) {
+            throw new AppException(ErrorCode.USER_ACCOUNT_ALREADY_ACTIVE);
         }
         // check lỗi token không đúng
-        if(!token.equals(user.getVerifyToken())){
-            throw new AppException(ErrorCode.VERIFY_TOKEN_NOT_VALID) ;
+        if (!token.equals(user.getVerifyToken())) {
+            throw new AppException(ErrorCode.VERIFY_ACCOUNT_TOKEN_NOT_VALID);
         }
 
         // update User
@@ -104,28 +112,32 @@ public class UserService {
         user.setUpdateAt(new Date());
         return userMapper.toUserResponse(userRepository.save(user));
     }
-    public LoginResponse login(UserRequest request) {
+
+    public LoginResponse login(UserRequest request, HttpServletResponse response) {
         // check lỗi không đúng email
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> {
-            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND) ;
+            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
         // check lỗi tài khoản email chưa được xác thực
-        if(!user.getIsActive()){
-            throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE) ;
+        if (!user.getIsActive()) {
+            throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE);
         }
         // check lỗi password không đúng
-        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
-            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH) ;
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         // đăng nhập thành công thì tạo token
-        String token = generateToken(user.getId(),  user.getUsername());
+        String token = generateToken(user.getId(), user.getUsername());
+        // thêm token vào cookie
+        generateCookie(response, "accesToken", token, 14);
+
         var userResponse = userMapper.toUserResponse(user);
-        var loginResponse = new LoginResponse(token,userResponse);
-        return loginResponse ;
+        var loginResponse = new LoginResponse(token, userResponse);
+        return loginResponse;
     }
 
-    public String generateToken(String id , String username){
+    public String generateToken(String id, String username) {
         // tạo header
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         // tạo payload
@@ -133,12 +145,12 @@ public class UserService {
                 .subject(id)
                 .issuer("coladeptrai")
                 .issueTime(new Date())
-                .expirationTime(Date.from(Instant.now().plus(duration,ChronoUnit.SECONDS)))
-                .claim("username",username)
+                .expirationTime(Date.from(Instant.now().plus(duration, ChronoUnit.SECONDS)))
+                .claim("username", username)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         // taọ obj chứa header và payload của JWT
-        JWSObject jwsObject = new JWSObject(jwsHeader,payload);
+        JWSObject jwsObject = new JWSObject(jwsHeader, payload);
 
         // kí xác nhận
         try {
@@ -147,5 +159,36 @@ public class UserService {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // tạo 1 cookie
+    // Cookie là một mẩu thông tin nhỏ mà server gửi về trình duyệt (client) để lưu trữ trên máy người dùng.
+    //  Browser sẽ tự động gửi cookie này về server trong các request tiếp theo tới cùng domain.
+    //  Mục đích:
+    //  Lưu thông tin đăng nhập (session ID, token, username…)
+    //  Lưu trạng thái người dùng (giỏ hàng, lựa chọn hiển thị)
+    //  Theo dõi hành vi (analytics, quảng cáo)
+    public void generateCookie(HttpServletResponse response, String name, String value, int expireDays) {
+
+        Cookie cookie = new Cookie(name, value);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(expireDays * 24 * 60 * 60);   // chuyển ngày sang giâ
+        response.addCookie(cookie);
+    }
+
+    public VerifyTokenResponse verifyToken(String token) throws JOSEException, ParseException {
+        JWSVerifier jwsVerifier = new MACVerifier(signerKey.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token); // parse token thành đối tượng jwt
+        Date dateExpire = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean expired = dateExpire.after(new Date()) ;
+        // báo lỗi token hết hạn
+        if(!expired){
+            throw new AppException(ErrorCode.TOKEN_IS_EXPIRED);
+        }
+        var verified = signedJWT.verify(jwsVerifier) && expired; // đối tượng xác nhận chữ kí ( nếu chữ kí ko giống thì sai , còn thành phần thay đổi
+        // dù không tự tạo token mà vẫn đúng chữ kí thì xác nhận vẫn đúng )
+        return new VerifyTokenResponse().builder().valid(verified).build();
     }
 }
