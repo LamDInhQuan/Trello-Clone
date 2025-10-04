@@ -5,7 +5,7 @@
     margin: 0 !important; /* bỏ margin để không bị tụt */
     pointer-events: none; /* overlay không bắt event */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* tuỳ chọn: cho cảm giác đang nổi */
-    z-index: 9999; /* luôn nổi trên cùng */
+    z-index: 998; /* luôn nổi trên cùng */
 }
 // khi bật button menu dropdown hiện overlay
 .overlay {

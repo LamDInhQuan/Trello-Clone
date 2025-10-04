@@ -7,7 +7,9 @@ import com.coladz2812.trello_api.dto.response.VerifyTokenResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.mapper.UserMapper;
+import com.coladz2812.trello_api.model.InvalidatedToken;
 import com.coladz2812.trello_api.model.User;
+import com.coladz2812.trello_api.repository.InvalidatedTokenRepository;
 import com.coladz2812.trello_api.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -15,6 +17,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +27,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,22 +46,31 @@ public class UserService {
 
     @NonFinal
     // Record là kiểu đặc biệt để định nghĩa DTO bất biến chỉ với 1 dòng, không cần getter/setter/toString thủ công.
-    public record LoginResponse(String token, UserResponse user) {
+    public record LoginResponse(String accessToken, String refreshToken, UserResponse user) {
     }
 
 
     UserRepository userRepository;
+    InvalidatedTokenRepository invalidatedTokenRepository;
     UserMapper userMapper;
     EmailService emailService;
     BCryptPasswordEncoder passwordEncoder;
 
     @NonFinal
-    @Value("${jwt.signer-key}")
-    private String signerKey;
+    @Value("${jwt.signerKeyAccess}")
+    private String signerKeyAccess;
+
+    @NonFinal
+    @Value("${jwt.signerKeyRefresh}")
+    private String signerKeyRefresh;
 
     @NonFinal
     @Value("${jwt.valid-duration}")
-    private long duration;
+    private long durationAccess;
+
+    @NonFinal
+    @Value("${jwt.refreshable-duration}")
+    private long durationRefresh;
 
     public UserResponse addUser(UserRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(9);
@@ -128,16 +140,19 @@ public class UserService {
         }
 
         // đăng nhập thành công thì tạo token
-        String token = generateToken(user.getId(), user.getUsername());
+        String accessToken = generateToken(user.getId(), user.getEmail(), signerKeyAccess ,durationAccess);
         // thêm token vào cookie
-        generateCookie(response, "accesToken", token, 14);
+        generateCookie(response, "accessToken", accessToken, 14);
 
+        // cookie refresh token
+        String refreshToken = generateToken(user.getId(), user.getEmail(), signerKeyRefresh,durationRefresh);
+        generateCookie(response, "refreshToken", refreshToken, 14);
         var userResponse = userMapper.toUserResponse(user);
-        var loginResponse = new LoginResponse(token, userResponse);
+        var loginResponse = new LoginResponse(accessToken, refreshToken, userResponse);
         return loginResponse;
     }
 
-    public String generateToken(String id, String username) {
+    public String generateToken(String id, String email, String singerKey,long duration) {
         // tạo header
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         // tạo payload
@@ -146,7 +161,8 @@ public class UserService {
                 .issuer("coladeptrai")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(duration, ChronoUnit.SECONDS)))
-                .claim("username", username)
+                .claim("email", email)
+                .jwtID(UUID.randomUUID().toString())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         // taọ obj chứa header và payload của JWT
@@ -154,7 +170,7 @@ public class UserService {
 
         // kí xác nhận
         try {
-            jwsObject.sign(new MACSigner(signerKey.getBytes()));
+            jwsObject.sign(new MACSigner(singerKey.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
             throw new RuntimeException(e);
@@ -171,24 +187,106 @@ public class UserService {
     public void generateCookie(HttpServletResponse response, String name, String value, int expireDays) {
 
         Cookie cookie = new Cookie(name, value);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(expireDays * 24 * 60 * 60);   // chuyển ngày sang giâ
         response.addCookie(cookie);
     }
 
-    public VerifyTokenResponse verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier jwsVerifier = new MACVerifier(signerKey.getBytes());
+    public void deleteCookie(HttpServletResponse response, String name) {
+        Cookie cookie = new Cookie(name, null); // giá trị null
+        cookie.setPath("/");                     // phải trùng path khi tạo cookie
+        cookie.setMaxAge(0);                     // maxAge=0 → xóa cookie
+        cookie.setSecure(true);                  // nếu cookie gốc có secure
+//    cookie.setHttpOnly(true);              // nếu cookie gốc có HttpOnly
+        response.addCookie(cookie);
+    }
+
+    public VerifyTokenResponse verifyTokenResponse(String token) throws ParseException, JOSEException, JwtException {
+        boolean isValid = true;
+        try {
+            var jwtToken = verifyTokenAccess(token,true);
+        } catch (AppException e) {
+            isValid = false;
+        }
+        return new VerifyTokenResponse().builder().valid(isValid).build();
+    }
+
+    public SignedJWT verifyTokenAccess(String token , boolean checkExpireTime) throws JOSEException, ParseException {
+        JWSVerifier jwsVerifier = new MACVerifier(signerKeyAccess.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token); // parse token thành đối tượng jwt
         Date dateExpire = signedJWT.getJWTClaimsSet().getExpirationTime();
-        boolean expired = dateExpire.after(new Date()) ;
+        boolean expired = dateExpire.after(new Date()); // lúc hết hạn phải sau lúc gọi verify
         // báo lỗi token hết hạn
-        if(!expired){
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+            throw new AppException(ErrorCode.TOKEN_LOGOUT);
+        }
+        if (!expired && checkExpireTime) {
             throw new AppException(ErrorCode.TOKEN_IS_EXPIRED);
         }
-        var verified = signedJWT.verify(jwsVerifier) && expired; // đối tượng xác nhận chữ kí ( nếu chữ kí ko giống thì sai , còn thành phần thay đổi
-        // dù không tự tạo token mà vẫn đúng chữ kí thì xác nhận vẫn đúng )
-        return new VerifyTokenResponse().builder().valid(verified).build();
+        boolean verified = signedJWT.verify(jwsVerifier);
+        if (!verified) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        // đối tượng xác nhận chữ kí ( nếu chữ kí ko giống thì sai , còn thành phần thay đổi
+        // dù không tự tạo token mà vẫn đúng chữ kí thì xác nhận vẫn đúng
+        return signedJWT;
+    }
+
+    public void logout(HttpServletResponse response, String token) throws ParseException, JOSEException {
+//        log.error("Logout");
+        // delete cookie
+        deleteCookie(response, "accessToken");
+        var jwt = verifyTokenAccess(token,false);
+        InvalidatedToken invalidatedToken = new InvalidatedToken().builder()
+                .id(jwt.getJWTClaimsSet().getJWTID())
+                .expiryTime(jwt.getJWTClaimsSet().getExpirationTime()).build();
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    public SignedJWT verifyTokenRefresh(String token) throws JOSEException, ParseException {
+        JWSVerifier jwsVerifier = new MACVerifier(signerKeyRefresh.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token); // parse token thành đối tượng jwt
+        Date dateExpire = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean expired = dateExpire.after(new Date()); // lúc hết hạn phải sau lúc gọi verify
+        // báo lỗi token hết hạn
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+            throw new AppException(ErrorCode.TOKEN_LOGOUT);
+        }
+        if (!expired) {
+            throw new AppException(ErrorCode.TOKEN_REFRESH_IS_EXPIRED);
+        }
+        boolean verified = signedJWT.verify(jwsVerifier);
+        if (!verified) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        // đối tượng xác nhận chữ kí ( nếu chữ kí ko giống thì sai , còn thành phần thay đổi
+        // dù không tự tạo token mà vẫn đúng chữ kí thì xác nhận vẫn đúng
+        return signedJWT;
+    }
+
+    public VerifyTokenResponse verifyTokenResponse2(String token) throws ParseException, JOSEException, JwtException {
+        boolean isValid = true;
+        try {
+            var jwtToken = verifyTokenRefresh(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
+        return new VerifyTokenResponse().builder().valid(isValid).build();
+    }
+    public String refreshToken(HttpServletResponse response, String accessToken
+            , String refreshToken ) throws ParseException, JOSEException {
+        var verifyTokenRefresh = verifyTokenRefresh(refreshToken);
+        var verifyTokenAccess = verifyTokenAccess(accessToken,false);
+        var invalidToken = InvalidatedToken.builder()
+                .id(verifyTokenAccess.getJWTClaimsSet().getJWTID())
+                .expiryTime(verifyTokenAccess.getJWTClaimsSet().getExpirationTime()).build();
+        invalidatedTokenRepository.save(invalidToken);
+
+        String accessTokenJWT = generateToken(verifyTokenAccess.getJWTClaimsSet().getSubject()
+                , verifyTokenAccess.getJWTClaimsSet().getStringClaim("email"), signerKeyAccess,durationAccess);
+        generateCookie(response, "accessToken", accessTokenJWT, 14);
+        return accessTokenJWT;
     }
 }

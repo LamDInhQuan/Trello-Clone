@@ -12,7 +12,7 @@ function MenuDropDownCustomItem({ children, leftIcon, onClick }) {
     return (
         <div className={cx('wrapper')}>
             <Button className={cx('buttonItem')} leftIcon={leftIcon} onClick={onClick}>
-                {children}
+                 <span className={cx('buttonLabel')}>{children}</span>
             </Button>
         </div>
     );

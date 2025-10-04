@@ -1,5 +1,6 @@
 package com.coladz2812.trello_api.configuration;
 
+import com.coladz2812.trello_api.filter.JwtAuthenticationEntryPoint;
 import com.coladz2812.trello_api.filter.JwtFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -12,10 +13,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @Configuration
 public class SecurityConfig { // lớp này xử lí request trước khi đi vào controllẻr
@@ -24,7 +26,7 @@ public class SecurityConfig { // lớp này xử lí request trước khi đi v�
         return new BCryptPasswordEncoder(10);
     }
 
-    final JwtFilter jwtFilter ;
+    JwtFilter jwtFilter;
 
     //  HttpSecurity Nó là một builder (giống như StringBuilder) do Spring Security cung cấp.
     //  Dùng để cấu hình chuỗi filter (filter chain) mà Spring Security sẽ áp dụng cho mọi request HTTP.
@@ -34,7 +36,16 @@ public class SecurityConfig { // lớp này xử lí request trước khi đi v�
     //  Đây là một bean mà bạn khai báo trong Spring.
     //  Nó đại diện cho toàn bộ chuỗi filter (filter chain) mà Spring Security sẽ áp dụng cho request.
 
-    private static final String[] PUBLIC_ENDPOINT = {"/user/**"};
+    private static final String[] PUBLIC_ENDPOINT = {
+            "/user/login",
+            "/user/register",
+            "/user/verify",
+            "/user/verifyToken" ,
+            "/user/verifyTokenRefresh",
+            "/user/refresh",
+            "/user/logout"
+            // có thể thêm /user/verify-email nếu bạn có xác thực email
+    };
 
     // CSRF = Cross-Site Request Forgery (tấn công giả mạo yêu cầu từ trình duyệt).
     //  Tấn công: hacker gửi 1 form/post từ website độc hại, khi bạn đang đăng nhập ở site hợp lệ thì request sẽ dùng cookie session
@@ -43,21 +54,23 @@ public class SecurityConfig { // lớp này xử lí request trước khi đi v�
     //  Nhưng với REST API (JWT, token-based, stateless) → thường tắt CSRF vì request không dựa vào cookie.
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity ) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
+                .cors(cors -> {
+                })
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT)
-                        .permitAll().anyRequest().authenticated());
+                                .permitAll().anyRequest().authenticated())
+                .exceptionHandling(exp -> exp.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+        // đặt filter trước UsernamePasswordAuthenticationFilter
+        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        httpSecurity.addFilterAfter(jwtFilter, CorsFilter.class);
-        //        // Bật chế độ resource server. Spring sẽ thêm filter chuyên xử lý token (BearerTokenAuthenticationFilter).
-        //        httpSecurity.oauth2ResourceServer(oauth2 -> {
-        //            oauth2.jwt(jwtConfigurer-> {
-        //                jwtConfigurer.decoder();
-        //            })
-        //        })
+//                // Bật chế độ resource server. Spring sẽ thêm filter chuyên xử lý token (BearerTokenAuthenticationFilter).
+//                httpSecurity.oauth2ResourceServer(oauth2 -> {
+//                    oauth2.authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+//                });
+//
         return httpSecurity.build();
     }
 

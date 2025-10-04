@@ -5,9 +5,13 @@ import com.coladz2812.trello_api.dto.request.VerifyTokenRequest;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.UserResponse;
 import com.coladz2812.trello_api.dto.response.VerifyTokenResponse;
+import com.coladz2812.trello_api.exception.AppException;
+import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.filter.RequestContext;
 import com.coladz2812.trello_api.service.UserService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -17,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/user")
@@ -46,8 +52,8 @@ public class UserController {
     //  Thiết lập mã trạng thái HTTP (200, 404, 403…).
     //  Chuyển hướng (redirect) client sang URL khác.
     @PostMapping("/login")
-    public ApiResponse<UserService.LoginResponse> login(@RequestBody @Valid UserRequest request , HttpServletResponse response  ) {
-        var userResponse = userService.login(request,response);
+    public ApiResponse<UserService.LoginResponse> login(@RequestBody @Valid UserRequest request, HttpServletResponse response) {
+        var userResponse = userService.login(request, response);
         ApiResponse<UserService.LoginResponse> apiResponse = ApiResponse.<UserService.LoginResponse>builder().result(userResponse).build();
 //        log.error("request context : "+ requestContext.getRequestContext());
         return apiResponse;
@@ -62,8 +68,46 @@ public class UserController {
 
     @PostMapping("/verifyToken")
     public ApiResponse<VerifyTokenResponse> verifyToken(@RequestBody VerifyTokenRequest request) throws ParseException, JOSEException {
-        var response = userService.verifyToken(request.getToken());
+        var response = userService.verifyTokenResponse(request.getToken());
         ApiResponse<VerifyTokenResponse> apiResponse = ApiResponse.<VerifyTokenResponse>builder().result(response).build();
+        return apiResponse;
+    }
+    @PostMapping("/verifyTokenRefresh")
+    public ApiResponse<VerifyTokenResponse> verifyTokenRefresh(@RequestBody VerifyTokenRequest request) throws ParseException, JOSEException {
+        var response = userService.verifyTokenResponse2(request.getToken());
+        ApiResponse<VerifyTokenResponse> apiResponse = ApiResponse.<VerifyTokenResponse>builder().result(response).build();
+        return apiResponse;
+    }
+        @PostMapping("/logout")
+        public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
+            Cookie cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                    .filter(e -> "accessToken".equals(e.getName())).findFirst().orElse(null);
+            if (cookie == null || cookie.getValue().isBlank()) {
+                throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
+            }
+            String token = cookie.getValue();
+            userService.logout(httpServletResponse, token);
+            ApiResponse<String> apiResponse = ApiResponse.<String>builder().result("Đăng xuất thành công!").build();
+
+
+            return apiResponse;
+        }
+    @PostMapping("/refresh")
+    public ApiResponse<String> refresh(HttpServletRequest request, HttpServletResponse response) throws ParseException, JOSEException {
+        Cookie cookieAccessToken = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                .filter(e -> "accessToken".equals(e.getName())).findFirst().orElse(null);
+        Cookie cookieRefreshToken = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                .filter(e -> "refreshToken".equals(e.getName())).findFirst().orElse(null);
+        if (cookieAccessToken == null || cookieAccessToken.getValue().isBlank()) {
+            throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
+        }
+        if (cookieRefreshToken == null || cookieRefreshToken.getValue().isBlank()) {
+            throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
+        }
+        String tokenAccess = cookieAccessToken.getValue();
+        String tokenRefresh = cookieRefreshToken.getValue();
+        String refreshTokenResponse = userService.refreshToken(response,tokenAccess,tokenRefresh);
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder().result(refreshTokenResponse).build();
         return apiResponse;
     }
 }

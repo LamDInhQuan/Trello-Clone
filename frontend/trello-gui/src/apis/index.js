@@ -36,7 +36,7 @@ export const updateCardOrderIdsInSameColumn = async (columnId, cardOrderIds) => 
             cardOrderIds,
         },
     );
-    return response.data;
+    return response?.data;
 };
 
 // update columnOrderIds
@@ -85,5 +85,14 @@ export const verifyUserAPI = async (data) => {
     const response = await authorizedAxiosInstance.post(
         `${API_ROOT}/user/verify?email=${data.email}&token=${data.token}`,
     );
+    return response.data;
+};
+
+export const logOutAPI = async () => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/logout`);
+    return response.data;
+};
+export const refreshTokenAPI = async () => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/refresh`);
     return response.data;
 };

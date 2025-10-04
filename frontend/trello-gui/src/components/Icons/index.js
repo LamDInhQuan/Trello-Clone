@@ -22,6 +22,10 @@ import LockIcon from './LockIcon';
 import ErrorOutline from './ErrorOutline';
 import InfoOutline from './InfoOutlineIcon';
 import TickOutlineIcon from './TickOutlineIcon';
+import AccountIcon from './AccountIcon';
+import AddUserIcon from './AddUserIcon';
+import SettingIcon from './SettingIcon';
+import LogoutIcon from './LogoutIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -47,7 +51,11 @@ const Icons = {
     LockIcon,
     ErrorOutline,
     InfoOutline ,
-    TickOutlineIcon
+    TickOutlineIcon ,
+    AccountIcon ,
+    AddUserIcon ,
+    SettingIcon ,
+    LogoutIcon
 };
 
 export default Icons;

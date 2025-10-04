@@ -51,6 +51,7 @@ public class BoardController {
 
     @GetMapping("/getBoardAndColumnByIdBoard/{id}")
     public ApiResponse<Document> getListBoardAndColumn(@PathVariable String id) {
+        log.error("get board ");
         Document boardResponse = boardService.getBoardAndColumnByIdBoard(id);
         ApiResponse<Document> apiResponse = ApiResponse.<Document>builder().result(boardResponse).build();
         return apiResponse;

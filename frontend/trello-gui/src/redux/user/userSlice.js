@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios
 import { API_ROOT } from '~/utils/constants';
-import { generatePlaceHolderCard } from '~/utils/formatters';
-import { mapOrder } from '~/utils/sorts';
 
 // khởi tạo giá tri state của 1 slice trong redux
 const initialState = {
@@ -14,6 +13,14 @@ const initialState = {
 // đi kèm với extraReducers
 export const loginUserAPIRedux = createAsyncThunk('user/loginUserAPI', async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/login`, data);
+    return response.data;
+});
+
+export const logoutUserAPIRedux = createAsyncThunk('user/logoutUserAPI', async (showSuccesMessage = true) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/logout`);
+    if (showSuccesMessage) {
+        toast.success('Đăng xuất thành công!');
+    }
     return response.data;
 });
 
@@ -31,6 +38,9 @@ export const userSlice = createSlice({
             // xử lý dữ liệu nếu cần thiết ....
             // update lại dữ liệu của currentActiveBoard
             state.currentUser = user;
+        });
+        builder.addCase(logoutUserAPIRedux.fulfilled, (state, action) => {
+            state.currentUser = null;
         });
     },
 });

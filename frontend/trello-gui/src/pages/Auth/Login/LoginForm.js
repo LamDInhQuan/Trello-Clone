@@ -97,7 +97,7 @@ function LoginForm() {
                         </div>
                     )}
                     <InputSearch
-                        inputError={!!errors['email']}
+                        // inputError={!!errors['email']}
                         title={'Enter Email...'}
                         label_search_className={!!errors['email'] ? cx('labelSearchError') : cx('labelSearch')}
                         searchInput_className={errors['email'] && cx('searchInputError')}

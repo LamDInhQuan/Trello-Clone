@@ -23,15 +23,20 @@ import { PersistGate } from 'redux-persist/integration/react';
 // Đối tượng persistor được tạo ra từ persistStore.
 // Tham số: store → Redux store của bạn (do configureStore hoặc createStore tạo ra).
 // Chức năng:
-//   - Theo dõi store: Khi state thay đổi, tự động lưu các slice được whitelist vào 
+//   - Theo dõi store: Khi state thay đổi, tự động lưu các slice được whitelist vào
 //      storage (localStorage, sessionStorage, v.v.).
-//   - Khôi phục dữ liệu (rehydrate): Khi app reload, persistor đọc dữ liệu từ storage và 
+//   - Khôi phục dữ liệu (rehydrate): Khi app reload, persistor đọc dữ liệu từ storage và
 //      đưa vào store.
 //   - Cho phép thao tác thủ công: bạn có thể gọi persistor.flush() để ép lưu state ngay,
 //      hoặc persistor.purge() để xóa dữ liệu persist.
-// Lưu ý: persistStore phải nhận store đã được wrap bằng persistReducer nếu bạn muốn slice 
+// Lưu ý: persistStore phải nhận store đã được wrap bằng persistReducer nếu bạn muốn slice
 // được persist.
 import { persistStore } from 'redux-persist';
+
+// Kỹ thuật Inject Store : là kỹ thuật khi cần sử dụng biến redux store ở các file ngoài phạm vị
+// component
+import { injectStore } from './utils/authorizeAxios';
+injectStore(store);
 
 const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root'));

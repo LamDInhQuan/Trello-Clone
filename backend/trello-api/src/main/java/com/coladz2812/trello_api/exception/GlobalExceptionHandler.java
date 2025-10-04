@@ -1,17 +1,22 @@
 package com.coladz2812.trello_api.exception;
 
+
 import com.coladz2812.trello_api.filter.RequestContext;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
+import com.nimbusds.jose.JOSEException;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.*;
 
 @ControllerAdvice
@@ -125,4 +130,17 @@ public class GlobalExceptionHandler {
                 message(ex.getErrorCode().getMessageCode()).build();
         return ResponseEntity.status(ex.getErrorCode().getHttpStatusCode()).body(apiResponse);
     }
+
+    @ExceptionHandler({ ParseException.class, JOSEException.class, JwtException.class})
+    public ResponseEntity<ApiResponse> handleTokenExceptions(Exception ex) {
+        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessageCode())
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+    }
+
+
+
 }

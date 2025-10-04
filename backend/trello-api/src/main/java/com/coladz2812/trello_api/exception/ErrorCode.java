@@ -38,7 +38,11 @@ public enum ErrorCode {
     SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST) ,
     VERIFY_ACCOUNT_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST),
     TOKEN_IS_EXPIRED(4006,"Token đã hết hạn! Vui lòng refresh token!",HttpStatus.GONE) ,
-    DOMAIN_CORS_BLOCK(4007,"Domain này không có quyền truy cập!",HttpStatus.FORBIDDEN)
+    DOMAIN_CORS_BLOCK(4007,"Domain này không có quyền truy cập!",HttpStatus.FORBIDDEN) ,
+    UNAUTHENTICATED(4444,"Không thể xác thực!",HttpStatus.UNAUTHORIZED) ,
+    TOKEN_LOGOUT(4008,"Token đã bị logout!",HttpStatus.BAD_REQUEST),
+    COOKIE_NOT_FOUND(4009,"Không tìm thấy cookie!",HttpStatus.BAD_REQUEST) ,
+    TOKEN_REFRESH_IS_EXPIRED(4009,"Token Refresh đã hết hạn! Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED)
     ;
     ;
 

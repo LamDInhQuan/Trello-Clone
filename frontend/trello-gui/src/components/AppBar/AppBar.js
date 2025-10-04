@@ -13,15 +13,81 @@ import InputSearch from '../InputSearch';
 import { faAngleDown, faBell, faCircle, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
 import { Tooltip } from 'react-tooltip';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useConfirm } from 'material-ui-confirm';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUserAPIRedux, selectCurrentUser } from '~/redux/user/userSlice';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
 function AppBar() {
+    const dispatch = useDispatch();
+    const user = useSelector(selectCurrentUser);
+
     const [inputSearch, setInputSearch] = useState('');
     const setOnChangeInputSearch = (e) => {
         setInputSearch(e.target.value);
     };
+
+    const confirmDeleteColumn = useConfirm();
+    const handelLogout = () => {
+        // đóng dropdown
+        setMenuDropDownHide(true);
+
+        // clear focus khỏi button dropdown
+        document.activeElement?.blur();
+
+        // gọi confirm sau 1 tick để root kịp update
+        setTimeout(() => {
+            confirmDeleteColumn({
+                title: 'Log out your account?',
+                description: 'Are you sure ?',
+            })
+                .then(() => {
+                    console.log('hello');
+                    console.log(user.token);
+                    dispatch(logoutUserAPIRedux());
+                })
+                .catch(() => {});
+        }, 0);
+    };
+
+    const [overlay, setOverlay] = useState();
+    const [menuDropDownHide, setMenuDropDownHide] = useState(false);
+    useEffect(() => {
+        if (menuDropDownHide) {
+            // reset lại sau khi ép ẩn
+            setMenuDropDownHide(false);
+        }
+        if (overlay) {
+            // reset lại sau khi ép ẩn
+            setOverlay(false);
+        }
+    }, [menuDropDownHide, overlay]);
+    // custom hàm callback
+    const handelMenuClick = (callback) => () => {
+        if (callback) {
+            callback();
+        }
+        setMenuDropDownHide(true);
+    };
+
+    const menuAvatarItems = [
+        {
+            label: 'Profile',
+            icon: Icons.AccountIcon,
+            onClick: handelMenuClick(() => {}),
+        },
+        { label: 'My account', icon: Icons.AccountIcon, onClick: handelMenuClick(() => {}) },
+        { label: 'Add another account', icon: Icons.AddUserIcon, onClick: handelMenuClick(() => {}) },
+        { label: 'Settings', icon: Icons.SettingIcon, onClick: handelMenuClick(() => {}) },
+        {
+            label: 'Logout',
+            icon: Icons.LogoutIcon,
+            onClick: handelMenuClick(() => handelLogout()),
+        },
+    ];
 
     return (
         <>
@@ -40,7 +106,13 @@ function AppBar() {
                     <ButtonDropDownMenu rightIcon={<FontAwesomeIcon icon={faAngleDown} />}>
                         TEMPLATES
                     </ButtonDropDownMenu>
-                    <Button leftIcon={<Icons.CreateIcon className={cx('icon')} />} outline onClick={() => {alert(inputSearch)}}>
+                    <Button
+                        leftIcon={<Icons.CreateIcon className={cx('icon')} />}
+                        outline
+                        onClick={() => {
+                            alert(inputSearch);
+                        }}
+                    >
                         Create
                     </Button>
                 </div>
@@ -61,6 +133,12 @@ function AppBar() {
                         imgSrc={
                             '//yt3.ggpht.com/6A2OSDRZX3MEGnXz18r6vCr3RjTXuGRHb3fLaYO9LaGmahqEv--apCBj1Gv3FaVAon_5cRJIH-U=s88-c-k-c0x00fff'
                         }
+                        menuItems={menuAvatarItems}
+                        deleteOnClick={handelLogout}
+                        hideFromParent={menuDropDownHide}
+                        onClickMenu={(isOpen) => {
+                            setOverlay(isOpen);
+                        }}
                     ></ButtonDropDownMenu>
                 </div>
             </div>
