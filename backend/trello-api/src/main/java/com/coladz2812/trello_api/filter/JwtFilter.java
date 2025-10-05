@@ -60,13 +60,13 @@ public class JwtFilter extends OncePerRequestFilter {
 //            log.error("accesToken : " + accesToken);
             try {
                 var jwt = customJwtDecoder.decode(accessToken);
-                var username = jwt.getClaimAsString("email");
+                var id = jwt.getClaimAsString("sub");
                 var authorities = List.of(); // hoặc lấy ROLE từ claim nếu có
                 // Đây là một implementation của Authentication trong Spring Security, đại diện cho thông tin đăng nhập của user.
                 //  principal: thông tin user, thường là UserDetails hoặc username.
                 //  credentials: password hoặc null nếu đã xác thực.
                 //  authorities: danh sách quyền hạn (ROLE_USER, ROLE_ADMIN).
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, List.of());
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(id, null, List.of());
 
                 // SecurityContextHolder Là lớp trung tâm trong Spring Security, dùng để lưu trữ thông tin bảo mật của request hiện tại.
                 // Nói cách khác, đây là nơi Spring Security biết request này đã đăng nhập chưa, user nào, quyền gì.

@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 const InputSearch = forwardRef(
     (
         {
+            leftIcon = false,
             title,
             label_search_className,
             searchInput_className,
@@ -27,12 +28,14 @@ const InputSearch = forwardRef(
 
         return (
             <div className={cx('wrapper')}>
+                {leftIcon && <span className={cx('left-icon')}>{leftIcon}</span>}
                 <input
                     type={typeInput}
                     // phần tử css trong obj đứng sau vẫn ghi đè phần tử css đứng trước nếu cả 2 thỏa mãn
                     className={cx('searchInput', searchInput_className, {
                         hasValueInInput: !hasValue && valueInput !== '',
-                        hasValue: hasValue
+                        hasValue: hasValue,
+                        marginLeft : leftIcon
                     })}
                     ref={ref} // ✅ rất quan trọng
                     {...rest}

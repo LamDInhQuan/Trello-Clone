@@ -1,0 +1,43 @@
+.tab {
+    margin-top: 10px;
+    display: flex;
+}
+.tab-button {
+    display: flex;
+    border-bottom: 2px solid #9ccbcc;
+    width: 100%;
+}
+.tab-icon {
+    width: 23px;
+    height: 23px;
+    color: #6c6875;
+}
+.button {
+    color: #6c6875;
+    border-radius: 0%;
+    padding-bottom: 8px;
+    transform: translateY(1px);
+    position: relative;
+    transition: color 0.3s ease;
+}
+.button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 1px;
+    background-color: #499e98;
+    transition: width 0.3s ease;
+}
+// active button
+.activeItem {
+    color: #499e98;
+}
+.activeButton {
+    color: #499e98;
+    border-bottom: 2px solid #499e98;
+}
+.button.activeButton::after {
+    width: 100%;
+}

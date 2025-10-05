@@ -26,6 +26,14 @@ import AccountIcon from './AccountIcon';
 import AddUserIcon from './AddUserIcon';
 import SettingIcon from './SettingIcon';
 import LogoutIcon from './LogoutIcon';
+import UserIcon from './UserIcon';
+import SecurityIcon from './SecurityIcon';
+import CloudUploadIcon from './CloudUploadIcon';
+import MailIcon from './MailIcon';
+import ContactUserIcon from './ContactUserIcon';
+import ContactUserIcon2 from './ContactUserIcon2';
+import PasswordIcon from './PasswordIcon';
+import LockResetIcon from './LockResetIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -50,12 +58,20 @@ const Icons = {
     CloseIcon,
     LockIcon,
     ErrorOutline,
-    InfoOutline ,
-    TickOutlineIcon ,
-    AccountIcon ,
-    AddUserIcon ,
-    SettingIcon ,
-    LogoutIcon
+    InfoOutline,
+    TickOutlineIcon,
+    AccountIcon,
+    AddUserIcon,
+    SettingIcon,
+    LogoutIcon,
+    UserIcon,
+    SecurityIcon,
+    CloudUploadIcon,
+    MailIcon,
+    ContactUserIcon,
+    ContactUserIcon2,
+    PasswordIcon ,
+    LockResetIcon
 };
 
 export default Icons;

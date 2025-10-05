@@ -36,5 +36,5 @@ brevo:
 jwt :
   signerKeyAccess : ${SIGNER_KEY_ACCESS}
   signerKeyRefresh : ${SIGNER_KEY_REFRESH}
-  valid-duration : 20 # in second thơig gian có hiệu lực cùa token
-  refreshable-duration : 60 #in second thời gian có thể làm mới token
+  valid-duration : 3600 # in second thơig gian có hiệu lực cùa token
+  refreshable-duration : 7200 #in second thời gian có thể làm mới token

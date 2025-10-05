@@ -97,6 +97,7 @@ function ButtonDropDownMenu({
                                   key={key}
                                   leftIcon={<Icon className={cx3('icon')} />}
                                   onClick={item.onClick}
+                                  link = {item.link}
                               >
                                   {item.label}
                               </MenuDropDownCustomItem>

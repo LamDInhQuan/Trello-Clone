@@ -28,6 +28,7 @@ body {
     font-size: 1rem;
     text-rendering: optimizeSpeed;
     overflow-x: hidden;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
 button,
@@ -92,3 +93,4 @@ html *::-webkit-scrollbar-track {
 #root[aria-hidden='true'] {
     aria-hidden: false !important;
 }
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');

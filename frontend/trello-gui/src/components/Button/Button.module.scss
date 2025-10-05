@@ -1,5 +1,5 @@
 .wrapper {
-    min-width: 20px;
+    min-width: 40px;
     padding: 4px 13px;
     font-weight: 600;
     border-radius: 4px;
@@ -12,9 +12,10 @@
     + .wrapper {
         margin-left: 10px;
     }
+    width: fit-content;
 }
 .wrapper:hover {
-  cursor: pointer; /* đổi thành con trỏ bàn tay */
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
 }
 
 // css khi avatar group = 0
@@ -49,4 +50,13 @@
     }
     font-weight: 500;
     color: var(--color-green);
+}
+// css input file
+.hidden-input {
+    display: none;
+}
+.button-wrapper {
+    display: flex;
+    width: fit-content;
+    white-space: nowrap;
 }

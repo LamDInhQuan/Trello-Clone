@@ -23,7 +23,14 @@ export const logoutUserAPIRedux = createAsyncThunk('user/logoutUserAPI', async (
     }
     return response.data;
 });
-
+export const updateInfoUserAPIRedux = createAsyncThunk('user/updateInfoUserAPI', async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/user/updateInfo`,data);
+    return response.data;
+});
+export const updatePasswordUserAPIRedux = createAsyncThunk('user/updatePasswordUserAPI', async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/user/updatePassword`,data);
+    return response.data;
+});
 // khởi tạo một cái slice trong kho lưu trữ - redux store
 export const userSlice = createSlice({
     name: 'user',
@@ -41,6 +48,14 @@ export const userSlice = createSlice({
         });
         builder.addCase(logoutUserAPIRedux.fulfilled, (state, action) => {
             state.currentUser = null;
+        });
+        builder.addCase(updateInfoUserAPIRedux.fulfilled, (state, action) => {
+            const user = action.payload.result;
+            state.currentUser = user;
+        });
+        builder.addCase(updatePasswordUserAPIRedux.fulfilled, (state, action) => {
+            const user = action.payload.result;
+            state.currentUser = user;
         });
     },
 });

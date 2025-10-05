@@ -67,6 +67,7 @@
     margin-left: 20px;
     color: white;
     cursor: pointer;
+    font-family: 'Times New Roman', Times, serif;
 }
 .list-card {
     width: 100%;
@@ -136,6 +137,7 @@
     }
     margin-left: 10px;
     height: 32px;
+     white-space: nowrap; // 👉 KHÔNG CHO XUỐNG DÒNG
 }
 .button-add:hover {
     background-color: #5bb7ae;

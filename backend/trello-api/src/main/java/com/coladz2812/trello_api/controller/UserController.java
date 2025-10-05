@@ -1,6 +1,9 @@
 package com.coladz2812.trello_api.controller;
 
+import com.coladz2812.trello_api.classValidation.UserUpdateInfo;
+import com.coladz2812.trello_api.classValidation.UserUpdatePassword;
 import com.coladz2812.trello_api.dto.request.UserRequest;
+import com.coladz2812.trello_api.dto.request.UserRequestUpdate;
 import com.coladz2812.trello_api.dto.request.VerifyTokenRequest;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.UserResponse;
@@ -18,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -72,26 +77,29 @@ public class UserController {
         ApiResponse<VerifyTokenResponse> apiResponse = ApiResponse.<VerifyTokenResponse>builder().result(response).build();
         return apiResponse;
     }
+
     @PostMapping("/verifyTokenRefresh")
     public ApiResponse<VerifyTokenResponse> verifyTokenRefresh(@RequestBody VerifyTokenRequest request) throws ParseException, JOSEException {
         var response = userService.verifyTokenResponse2(request.getToken());
         ApiResponse<VerifyTokenResponse> apiResponse = ApiResponse.<VerifyTokenResponse>builder().result(response).build();
         return apiResponse;
     }
-        @PostMapping("/logout")
-        public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
-            Cookie cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
-                    .filter(e -> "accessToken".equals(e.getName())).findFirst().orElse(null);
-            if (cookie == null || cookie.getValue().isBlank()) {
-                throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
-            }
-            String token = cookie.getValue();
-            userService.logout(httpServletResponse, token);
-            ApiResponse<String> apiResponse = ApiResponse.<String>builder().result("Đăng xuất thành công!").build();
 
-
-            return apiResponse;
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
+        Cookie cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                .filter(e -> "accessToken".equals(e.getName())).findFirst().orElse(null);
+        if (cookie == null || cookie.getValue().isBlank()) {
+            throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
         }
+        String token = cookie.getValue();
+        userService.logout(httpServletResponse, token);
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder().result("Đăng xuất thành công!").build();
+
+
+        return apiResponse;
+    }
+
     @PostMapping("/refresh")
     public ApiResponse<String> refresh(HttpServletRequest request, HttpServletResponse response) throws ParseException, JOSEException {
         Cookie cookieAccessToken = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
@@ -106,8 +114,30 @@ public class UserController {
         }
         String tokenAccess = cookieAccessToken.getValue();
         String tokenRefresh = cookieRefreshToken.getValue();
-        String refreshTokenResponse = userService.refreshToken(response,tokenAccess,tokenRefresh);
+        String refreshTokenResponse = userService.refreshToken(response, tokenAccess, tokenRefresh);
         ApiResponse<String> apiResponse = ApiResponse.<String>builder().result(refreshTokenResponse).build();
         return apiResponse;
     }
+
+
+    @PutMapping("/updateInfo")
+    public ApiResponse<UserResponse> updateInfoUser(
+            Authentication authentication,
+            @Validated(UserUpdateInfo.class) @RequestBody UserRequestUpdate request) {
+        String id = authentication.getPrincipal().toString();
+        var response = userService.updateInfoUser(id, request);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(response).build();
+        return apiResponse;
+    }
+
+    @PutMapping("/updatePassword")
+    public ApiResponse<UserResponse> updatePassword(
+            Authentication authentication,
+            @Validated(UserUpdatePassword.class) @RequestBody UserRequestUpdate request) {
+        String id = authentication.getPrincipal().toString();
+        var response = userService.updateInfoUser(id, request);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(response).build();
+        return apiResponse;
+    }
+
 }

@@ -42,7 +42,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(4444,"Không thể xác thực!",HttpStatus.UNAUTHORIZED) ,
     TOKEN_LOGOUT(4008,"Token đã bị logout!",HttpStatus.BAD_REQUEST),
     COOKIE_NOT_FOUND(4009,"Không tìm thấy cookie!",HttpStatus.BAD_REQUEST) ,
-    TOKEN_REFRESH_IS_EXPIRED(4009,"Token Refresh đã hết hạn! Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED)
+    TOKEN_REFRESH_IS_EXPIRED(4009,"Token Refresh đã hết hạn! Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED),
+    CURRENT_PASSWORD_NOT_VALID(1027,"Password hiện tại không đúng",HttpStatus.BAD_REQUEST),
+    DISPLAY_NAME_NOT_NULL(1028,"Tên hiển thị không được để trống",HttpStatus.BAD_REQUEST),
     ;
     ;
 

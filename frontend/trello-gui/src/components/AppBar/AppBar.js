@@ -18,6 +18,7 @@ import { useConfirm } from 'material-ui-confirm';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAPIRedux, selectCurrentUser } from '~/redux/user/userSlice';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -45,8 +46,6 @@ function AppBar() {
                 description: 'Are you sure ?',
             })
                 .then(() => {
-                    console.log('hello');
-                    console.log(user.token);
                     dispatch(logoutUserAPIRedux());
                 })
                 .catch(() => {});
@@ -81,7 +80,7 @@ function AppBar() {
         },
         { label: 'My account', icon: Icons.AccountIcon, onClick: handelMenuClick(() => {}) },
         { label: 'Add another account', icon: Icons.AddUserIcon, onClick: handelMenuClick(() => {}) },
-        { label: 'Settings', icon: Icons.SettingIcon, onClick: handelMenuClick(() => {}) },
+        { label: 'Settings', icon: Icons.SettingIcon, onClick: handelMenuClick(() => {}), link: '/settings/account' },
         {
             label: 'Logout',
             icon: Icons.LogoutIcon,
@@ -94,10 +93,12 @@ function AppBar() {
             <div className={cx('wrapper')}>
                 <div className={cx('box')}>
                     <Icons.MenuBarIcon className={cx('menuBar-Icon')} />
-                    <div className={cx('logo-and-name')}>
-                        <Icons.TrelloIcon className={cx('trelloLogo-Icon')} />
-                        <h4 className={cx('logo-name')}>Trello</h4>
-                    </div>
+                    <Link to={"/"}>
+                        <div className={cx('logo-and-name')}>
+                            <Icons.TrelloIcon className={cx('trelloLogo-Icon')} />
+                            <h4 className={cx('logo-name')}>Trello</h4>
+                        </div>
+                    </Link>
                     <ButtonDropDownMenu rightIcon={<FontAwesomeIcon icon={faAngleDown} />}>
                         WORKSPACES
                     </ButtonDropDownMenu>

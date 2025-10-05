@@ -2,6 +2,7 @@ package com.coladz2812.trello_api.service;
 
 import com.coladz2812.trello_api.dto.request.EmailRequest;
 import com.coladz2812.trello_api.dto.request.UserRequest;
+import com.coladz2812.trello_api.dto.request.UserRequestUpdate;
 import com.coladz2812.trello_api.dto.response.UserResponse;
 import com.coladz2812.trello_api.dto.response.VerifyTokenResponse;
 import com.coladz2812.trello_api.exception.AppException;
@@ -140,19 +141,19 @@ public class UserService {
         }
 
         // đăng nhập thành công thì tạo token
-        String accessToken = generateToken(user.getId(), user.getEmail(), signerKeyAccess ,durationAccess);
+        String accessToken = generateToken(user.getId(), user.getEmail(), signerKeyAccess, durationAccess);
         // thêm token vào cookie
         generateCookie(response, "accessToken", accessToken, 14);
 
         // cookie refresh token
-        String refreshToken = generateToken(user.getId(), user.getEmail(), signerKeyRefresh,durationRefresh);
+        String refreshToken = generateToken(user.getId(), user.getEmail(), signerKeyRefresh, durationRefresh);
         generateCookie(response, "refreshToken", refreshToken, 14);
         var userResponse = userMapper.toUserResponse(user);
         var loginResponse = new LoginResponse(accessToken, refreshToken, userResponse);
         return loginResponse;
     }
 
-    public String generateToken(String id, String email, String singerKey,long duration) {
+    public String generateToken(String id, String email, String singerKey, long duration) {
         // tạo header
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         // tạo payload
@@ -206,14 +207,14 @@ public class UserService {
     public VerifyTokenResponse verifyTokenResponse(String token) throws ParseException, JOSEException, JwtException {
         boolean isValid = true;
         try {
-            var jwtToken = verifyTokenAccess(token,true);
+            var jwtToken = verifyTokenAccess(token, true);
         } catch (AppException e) {
             isValid = false;
         }
         return new VerifyTokenResponse().builder().valid(isValid).build();
     }
 
-    public SignedJWT verifyTokenAccess(String token , boolean checkExpireTime) throws JOSEException, ParseException {
+    public SignedJWT verifyTokenAccess(String token, boolean checkExpireTime) throws JOSEException, ParseException {
         JWSVerifier jwsVerifier = new MACVerifier(signerKeyAccess.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token); // parse token thành đối tượng jwt
         Date dateExpire = signedJWT.getJWTClaimsSet().getExpirationTime();
@@ -238,7 +239,7 @@ public class UserService {
 //        log.error("Logout");
         // delete cookie
         deleteCookie(response, "accessToken");
-        var jwt = verifyTokenAccess(token,false);
+        var jwt = verifyTokenAccess(token, false);
         InvalidatedToken invalidatedToken = new InvalidatedToken().builder()
                 .id(jwt.getJWTClaimsSet().getJWTID())
                 .expiryTime(jwt.getJWTClaimsSet().getExpirationTime()).build();
@@ -275,18 +276,44 @@ public class UserService {
         }
         return new VerifyTokenResponse().builder().valid(isValid).build();
     }
+
     public String refreshToken(HttpServletResponse response, String accessToken
-            , String refreshToken ) throws ParseException, JOSEException {
+            , String refreshToken) throws ParseException, JOSEException {
         var verifyTokenRefresh = verifyTokenRefresh(refreshToken);
-        var verifyTokenAccess = verifyTokenAccess(accessToken,false);
+        var verifyTokenAccess = verifyTokenAccess(accessToken, false);
         var invalidToken = InvalidatedToken.builder()
                 .id(verifyTokenAccess.getJWTClaimsSet().getJWTID())
                 .expiryTime(verifyTokenAccess.getJWTClaimsSet().getExpirationTime()).build();
         invalidatedTokenRepository.save(invalidToken);
 
         String accessTokenJWT = generateToken(verifyTokenAccess.getJWTClaimsSet().getSubject()
-                , verifyTokenAccess.getJWTClaimsSet().getStringClaim("email"), signerKeyAccess,durationAccess);
+                , verifyTokenAccess.getJWTClaimsSet().getStringClaim("email"), signerKeyAccess, durationAccess);
         generateCookie(response, "accessToken", accessTokenJWT, 14);
         return accessTokenJWT;
+    }
+
+    public UserResponse updateInfoUser(String id, UserRequestUpdate request) {
+        // check lỗi không đúng email
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
+        });
+        // check lỗi tài khoản email chưa được xác thực
+        if (!user.getIsActive()) {
+            throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE);
+        }
+        //        log.error("request : "+request.toString());
+        // update info
+        if (request.getCurrentPassword() != null && request.getNewPassword() != null) {
+            // check lỗi password không đúng
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+                throw new AppException(ErrorCode.CURRENT_PASSWORD_NOT_VALID);
+            }
+//            log.error("new getNewPassword() : "+request.getNewPassword());
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        } else if (!request.getDisplayName().isEmpty() && request.getDisplayName() != null) {
+//            log.error("new displayname : "+request.getDisplayName());
+            user.setDisplayName(request.getDisplayName());
+        }
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 }

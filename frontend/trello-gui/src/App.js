@@ -7,9 +7,10 @@ import NotFound from './pages/404';
 import Auth from './pages/Auth';
 import AccountVerification from './pages/Auth/AccountVerification';
 import { selectCurrentUser } from '~/redux/user/userSlice';
+import Settings from './pages/Settings';
 
-// Giải pháp clean code trong việc xác định route nào cần được truy cập khi đã đăng nhập tài khoản 
-// thành công - Sử dụng <Outlet /> để hiển thị các child route 
+// Giải pháp clean code trong việc xác định route nào cần được truy cập khi đã đăng nhập tài khoản
+// thành công - Sử dụng <Outlet /> để hiển thị các child route
 const ProtectedRoute = ({ user }) => {
     if (!user) return <Navigate to={'/login'} replace={true} />;
     return <Outlet />;
@@ -31,12 +32,15 @@ function App() {
                     <Navigate to="/boards/68af4b814b6913bb70d835bb" replace={true} />
                 }
             />
-             {/* ProtectedRoute hiểu đơn giản là trong dự án của chúng ta sẽ có những route chỉ 
+            {/* ProtectedRoute hiểu đơn giản là trong dự án của chúng ta sẽ có những route chỉ 
              được truy cập khi user đã login  */}
-            <Route element={<ProtectedRoute user={currentUser}/>}>
-            {/* <Outlet /> của React-router-dom sẽ chạy vào các child route trong này */}
+            <Route element={<ProtectedRoute user={currentUser} />}>
+                {/* <Outlet /> của React-router-dom sẽ chạy vào các child route trong này */}
                 {/* Board Details  */}
                 <Route path="/boards/:boardId" element={<Board />} />
+                {/* User Settings   */}
+                <Route path="/settings/account" element={<Settings />}></Route>
+                <Route path="/settings/security" element={<Settings />}></Route>
             </Route>
             {/* Authentication  */}
             <Route path="/login" element={<Auth />} />

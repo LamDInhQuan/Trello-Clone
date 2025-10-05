@@ -1,6 +1,11 @@
 .wrapper {
     position: relative;
 }
+.left-icon {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+}
 .label-search {
     position: absolute;
     z-index: 999;
@@ -51,4 +56,7 @@
     font-size: 12px;
     font-weight: 600;
     transform: translateY(0) scale(1);
+}
+.marginLeft {
+    padding-left: 37px;
 }
