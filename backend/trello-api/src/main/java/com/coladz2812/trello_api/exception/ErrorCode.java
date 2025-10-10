@@ -45,6 +45,10 @@ public enum ErrorCode {
     TOKEN_REFRESH_IS_EXPIRED(4009,"Token Refresh đã hết hạn! Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED),
     CURRENT_PASSWORD_NOT_VALID(1027,"Password hiện tại không đúng",HttpStatus.BAD_REQUEST),
     DISPLAY_NAME_NOT_NULL(1028,"Tên hiển thị không được để trống",HttpStatus.BAD_REQUEST),
+    IMAGE_MAX_FILE(4010,"Kích thước ảnh quá lớn",HttpStatus.BAD_REQUEST),
+    IMAGE_NOT_VALID(4011,"Thuộc tính file không hợp lệ! Chỉ chấp nhận jpg, jpeg và png",HttpStatus.BAD_REQUEST),
+    MAX_FILE(4012,"Kích thước file qúa lớn!",HttpStatus.BAD_REQUEST),
+    UPLOAD_AVATAR_FAILED(4013,"Upload avatar thất bại!",HttpStatus.BAD_REQUEST)
     ;
     ;
 

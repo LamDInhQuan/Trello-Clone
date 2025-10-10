@@ -2,6 +2,7 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from './InputSearch.module.scss';
 import classNames from 'classnames/bind';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 // src
 
@@ -10,6 +11,7 @@ const cx = classNames.bind(styles);
 const InputSearch = forwardRef(
     (
         {
+            noValueInPlaceHolder = false,
             leftIcon = false,
             title,
             label_search_className,
@@ -35,7 +37,7 @@ const InputSearch = forwardRef(
                     className={cx('searchInput', searchInput_className, {
                         hasValueInInput: !hasValue && valueInput !== '',
                         hasValue: hasValue,
-                        marginLeft : leftIcon
+                        marginLeft: leftIcon,
                     })}
                     ref={ref} // ✅ rất quan trọng
                     {...rest}
@@ -45,7 +47,7 @@ const InputSearch = forwardRef(
                     onBlur={() => {
                         setPlaceholder(title);
                     }}
-                    placeholder={placeholder}
+                    placeholder={noValueInPlaceHolder ? '' : placeholder}
                     autoFocus={autoFocus}
                     value={valueInput}
                 />

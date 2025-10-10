@@ -31,6 +31,10 @@ export const updatePasswordUserAPIRedux = createAsyncThunk('user/updatePasswordU
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/user/updatePassword`,data);
     return response.data;
 });
+export const uploadAvatarUserAPIRedux = createAsyncThunk('user/uploadAvatarUserAPI', async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/user/uploadAvatarUser`,data);
+    return response.data;
+});
 // khởi tạo một cái slice trong kho lưu trữ - redux store
 export const userSlice = createSlice({
     name: 'user',
@@ -54,6 +58,10 @@ export const userSlice = createSlice({
             state.currentUser = user;
         });
         builder.addCase(updatePasswordUserAPIRedux.fulfilled, (state, action) => {
+            const user = action.payload.result;
+            state.currentUser = user;
+        });
+        builder.addCase(uploadAvatarUserAPIRedux.fulfilled, (state, action) => {
             const user = action.payload.result;
             state.currentUser = user;
         });

@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 
 function Button(
     {
+        onChangeFile = false,
         inputFile = false,
         children,
         leftIcon = false,
@@ -51,7 +52,7 @@ function Button(
     const classes = cx('wrapper', { outline, [className]: className, chipHover, avatarGroup });
     return (
         <div className={cx('button-wrapper')}>
-            {inputFile && <input type="file" className={cx('hidden-input')} ref={fileRef} />}
+            {inputFile && <input type="file" className={cx('hidden-input')} ref={fileRef} onChange={onChangeFile} />}
             <button className={classes} ref={ref} onClick={inputFile ? handleClick : onClick} {...props}>
                 {leftIcon && <span className={cx('left-icon', padding)}>{leftIcon}</span>}
                 {children}

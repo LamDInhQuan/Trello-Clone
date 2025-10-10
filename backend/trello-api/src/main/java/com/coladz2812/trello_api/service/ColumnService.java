@@ -40,7 +40,7 @@ public class ColumnService {
 
     // @Transactional là annotation trong Spring dùng để quản lý transaction (giao dịch) cho các thao tác với cơ sở dữ liệu.
     //
-    //Nói một cách dễ hiểu: nó đảm bảo rằng tất cả các thao tác trong một phương thức được thực hiện “cùng nhau”.
+    // Nói một cách dễ hiểu: nó đảm bảo rằng tất cả các thao tác trong một phương thức được thực hiện “cùng nhau”.
     // Nếu có bước nào thất bại, toàn bộ các thay đổi trước đó sẽ bị rollback (khôi phục), để database không bị
     // trạng thái “một nửa”.
     @Transactional

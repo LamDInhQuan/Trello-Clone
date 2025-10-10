@@ -87,13 +87,15 @@ function AppBar() {
             onClick: handelMenuClick(() => handelLogout()),
         },
     ];
-
+    // console.log(user);
     return (
         <>
             <div className={cx('wrapper')}>
                 <div className={cx('box')}>
-                    <Icons.MenuBarIcon className={cx('menuBar-Icon')} />
-                    <Link to={"/"}>
+                    <Link to={'/boards'}>
+                        <Icons.MenuBarIcon className={cx('menuBar-Icon')} />
+                    </Link>
+                    <Link to={'/'}>
                         <div className={cx('logo-and-name')}>
                             <Icons.TrelloIcon className={cx('trelloLogo-Icon')} />
                             <h4 className={cx('logo-name')}>Trello</h4>
@@ -132,7 +134,9 @@ function AppBar() {
                     </Tippy>
                     <ButtonDropDownMenu
                         imgSrc={
-                            '//yt3.ggpht.com/6A2OSDRZX3MEGnXz18r6vCr3RjTXuGRHb3fLaYO9LaGmahqEv--apCBj1Gv3FaVAon_5cRJIH-U=s88-c-k-c0x00fff'
+                            user?.avatar ||
+                            user?.user?.avatar ||
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa7tBFCEp6gP1NhOcGkP1xrcJOkfkhLVCXOA&s'
                         }
                         menuItems={menuAvatarItems}
                         deleteOnClick={handelLogout}

@@ -34,6 +34,17 @@ import ContactUserIcon from './ContactUserIcon';
 import ContactUserIcon2 from './ContactUserIcon2';
 import PasswordIcon from './PasswordIcon';
 import LockResetIcon from './LockResetIcon';
+import BoardsIcon from './BoardsIcon';
+import TemplateIcon from './TemplateIcon';
+import HomeIcon from './HomeIcon';
+import ArrowRightIcon from './ArrowRightIcon';
+import ArrowRight2Icon from './ArrowRight2Icon';
+import ArrowLastRightIcon from './ArrowLastRightIcon';
+import ArrowLeftI2Icon from './ArrowLeftI2Icon';
+import ArrowLastLeftIcon from './ArrowLastLeftIcon';
+import CloseBorderIcon from './CloseBorderIcon';
+import ABCCharacterIcon from './ABCCharacterIcon';
+import DescriptionIcon from './DescriptionIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -71,7 +82,18 @@ const Icons = {
     ContactUserIcon,
     ContactUserIcon2,
     PasswordIcon ,
-    LockResetIcon
+    LockResetIcon ,
+    BoardsIcon ,
+    TemplateIcon ,
+    HomeIcon ,
+    ArrowRightIcon ,
+    ArrowRight2Icon , 
+    ArrowLastRightIcon ,
+    ArrowLeftI2Icon ,
+    ArrowLastLeftIcon ,
+    CloseBorderIcon ,
+    ABCCharacterIcon ,
+    DescriptionIcon
 };
 
 export default Icons;

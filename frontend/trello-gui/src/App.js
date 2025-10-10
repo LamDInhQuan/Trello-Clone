@@ -2,12 +2,13 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import logo from './logo.svg';
-import Board from '~/pages/Boards';
+import Boards from '~/pages/Boards';
 import NotFound from './pages/404';
 import Auth from './pages/Auth';
 import AccountVerification from './pages/Auth/AccountVerification';
 import { selectCurrentUser } from '~/redux/user/userSlice';
 import Settings from './pages/Settings';
+import Board from './pages/Boards/_id';
 
 // Giải pháp clean code trong việc xác định route nào cần được truy cập khi đã đăng nhập tài khoản
 // thành công - Sử dụng <Outlet /> để hiển thị các child route
@@ -37,6 +38,7 @@ function App() {
             <Route element={<ProtectedRoute user={currentUser} />}>
                 {/* <Outlet /> của React-router-dom sẽ chạy vào các child route trong này */}
                 {/* Board Details  */}
+                 <Route path="/boards" element={<Boards />} />
                 <Route path="/boards/:boardId" element={<Board />} />
                 {/* User Settings   */}
                 <Route path="/settings/account" element={<Settings />}></Route>

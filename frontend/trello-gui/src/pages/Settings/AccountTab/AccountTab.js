@@ -14,8 +14,8 @@ import ContactUserIcon from '~/components/Icons/ContactUserIcon';
 import ContactUserIcon2 from '~/components/Icons/ContactUserIcon2';
 import MailIcon from '~/components/Icons/MailIcon';
 import { useForm } from 'react-hook-form';
-import { FIELD_REQUIRED_MESSAGE } from '~/utils/validators';
-import { selectCurrentUser, updateInfoUserAPIRedux } from '~/redux/user/userSlice';
+import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from '~/utils/validators';
+import { selectCurrentUser, updateInfoUserAPIRedux, uploadAvatarUserAPIRedux } from '~/redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import FieldErrorAlert from '~/components/FieldErrorAlert';
 import { toast } from 'react-toastify';
@@ -29,7 +29,6 @@ function AccountTab() {
     // Nhờ useForm, bạn không cần useState cho từng ô input nữa → code ngắn gọn, performance cao.
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
-    console.log(user);
     const initialGeneralForm = {
         displayName: user?.displayName || user?.user?.displayName,
         username: user?.username || user?.user?.username,
@@ -64,15 +63,55 @@ function AccountTab() {
                 .catch();
         }
     };
+    const uploadAvatar = (e) => {
+        console.log(e.target.files[0]);
+        const error = singleFileValidator(e.target.files[0]);
+        if (error) {
+            toast.error(error);
+            return;
+        }
+        // sử dụng FormData để xử lý dữ liệu liên quan tới file khi gọi API
+        // FormData là đối tượng có sẵn trong JavaScript (built-in API của trình duyệt), dùng để
+        //  tạo ra một “form ảo” chứa các cặp key–value tương tự như form HTML gửi lên server.
+        let reqData = new FormData();
+        reqData.append('avatar', e.target.files[0]);
+        // Cách để log được dữ liệu thông qua FormData
+        console.log('reqData', reqData); // ko log dc luôn
+        for (const value of reqData.values()) {
+            console.log('reqData Value ', value);
+        }
+
+        // gọi API
+        toast
+            .promise(dispatch(uploadAvatarUserAPIRedux(reqData)), {
+                pending: 'Updating...',
+            })
+            .then((res) => {
+                // kiểm tra đăng nhập không có lỗi điều hướng về route ("/")
+                // console.log(res);
+
+                // Lưu ý dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input , nếu không
+                // thì sẽ không thể chọn cùng một file liên tiếp được
+                if (!res.error) {
+                    toast.success('Update user successfully');
+                }
+                e.target.value = '';
+            })
+            .catch();
+    };
     return (
         <form onSubmit={handleSubmit(submitUpdateUsername)}>
             <div className={cx('wrapper')}>
                 <div className={cx('account')}>
                     <div className={cx('set-avatar')}>
                         <div className={cx('avatar-user')}>
-                            <span>
-                                <UserIcon className={cx('user-icon')} />
-                            </span>
+                            {user?.avatar || user?.user?.avatar ? (
+                                <img src={user?.avatar || user?.user?.avatar} className={cx('user-icon2')} />
+                            ) : (
+                                <span>
+                                    <UserIcon className={cx('user-icon')} />
+                                </span>
+                            )}
                             <div className={cx('user-name')}>
                                 <p>{initialGeneralForm.displayName}</p>
                                 <p>@{initialGeneralForm.username}</p>
@@ -82,6 +121,7 @@ function AccountTab() {
                             inputFile={true}
                             leftIcon={<CloudUploadIcon className={cx('icon-upload')} />}
                             className={cx('button-upload')}
+                            onChangeFile={uploadAvatar}
                         >
                             Upload
                         </Button>

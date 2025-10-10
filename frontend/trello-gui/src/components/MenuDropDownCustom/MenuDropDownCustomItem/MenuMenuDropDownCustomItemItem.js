@@ -9,9 +9,16 @@ import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function MenuDropDownCustomItem({ children, leftIcon, onClick, link }) {
+function MenuDropDownCustomItem({
+    children,
+    leftIcon,
+    onClick,
+    link,
+    classNameWrapper = false,
+    classNameItem = false,
+}) {
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',classNameWrapper)}>
             {link ? (
                 <Link to={link}>
                     <Button className={cx('buttonItem')} leftIcon={leftIcon} onClick={onClick}>
@@ -19,7 +26,7 @@ function MenuDropDownCustomItem({ children, leftIcon, onClick, link }) {
                     </Button>
                 </Link>
             ) : (
-                <Button className={cx('buttonItem')} leftIcon={leftIcon} onClick={onClick}>
+                <Button className={cx('buttonItem', classNameItem)} leftIcon={leftIcon} onClick={onClick}>
                     <span className={cx('buttonLabel')}>{children}</span>
                 </Button>
             )}

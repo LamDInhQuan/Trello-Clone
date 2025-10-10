@@ -1,5 +1,5 @@
 //thuư viện ngoài
-import styles from './Board.module.scss';
+import styles from './_id.module.scss';
 import classNames from 'classnames/bind';
 
 // src

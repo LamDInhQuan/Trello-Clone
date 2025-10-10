@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -131,6 +132,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getErrorCode().getHttpStatusCode()).body(apiResponse);
     }
 
+    // lỗi jwt
     @ExceptionHandler({ ParseException.class, JOSEException.class, JwtException.class})
     public ResponseEntity<ApiResponse> handleTokenExceptions(Exception ex) {
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
@@ -141,6 +143,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
-
+    // lỗi kích thước file quá lớn
+    @ExceptionHandler({ MaxUploadSizeExceededException.class})
+    public ResponseEntity<ApiResponse> handleMaxUploadSizeExceptions(MaxUploadSizeExceededException ex) {
+        ErrorCode errorCode = ErrorCode.MAX_FILE;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessageCode())
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+    }
 
 }

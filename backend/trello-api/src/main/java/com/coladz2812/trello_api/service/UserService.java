@@ -1,5 +1,6 @@
 package com.coladz2812.trello_api.service;
 
+import com.cloudinary.Cloudinary;
 import com.coladz2812.trello_api.dto.request.EmailRequest;
 import com.coladz2812.trello_api.dto.request.UserRequest;
 import com.coladz2812.trello_api.dto.request.UserRequestUpdate;
@@ -12,6 +13,7 @@ import com.coladz2812.trello_api.model.InvalidatedToken;
 import com.coladz2812.trello_api.model.User;
 import com.coladz2812.trello_api.repository.InvalidatedTokenRepository;
 import com.coladz2812.trello_api.repository.UserRepository;
+import com.coladz2812.trello_api.util.FileUploadUtil;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -30,11 +32,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,6 +61,7 @@ public class UserService {
     UserMapper userMapper;
     EmailService emailService;
     BCryptPasswordEncoder passwordEncoder;
+    Cloudinary cloudinary;
 
     @NonFinal
     @Value("${jwt.signerKeyAccess}")
@@ -302,7 +308,7 @@ public class UserService {
             throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE);
         }
         //        log.error("request : "+request.toString());
-        // update info
+        // 1. update info
         if (request.getCurrentPassword() != null && request.getNewPassword() != null) {
             // check lỗi password không đúng
             if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -313,6 +319,36 @@ public class UserService {
         } else if (!request.getDisplayName().isEmpty() && request.getDisplayName() != null) {
 //            log.error("new displayname : "+request.getDisplayName());
             user.setDisplayName(request.getDisplayName());
+        }
+
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    public UserResponse uploadAvatarUser(String id, MultipartFile avatarFile) {
+        // check lỗi không đúng email
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
+        });
+        // check lỗi tài khoản email chưa được xác thực
+        if (!user.getIsActive()) {
+            throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE);
+        }
+
+        // 2. Update avatar
+        if (!avatarFile.isEmpty()) {
+//            log.error("avatarFile : "+avatarFile);
+            try {
+                var uploadResponse = cloudinary.uploader().upload(avatarFile.getBytes(), Map.of("folder", "avatars", // folder trên Cloudinary
+                        "public_id", FileUploadUtil.getFileName(avatarFile.getOriginalFilename()), // tên file
+                        "overwrite", true,
+                        "resource_type", "image"));
+//                log.error("uploadResponse"+uploadResponse);
+                String avatarURL = uploadResponse.get("secure_url").toString();
+                user.setAvatar(avatarURL);
+            } catch (IOException e) {
+                throw new AppException(ErrorCode.UPLOAD_AVATAR_FAILED);
+            }
+
         }
         return userMapper.toUserResponse(userRepository.save(user));
     }

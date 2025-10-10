@@ -12,6 +12,7 @@ import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.filter.RequestContext;
 import com.coladz2812.trello_api.service.UserService;
+import com.coladz2812.trello_api.util.FileUploadUtil;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -124,6 +126,7 @@ public class UserController {
     public ApiResponse<UserResponse> updateInfoUser(
             Authentication authentication,
             @Validated(UserUpdateInfo.class) @RequestBody UserRequestUpdate request) {
+        log.error("request"+request);
         String id = authentication.getPrincipal().toString();
         var response = userService.updateInfoUser(id, request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(response).build();
@@ -140,4 +143,15 @@ public class UserController {
         return apiResponse;
     }
 
+    @PutMapping("/uploadAvatarUser")
+    public ApiResponse<UserResponse> uploadAvatarUser(
+            Authentication authentication,
+            @RequestParam("avatar") MultipartFile avatarFile) {
+//        log.error("avatarFile"+avatarFile);
+        FileUploadUtil.assertAllowed(avatarFile); // kiểm tra xem file hợp lệ ko
+        String id = authentication.getPrincipal().toString();
+        var response = userService.uploadAvatarUser(id, avatarFile);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder().result(response).build();
+        return apiResponse;
+    }
 }
