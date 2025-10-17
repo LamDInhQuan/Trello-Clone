@@ -15,6 +15,8 @@ public interface BoardMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "_destroy", ignore = true)
+    @Mapping(target = "ownerIds", ignore = true)
+    @Mapping(target = "memberIds", ignore = true)
     Board toBoard(BoardRequest request);
 
     BoardResponse toBoardResponse(Board board);

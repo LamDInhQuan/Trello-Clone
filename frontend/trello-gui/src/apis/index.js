@@ -96,3 +96,11 @@ export const refreshTokenAPI = async () => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/user/refresh`);
     return response.data;
 };
+
+// get list boards
+export const getListBoardsAPI = async (currentPage) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/board/getListBoards`, {
+        params: { page: currentPage },
+    });
+    return response.data;
+};

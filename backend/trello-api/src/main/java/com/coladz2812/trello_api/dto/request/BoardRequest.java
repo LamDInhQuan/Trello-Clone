@@ -30,5 +30,6 @@ public class BoardRequest {
     Boolean _destroy;
     @ValueIn(values = { "public" , "private"} , message = "SCOPE_ERROR")
     String scope ;
-
+    List<String> ownerIds = List.of();
+    List<String> memberIds = List.of();
 }

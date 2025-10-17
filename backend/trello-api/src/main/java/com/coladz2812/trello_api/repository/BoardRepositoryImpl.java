@@ -3,6 +3,7 @@ package com.coladz2812.trello_api.repository;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.model.Board;
+import com.coladz2812.trello_api.util.PaginationUtil;
 import com.fasterxml.jackson.databind.deser.impl.ObjectIdReader;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -179,6 +180,56 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         document.put("columns", columns);
 
         return document;
+    }
+
+    @Override
+    public List<Document> getListBoardsByUserId(String userId , int currentPage) {
+        List<Document> pipeline = Arrays.asList(
+                // 1️⃣ Bước lọc board theo userId
+                new Document("$match", new Document("$or", Arrays.asList(
+                        new Document("ownerIds", userId),
+                        new Document("memberIds", userId)
+                ))) ,
+                // 2️⃣ Sắp xếp theo tiêu đề bảng tăng dần
+                new Document("$sort",new Document("title",1)) ,
+                // 3️⃣ Phân luồng xử lý song song bằng $facet
+                // cú pháp của $facet trong MongoDB yêu cầu mỗi nhánh xử lý phải là một mảng các stages
+                new Document("$facet",new Document()
+                        .append("queryBoards", Arrays.asList(
+                                new Document("$skip", PaginationUtil.countBoardsInPrevPages(currentPage,2)),
+                                new Document("$limit",2)// số lượng bản ghi
+                        ))
+                        .append("queryTotalBoards",Arrays.asList(
+                                new Document("$count","total")
+                )))
+
+        );
+        // chạy aggregation
+        List<Document> results = mongoTemplate.getCollection("board")
+                .aggregate(pipeline)
+                .into(new ArrayList<>());
+
+//        List<Document> results2 = new ArrayList<>();
+
+        if (results.isEmpty()) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND);
+        }
+
+        // chuyển ObjectId sang String cho board
+        for(Document doc : results){
+            if(doc.containsKey("queryBoards")){
+                List<Document> boards = (List<Document>) doc.get("queryBoards");
+                for(Document board : boards){
+                    if(board.containsKey("_id")){
+//                        log.error("id"+board);
+                        ObjectId boardId = (ObjectId) board.get("_id");
+                        board.put("_id", boardId.toString());
+                    }
+                }
+            }
+        }
+
+        return results;
     }
 
     // Trong MongoDB, $lookup là stage trong aggregation pipeline dùng để

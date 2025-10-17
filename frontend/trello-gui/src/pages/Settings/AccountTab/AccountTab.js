@@ -54,11 +54,13 @@ function AccountTab() {
             toast
                 .promise(dispatch(updateInfoUserAPIRedux({ displayName: trimmedName })), {
                     pending: 'Updating...',
-                    success: 'Update user successfully',
                 })
                 .then((res) => {
                     // kiểm tra đăng nhập không có lỗi điều hướng về route ("/")
                     // console.log(res);
+                    if (!res.error) {
+                        toast.success('Update user successfully');
+                    }
                 })
                 .catch();
         }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,13 @@ public class BoardController {
     public ApiResponse<BoardResponse> createNewBoard(@RequestBody @Valid BoardRequest request) {
         var boardResponse = boardService.createNewBoard(request);
         ApiResponse<BoardResponse> apiResponse = ApiResponse.<BoardResponse>builder().result(boardResponse).build();
+        return apiResponse;
+    }
+
+    @GetMapping("/getListBoards")
+    public ApiResponse<List<Document>> getListBoards(Authentication authentication , @RequestParam("page") int currentPage) {
+        var boardResponse = boardService.getListBoards(authentication.getPrincipal().toString(),currentPage);
+        ApiResponse<List<Document>> apiResponse = ApiResponse.<List<Document>>builder().result(boardResponse).build();
         return apiResponse;
     }
 

@@ -3,6 +3,7 @@ package com.coladz2812.trello_api.filter;
 import com.coladz2812.trello_api.dto.response.VerifyTokenResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
+import com.coladz2812.trello_api.repository.UserRepository;
 import com.coladz2812.trello_api.service.UserService;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
@@ -33,9 +34,10 @@ public class CustomJwtDecoder implements JwtDecoder {
     NimbusJwtDecoder nimbusJwtDecoder;
 
     private UserService userService;
-
-    public CustomJwtDecoder(@Lazy UserService userService) {
+    private UserRepository userRepository;
+    public CustomJwtDecoder(@Lazy UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -45,6 +47,10 @@ public class CustomJwtDecoder implements JwtDecoder {
         VerifyTokenResponse isValid = null;
         try {
             var verified = userService.verifyTokenAccess(token,true);
+            var userId = verified.getJWTClaimsSet().getSubject(); // giả sử payload chứa userId
+            log.error("userID"+verified.getJWTClaimsSet().getSubject());
+            var user = userRepository.findById(userId)
+                    .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         } catch (ParseException e) {
 //            log.error("vao ParseException");
             throw new AppException(ErrorCode.UNAUTHENTICATED);

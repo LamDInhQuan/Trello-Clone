@@ -30,7 +30,7 @@ function App() {
                     // không còn nằm trong history của Browser
                     // Thực hành dễ hiểu hơn bằng cách nhấn Go home từ trang 404 xong thử quay lại bằng nút
                     // back của trình duyệt giữa 2 trường hợp có replace hoặc không có
-                    <Navigate to="/boards/68af4b814b6913bb70d835bb" replace={true} />
+                    <Navigate to="/boards" replace={true} />
                 }
             />
             {/* ProtectedRoute hiểu đơn giản là trong dự án của chúng ta sẽ có những route chỉ 

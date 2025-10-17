@@ -14,4 +14,7 @@ public interface BoardRepositoryCustom {
 //    public List<Document> getListBoardAndStudentInBoard();
 
     public Document getBoardAndColumnByIdBoard(String id);
+
+    public List<Document> getListBoardsByUserId(String userId , int currentPage);
+
 }
