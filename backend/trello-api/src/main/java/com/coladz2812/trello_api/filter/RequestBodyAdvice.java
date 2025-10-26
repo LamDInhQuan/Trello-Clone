@@ -27,7 +27,7 @@ public class RequestBodyAdvice extends RequestBodyAdviceAdapter {
     }
 
     private List<?> lstDto = List.of(new BoardRequest(),
-            new ColumnRequest(), new CardRequest() ,new BoardRequestUpdate(), new UserRequest());
+            new ColumnRequest(), new CardRequest() ,new BoardRequestUpdate(), new UserRequest() , new CardRequestUpdate());
 
     // supports() là phương thức quyết định xem RequestBodyAdvice (ở đây là
     // lớp RequestBodyAdviceAdapter bạn tạo) có được áp dụng cho một request cụ thể hay không.

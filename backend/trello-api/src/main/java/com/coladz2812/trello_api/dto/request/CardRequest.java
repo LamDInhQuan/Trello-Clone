@@ -22,7 +22,8 @@ public class CardRequest {
     String columnId ;
     @Size(min = 3, max = 20, message = "CARD_TITLE_CHARACTER")
     String title;
-    @Size(min = 3, max = 255, message = "CARD_DESCRIPTION_CHARACTER")
+    @Size(min = 3, max = 1000, message = "CARD_DESCRIPTION_CHARACTER")
+    String cardCover ;
     String description;
     Date createdAt;
     Date updatedAt;

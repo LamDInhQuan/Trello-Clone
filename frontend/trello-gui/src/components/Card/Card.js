@@ -18,13 +18,14 @@ import InputSearch from '../InputSearch';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
-import { createNewCardApi, deleteColumnInBoard } from '~/apis';
+import { createNewCardApi, deleteColumnInBoard, updateTitleColumnAPI } from '~/apis';
 import { useForm } from 'react-hook-form';
+import ToggleFocusInput from '../ToggleFocusInput';
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(stylesInterceptorLoading);
 
-function Card({ title = 'Column Title', id, items = [] }) {
+function Card({ title = 'Column Title', id, items }) {
     // console.log('render card');
 
     // lấy nội dung form input add column
@@ -80,7 +81,7 @@ function Card({ title = 'Column Title', id, items = [] }) {
                 title: newColumnTitle,
             });
         } catch (error) {
-            return 
+            return;
         }
         // clone board và các array bên trong
         const newBoard = {
@@ -186,6 +187,32 @@ function Card({ title = 'Column Title', id, items = [] }) {
         },
     ];
 
+    const [editTitleColumn, setEditTitleColumn] = useState(false); // kiểm tra focus title column
+    const [updateColumnTitle, setUpdateColumnTitle] = useState(title);
+    // console.log(editTitleColumn);
+    const onUpdateColumnTitle = (title) => {
+        console.log({ columnId: items._id, title: title });
+        setUpdateColumnTitle(title);
+        updateTitleColumnAPI({ columnId: items._id, title: title })
+            .then((res) => {
+                if (!res.error) {
+                    toast.success('Cập nhật tiêu đề cột thành công!');
+                }
+                const newBoard = {
+                    ...board,
+                    columns: board.columns.map((col) => (col._id === items._id ? { ...col, title } : { ...col })),
+                };
+                // clone lại cả obj title của column để sửa
+                // tìm cột chứa card
+                const columnOfCard = newBoard.columns.find((col) => col._id === items._id);
+                if (columnOfCard) {
+                    columnOfCard.title = title;
+                }
+                console.log(columnOfCard);
+                dispatch(updateCurrentActiveBoard(newBoard));
+            })
+            .catch(() => {});
+    };
     return (
         <>
             {/* Overlay */}
@@ -203,19 +230,23 @@ function Card({ title = 'Column Title', id, items = [] }) {
                     }}
                     hideFromParent={menuDropDownHide}
                 ></ButtonDropDownMenu>
-
-                <div className={cx('wrapper')} data-column-id={items._id}>
-                    <div className={cx('scroll-inner')} {...attributes} {...listeners}>
+                <div className={cx('wrapper', { titleh3: !editTitleColumn })} data-column-id={items._id}>
+                    <div className={cx('scroll-inner')} {...listeners} {...attributes}>
+                        {/* Title */}
                         <div className={cx('column-title')}>
-                            <h4 className={cx('title')} onClick={addNewColumn}>
-                                {title}
-                            </h4>
+                            <ToggleFocusInput
+                                className={cx('titleInput', { active: editTitleColumn })}
+                                value={updateColumnTitle}
+                                onFocusChange={setEditTitleColumn}
+                                onUpdateColumnTitle={onUpdateColumnTitle}
+                            />
                         </div>
+
                         <SortableContext items={orderArray} strategy={verticalListSortingStrategy}>
                             <div className={cx('list-card')}>
-                                {orderredArray.map((item) => {
-                                    return <CardItem key={item._id} card={item} />;
-                                })}
+                                {orderredArray.map((item) => (
+                                    <CardItem key={item._id} card={item} />
+                                ))}
                             </div>
                         </SortableContext>
                     </div>
@@ -245,8 +276,10 @@ function Card({ title = 'Column Title', id, items = [] }) {
                                     {...register('columnTitleInput')}
                                 />
                                 <div className={cx('wrapper-button-add-column2')}>
-                                    
-                                    <Button className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`} onClick={addNewColumn}>
+                                    <Button
+                                        className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`}
+                                        onClick={addNewColumn}
+                                    >
                                         Add Card
                                     </Button>
                                     <Button

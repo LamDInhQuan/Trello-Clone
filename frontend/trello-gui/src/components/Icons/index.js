@@ -45,6 +45,17 @@ import ArrowLastLeftIcon from './ArrowLastLeftIcon';
 import CloseBorderIcon from './CloseBorderIcon';
 import ABCCharacterIcon from './ABCCharacterIcon';
 import DescriptionIcon from './DescriptionIcon';
+import CardIcon from './CardIcon';
+import DescriptionIcon2 from './DescriptionIcon2';
+import CommentIcon from './CommentIcon';
+import EditNoteIcon from './EditNoteIcon';
+import UserIconOutline from './UserIconOutline';
+import CoverIcon from './CoverIcon';
+import AttachIcon2 from './AttachIcon2';
+import LabelTagIcon from './LabelTagIcon';
+import CheckListIcon from './CheckListIcon';
+import CustomFieldIcon from './CustomFieldIcon';
+import CheckListIcon2 from './CheckListIcon2';
 
 const Icons = {
     MenuBarIcon,
@@ -93,7 +104,18 @@ const Icons = {
     ArrowLastLeftIcon ,
     CloseBorderIcon ,
     ABCCharacterIcon ,
-    DescriptionIcon
+    DescriptionIcon ,
+    CardIcon , 
+    DescriptionIcon2 ,
+    CommentIcon ,
+    EditNoteIcon ,
+    UserIconOutline ,
+    CoverIcon ,
+    AttachIcon2 ,
+    LabelTagIcon ,
+    CheckListIcon ,
+    CustomFieldIcon ,
+    CheckListIcon2
 };
 
 export default Icons;

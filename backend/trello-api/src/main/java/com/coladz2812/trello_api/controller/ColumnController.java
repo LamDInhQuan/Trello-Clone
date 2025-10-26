@@ -1,5 +1,6 @@
 package com.coladz2812.trello_api.controller;
 
+import com.coladz2812.trello_api.classValidation.ColumnInfoUpdate;
 import com.coladz2812.trello_api.classValidation.SingleColumnUpdate;
 import com.coladz2812.trello_api.classValidation.TwoColumnsUpdate;
 import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
@@ -59,7 +60,13 @@ public class ColumnController {
         ApiResponse<Object> apiResponse = ApiResponse.<Object>builder().result(columnsResponse).build();
         return apiResponse;
     }
-
+    @PutMapping("/updateTitle")
+    public ApiResponse<Object> updateTitleColumn(@Validated(ColumnInfoUpdate.class) @RequestBody ColumnRequestUpdate request) {
+        var columnsResponse = columnService.updateTitleColumn(request);
+        log.error("request title"+request.getTitle());
+        ApiResponse<Object> apiResponse = ApiResponse.<Object>builder().result(columnsResponse).build();
+        return apiResponse;
+    }
 }
 
 // @Valid

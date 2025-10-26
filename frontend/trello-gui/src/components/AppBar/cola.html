@@ -2,135 +2,142 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Trello Advance - Xác thực tài khoản</title>
+  <title>Bảng Trello đầu rộng</title>
   <style>
+    :root {
+      --column-bg: #2c3e50;
+      --card-bg: #3d566e;
+      --card-hover: #4b6a89;
+      --text-color: #ecf0f1;
+      --wood: #a67c52;
+      --chalkboard: #1c1c1c;
+    }
+
     body {
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background: linear-gradient(to right, #bdc3c7, #ecf0f1);
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: linear-gradient(135deg, #0079bf, #5067c5);
+      padding: 40px;
     }
 
-    .verify-card {
-      background: #fff;
-      padding: 40px 35px;
-      border-radius: 16px;
-      width: 400px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      animation: fadeIn 0.8s ease;
-    }
-
-    .app-logo {
-      font-size: 40px;
-      color: #0079bf;
-      margin-bottom: 15px;
-    }
-
-    .verify-card h2 {
-      margin: 10px 0;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .verify-card p {
-      font-size: 15px;
-      color: #555;
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-
-    .verify-btn {
-      background: #0079bf;
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 6px 15px rgba(0, 121, 191, 0.4);
-      margin-left: 100px;
-    }
-
-    .verify-btn:hover {
-      transform: translateY(-2px);
-      background: #026aa7;
-    }
-
-    .loading {
+    .board {
       display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
       justify-content: center;
-      align-items: center;
-      gap: 12px;
-      color: #0079bf;
-      font-weight: 500;
-      font-size: 15px;
     }
 
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid #ddd;
-      border-top: 3px solid #0079bf;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .column {
+      width: 280px;
+      background: var(--column-bg);
+      border-radius: 12px;
+      color: var(--text-color);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
     }
 
-    .success {
-      color: #28a745;
+    .column-header {
+      width: 100%;
+      background: var(--chalkboard);
+      border-top: 8px solid var(--wood);
+      border-bottom: 8px solid var(--wood);
+      border-radius: 12px 12px 0 0;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
+      padding: 16px;
+      text-align: center;
+      font-size: 18px;
       font-weight: bold;
-      margin-top: 20px;
+      position: relative;
     }
 
-    .error {
-      color: #e74c3c;
-      font-weight: bold;
-      margin-top: 20px;
+    .column-header::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 60px;
+      background: black;
+      border-radius: 2px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .card-list {
+      padding: 12px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .card {
+      background: var(--card-bg);
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: grab;
+      transition: background 0.2s ease;
+    }
+
+    .card:hover {
+      background: var(--card-hover);
+    }
+
+    .dragging {
+      opacity: 0.6;
+      transform: scale(1.02);
     }
   </style>
 </head>
 <body>
-  <div class="verify-card">
-    <div class="app-logo">📝</div>
-    <h2>Xác thực tài khoản</h2>
-    <p>Hoàn tất bước cuối cùng để truy cập <b>Trello Advance</b>.<br>
-    Nhấn nút bên dưới để xác thực email của bạn.</p>
-    
-    <!-- Khi chưa verify -->
-    <button class="verify-btn">✅ Xác thực ngay</button>
 
-    <!-- Khi đang verify -->
-    <!--
-    <div class="loading">
-      <div class="spinner"></div>
-      <span>Đang xác thực...</span>
+  <div class="board">
+    <div class="column" draggable="true">
+      <div class="column-header">Công việc</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Viết báo cáo</div>
+        <div class="card" draggable="true">Họp nhóm</div>
+        <div class="card" draggable="true">Gọi khách hàng</div>
+      </div>
     </div>
-    -->
 
-    <!-- Khi thành công -->
-    <!--
-    <div class="success">🎉 Tài khoản đã được xác thực thành công!</div>
-    -->
+    <div class="column" draggable="true">
+      <div class="column-header">Đang làm</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Thiết kế giao diện</div>
+      </div>
+    </div>
 
-    <!-- Khi thất bại -->
-    <!--
-    <div class="error">⚠️ Token không hợp lệ hoặc đã hết hạn!</div>
-    -->
+    <div class="column" draggable="true">
+      <div class="column-header">Hoàn thành</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Gửi email</div>
+      </div>
+    </div>
   </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const columns = document.querySelectorAll('.column');
+
+    cards.forEach(card => {
+      card.addEventListener('dragstart', () => {
+        card.classList.add('dragging');
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+      });
+    });
+
+    columns.forEach(column => {
+      column.addEventListener('dragover', e => {
+        e.preventDefault();
+        const draggingCard = document.querySelector('.dragging');
+        const cardList = column.querySelector('.card-list');
+        if (draggingCard && cardList) {
+          cardList.appendChild(draggingCard);
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>

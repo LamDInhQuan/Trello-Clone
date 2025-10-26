@@ -25,7 +25,7 @@
     position: relative;
     top: 30px;
     z-index: 99;
-    left: 200px;
+    left: 205px;
     width: 30px;
     height: 30px;
 }
@@ -33,11 +33,27 @@
     background-color: #d8d0d090;
     border-radius: 50%;
 }
+.titleInput {
+    font-size: 17px;
+    font-weight: bold;
+    margin-left: 15px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Times New Roman', Times, serif;
+    width: 80%;
+    padding: 5px;
+    border-radius: 3px;
+    caret-color: transparent; /* ẩn caret */
+}
+.titleInput.active {
+    border: 1.5px solid azure;
+    caret-color: azure; /* ẩn caret */
+}
 
 .wrapper {
     position: relative;
     top: 3px;
-    margin-top: -15px;
+    margin-top: -13px;
     width: 240px;
     height: fit-content;
     max-height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 40px);
@@ -47,12 +63,17 @@
     flex-direction: column;
     flex-shrink: 0;
 }
+.wrapper.titleh3 {
+    margin-top: -13px;
+}
 .scroll-inner {
     display: flex;
     flex-direction: column;
     padding-right: 5px; /* đẩy nội dung khỏi scrollbar */
     flex-grow: 1;
+    position: relative;
 }
+
 .column-title {
     width: 100%;
     height: var(--column-card-title);
@@ -64,11 +85,14 @@
 .title {
     font-size: 17px;
     font-weight: bold;
-    margin-left: 20px;
+    margin-left: 15px;
     color: white;
     cursor: pointer;
     font-family: 'Times New Roman', Times, serif;
+    width: 80%;
+    padding: 5px;
 }
+
 .list-card {
     width: 100%;
     display: flex;
@@ -113,7 +137,7 @@
 // icon
 .icon-dropDown {
     color: white;
-    transform: translateX(-12px);
+    transform: translateX(-5px);
 }
 .icon {
     width: 22px;
@@ -137,7 +161,7 @@
     }
     margin-left: 10px;
     height: 32px;
-     white-space: nowrap; // 👉 KHÔNG CHO XUỐNG DÒNG
+    white-space: nowrap; // 👉 KHÔNG CHO XUỐNG DÒNG
 }
 .button-add:hover {
     background-color: #5bb7ae;

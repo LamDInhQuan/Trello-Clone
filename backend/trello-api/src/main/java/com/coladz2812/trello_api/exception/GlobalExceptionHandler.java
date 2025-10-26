@@ -90,6 +90,7 @@ public class GlobalExceptionHandler {
 
 
     public boolean validateSizeConstraints(String fieldError) {
+        log.error("check");
         boolean check = false;
         Object requestObject = requestContext.getRequestContext();
         if(requestObject == null){

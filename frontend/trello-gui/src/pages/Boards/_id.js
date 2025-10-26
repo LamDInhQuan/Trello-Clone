@@ -29,6 +29,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Loading from '~/components/Loading';
+import ActiveCard from '~/components/Modal/ActiveCard';
+import { selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice';
 
 const cx = classNames.bind(styles);
 
@@ -42,6 +44,7 @@ function Board() {
     // Không dùng state của component nữa mà dùng state của Redux
     // const [board, setBoard] = useState();
     const board = useSelector(selectCurrentActiveBoard);
+    const activeCard = useSelector(selectCurrentActiveCard);
 
     // useParams là hook của react-router-dom (v6 trở lên).
     // Nó trả về một object chứa các tham số động (route parameters) từ URL.
@@ -126,14 +129,18 @@ function Board() {
     };
 
     if (error) {
-        return <Loading/>
+        return <Loading />;
     }
     if (!board) {
-        return null
+        return null;
     }
 
     return (
         <div className={cx('wrapper')}>
+            {/* Modal Active Card , check đóng mở dựa theo điều kiện có tồn tại data ActiveCard lưu
+            trong Redux hay không thì mới render . Mỗi thời điểm chỉ tồn tại 1 cái Modal Card đang Active  */}
+            {activeCard && <ActiveCard />}
+            {/* Các thành phần còn lại của Board Details  */}
             <AppBar />
             <BoardBar />
             <BoardContent

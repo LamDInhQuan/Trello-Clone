@@ -18,7 +18,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class BoardRequest {
-    @Size(min = 3, max = 20, message = "BOARD_TITLE_CHARACTER")
+    @Size(min = 3, max = 50, message = "BOARD_TITLE_CHARACTER")
     String title;
     @Size(min = 3, message = "BOARD_SLUG_CHARACTER")
     String slug;

@@ -33,6 +33,10 @@ function ButtonDropDownMenu({
     menuItems,
     onClickMenu = false,
     hideFromParent = false,
+    avatarGroups = false,
+    translateY = 30,
+    buttonClassName = false,
+    addMemberAvatarGroup = false,
 }) {
     const [hide, setHide] = useState(false);
     useEffect(() => {
@@ -59,7 +63,7 @@ function ButtonDropDownMenu({
     const imgRef = useRef();
     // lấy tọa độ menu
 
-    const position = useDropDownPosition(imgRef, dropdownRef, hide, magin);
+    const position = useDropDownPosition(imgRef, dropdownRef, hide, magin, translateY);
 
     // Nếu click bên ngoài dropdownRef, đóng dropdown
     const divRef = useRef();
@@ -76,7 +80,7 @@ function ButtonDropDownMenu({
             <Button
                 ref={imgRef}
                 onClick={handleClickSafe}
-                className={imgSrc ? cx('avatar') : cx('button')}
+                className={cx(imgSrc ? cx('avatar') : cx('button'), buttonClassName)}
                 imgSrc={imgSrc || false}
                 leftIcon={leftIcon}
                 rightIcon={rightIcon}
@@ -85,7 +89,7 @@ function ButtonDropDownMenu({
             </Button>
             {/*  ẩn hiện menumenu */}
             <MenuDropDownCustom
-                className={cx2('wrapper', { active: hide })}
+                className={cx2('wrapper', { active: hide, avatarGroups: avatarGroups })}
                 ref={dropdownRef}
                 position={imgSrc || calcPosition ? position : false}
             >
@@ -95,11 +99,14 @@ function ButtonDropDownMenu({
                           return (
                               <MenuDropDownCustomItem
                                   key={key}
-                                  leftIcon={<Icon className={cx3('icon')} />}
+                                  leftIcon={Icon ? <Icon className={cx3('icon')} /> : null}
                                   onClick={item.onClick}
-                                  link = {item.link}
+                                  link={item.link}
+                                  src={item?.avatar}
+                                  avatarName={item?.username}
+                                  addMemberAvatarGroup={addMemberAvatarGroup}
                               >
-                                  {item.label}
+                                  {item?.label}
                               </MenuDropDownCustomItem>
                           );
                       })

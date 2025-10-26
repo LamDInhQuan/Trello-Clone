@@ -1,10 +1,10 @@
 import { faY } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useLayoutEffect, useState } from 'react';
 
-function useDropDownPosition(triggerRef, dropdownRef, hide, magin = 0) {
+function useDropDownPosition(triggerRef, dropdownRef, hide, magin = 0 ,translateY = 30) {
     // trigger là nút nhấn để hiện dropdown
-    const [position, setPosition] = useState({ left: 0, top: 30 });
-
+    const [position, setPosition] = useState({ left: 0, top : translateY });
+    // console.log(translateY);
     // đổi position khi menu tràn ra ngoài
     useEffect(() => {
         // đo tọa độ

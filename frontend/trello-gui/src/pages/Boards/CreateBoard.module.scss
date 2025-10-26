@@ -85,12 +85,16 @@
 .board > h3 {
     margin-left: 15px;
     font-size: 17px;
+    width: 88%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .board > p {
     margin-left: 15px;
     font-size: 12px;
     color: rgba(120, 117, 117, 0.904);
-     width: 88%;
+    width: 88%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

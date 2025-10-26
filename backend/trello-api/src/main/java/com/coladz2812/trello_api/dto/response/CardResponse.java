@@ -18,6 +18,7 @@ public class CardResponse {
     String boardId;
     String columnId;
     String title;
+    String cardCover ;
     String description;
     Date createdAt;
     Date updatedAt;

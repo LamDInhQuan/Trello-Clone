@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import authorizedAxiosInstance from '~/utils/authorizeAxios'; // custom axios
 import { API_ROOT } from '~/utils/constants';
 import { generatePlaceHolderCard } from '~/utils/formatters';
@@ -31,9 +31,30 @@ export const activeBoardSlice = createSlice({
             const board = action.payload;
             // xử lý dữ liệu nếu cần thiết ....
             // ...
-
             // update lại dữ liệu của currentActiveBoard
             state.currentActiveBoard = board;
+        },
+        updateCardInBoard: (state, action) => {
+            // current() chỉ dùng để xem state thực — chứ không nên dùng để sửa state, vì object
+            // trả ra bởi current() là bản copy tĩnh, không còn liên kết với Redux state nữa.
+            const currentCard = action.payload;
+            // console.log('currentCard:', currentCard); // xem trạng thái state
+            // console.log('current(state.currentActiveBoard):', current(state.currentActiveBoard)); // xem trạng thái state
+            const currentBoard = state.currentActiveBoard;
+            const column = currentBoard.columns.find((col) => col._id === currentCard.columnId);
+            if (column) {
+                // console.log('column:', current(column));
+                const cardFinded = column.cards.find(
+                    (card) => card._id === currentCard._id || card._id === currentCard.cardId,
+                );
+                if (cardFinded) {
+                    // console.log('cardFinded:', currentCard); // xem trạng thái state
+
+                    cardFinded.title = currentCard.title;
+                    cardFinded.description = currentCard.description;
+                    cardFinded.cardCover = currentCard?.cardCover;
+                }
+            }
         },
     },
     // ExtraReducers : nơi xử lý dữ liệu bất đồng bộ
@@ -41,6 +62,8 @@ export const activeBoardSlice = createSlice({
         builder.addCase(fetchBoardDetailAPIRedux.fulfilled, (state, action) => {
             // action.payload ở đây chính là response.data trả về ở trên
             let board = action.payload.result;
+            board.FeUsersFromBoard = board.owners.concat(board.members)
+            // console.log(board);
             // xử lý dữ liệu nếu cần thiết ....
             // sắp xếp luôn các columns trước khi đưa xuống các component con
             if (board) {
@@ -79,7 +102,7 @@ export const activeBoardSlice = createSlice({
 // lại dữ liêu thông qua reducer ( chạy đồng bộ )
 // Để ý ở trên thì không thấy properties actions đâu cả  , bởi vì những actions này đơn giản là được redux
 // tạo tự động theo tên của reducer nhé
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions;
+export const { updateCurrentActiveBoard, updateCardInBoard } = activeBoardSlice.actions;
 
 // Selectors : là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liêu từ trong kho
 // redux store ra sử dụng

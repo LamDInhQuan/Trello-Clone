@@ -29,8 +29,8 @@ public class BoardController {
 //    RequestContext requestContext;
 
     @PostMapping("/create")
-    public ApiResponse<BoardResponse> createNewBoard(@RequestBody @Valid BoardRequest request) {
-        var boardResponse = boardService.createNewBoard(request);
+    public ApiResponse<BoardResponse> createNewBoard(@RequestBody @Valid BoardRequest request , Authentication authentication ) {
+        var boardResponse = boardService.createNewBoard(request,authentication.getPrincipal().toString());
         ApiResponse<BoardResponse> apiResponse = ApiResponse.<BoardResponse>builder().result(boardResponse).build();
         return apiResponse;
     }
@@ -58,9 +58,9 @@ public class BoardController {
 
 
     @GetMapping("/getBoardAndColumnByIdBoard/{id}")
-    public ApiResponse<Document> getListBoardAndColumn(@PathVariable String id) {
+    public ApiResponse<Document> getListBoardAndColumn(Authentication authentication ,@PathVariable String id) {
         log.error("get board ");
-        Document boardResponse = boardService.getBoardAndColumnByIdBoard(id);
+        Document boardResponse = boardService.getBoardAndColumnByIdBoard(id,authentication.getPrincipal().toString());
         ApiResponse<Document> apiResponse = ApiResponse.<Document>builder().result(boardResponse).build();
         return apiResponse;
     }

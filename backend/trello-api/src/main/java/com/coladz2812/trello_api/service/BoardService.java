@@ -24,6 +24,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,17 +41,15 @@ public class BoardService {
     Slugify slugify;
     UserRepository userRepository;
 
-    public BoardResponse createNewBoard(BoardRequest request) {
+    public BoardResponse createNewBoard(BoardRequest request , String userId) {
         Board board = boardMapper.toBoard(request);
         board.setSlug(slugify.slugify(board.getTitle()));
+        board.setOwnerIds(Arrays.asList(userId));
+//        log.error("board"+board);
         return boardMapper.toBoardResponse(boardRepository.save(board));
     }
 
     public List<Document> getListBoards(String userId, int currentPage) {
-        // check lỗi không đúng email
-        User user = userRepository.findById(userId).orElseThrow(() -> {
-            throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
-        });
         var listBoards = boardRepository.getListBoardsByUserId(userId, currentPage);
         return listBoards;
     }
@@ -69,8 +68,8 @@ public class BoardService {
     }
 
 
-    public Document getBoardAndColumnByIdBoard(String id) {
-        Document document = boardRepository.getBoardAndColumnByIdBoard(id);
+    public Document getBoardAndColumnByIdBoard(String boardId,String userId) {
+        Document document = boardRepository.getBoardAndColumnByIdBoard(boardId,userId);
         log.error("document : " + document.toJson());
         if (document == null || document.isEmpty()) {
             throw new AppException(ErrorCode.BOARD_NOT_FOUND);

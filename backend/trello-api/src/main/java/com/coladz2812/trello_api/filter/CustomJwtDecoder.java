@@ -49,6 +49,7 @@ public class CustomJwtDecoder implements JwtDecoder {
             var verified = userService.verifyTokenAccess(token,true);
             var userId = verified.getJWTClaimsSet().getSubject(); // giả sử payload chứa userId
             log.error("userID"+verified.getJWTClaimsSet().getSubject());
+            // check lỗi không đúng email với cookie
             var user = userRepository.findById(userId)
                     .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         } catch (ParseException e) {

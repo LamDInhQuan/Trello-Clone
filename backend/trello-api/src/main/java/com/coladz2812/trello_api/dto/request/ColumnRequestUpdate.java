@@ -1,8 +1,10 @@
 package com.coladz2812.trello_api.dto.request;
 
+import com.coladz2812.trello_api.classValidation.ColumnInfoUpdate;
 import com.coladz2812.trello_api.classValidation.SingleColumnUpdate;
 import com.coladz2812.trello_api.classValidation.TwoColumnsUpdate;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,4 +47,9 @@ public class ColumnRequestUpdate {
     @NotNull(groups = TwoColumnsUpdate.class, message = "UPDATE_CARDORDERIDS_NOT_NULL")
     List<String> nextCardOrderIds;
 
+    @NotNull(groups = ColumnInfoUpdate.class, message = "COLUMNID_NOT_NULL")
+    String columnId ;
+    @NotNull(groups = ColumnInfoUpdate.class, message = "COLUMN_TITLE_NOT_NULL")
+    @Size(min = 3, max = 20, message = "COLUMN_TITLE_CHARACTER",groups = ColumnInfoUpdate.class)
+    String title;
 }

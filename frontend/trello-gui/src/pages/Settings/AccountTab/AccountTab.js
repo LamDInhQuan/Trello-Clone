@@ -85,9 +85,16 @@ function AccountTab() {
 
         // gọi API
         toast
-            .promise(dispatch(uploadAvatarUserAPIRedux(reqData)), {
-                pending: 'Updating...',
-            })
+            .promise(
+                dispatch(uploadAvatarUserAPIRedux(reqData)).finally(() => {
+                    console.log('delete file avatar');
+                    // console.log(e.target.value);
+                    e.target.value = ''
+                }),
+                {
+                    pending: 'Updating...',
+                },
+            )
             .then((res) => {
                 // kiểm tra đăng nhập không có lỗi điều hướng về route ("/")
                 // console.log(res);

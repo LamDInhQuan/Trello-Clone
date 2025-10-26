@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalAppStyle from './components/GlobalAppStyle';
+import 'tippy.js/dist/tippy.css';
 
 // cấu hình react toastify
 import { ToastContainer, toast } from 'react-toastify';

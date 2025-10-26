@@ -59,6 +59,7 @@ public class ColumnService {
         boardRepository.save(board);
         ColumnResponse columnResponse = columnMapper.toColumnResponse(savedColumn) ;
         columnResponse.setBoardId(column.getBoardId().toString());
+        columnResponse.setCreatedAt(new Date());
         return columnResponse ;
     }
 
@@ -98,5 +99,13 @@ public class ColumnService {
         return cardRepository.save(card);
     }
 
-
+    public ColumnResponse updateTitleColumn(ColumnRequestUpdate request){
+        Column column = columnRepository.findById(request.getColumnId()).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
+        column.setTitle(request.getTitle());
+        ColumnResponse columnResponse = columnMapper.toColumnResponse(columnRepository.save(column)) ;
+        columnResponse.setBoardId(column.getBoardId().toString());
+        columnResponse.setUpdatedAt(new Date());
+        columnResponse.setCreatedAt(column.getCreateAt());
+        return columnResponse;
+    }
 }

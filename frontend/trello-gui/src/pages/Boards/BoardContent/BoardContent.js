@@ -8,6 +8,9 @@ import {
     rectIntersection,
     pointerWithin,
     closestCenter,
+    useSensors,
+    useSensor,
+    PointerSensor,
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import classNames from 'classnames/bind';
@@ -126,6 +129,7 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
 
     const handelDragStart = (event) => {
         console.log('kéo');
+        // console.log("event",event);
         setItemDragId(event.active.id);
 
         setItemDragType(
@@ -517,10 +521,19 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
         [itemDragType, oderredCards],
     );
 
+    const pointerSensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 10,
+        },
+    });
+    // Vẫn nhấn (pointer down) bình thường, nhưng chưa kích hoạt drag ngay.
+    // Nó chờ bạn di chuyển con trỏ vượt quá khoảng cách distance (ví dụ 10px) mới bắt đầu drag thực sự.
+    const sensors = useSensors(pointerSensor);
     return (
         <DndContext
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
             // custom lại thuật toán va chạm ko bug ko giật
+            sensors={sensors}
             onDragStart={handelDragStart}
             onDragEnd={handelDragEnd}
             onDragOver={handelDragOver}

@@ -21,15 +21,33 @@ import { useSearchParam } from 'react-use';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PopupInput from '~/components/PopupInput';
 import { getListBoardsAPI } from '~/apis';
+import ActiveCard from '~/components/Modal/ActiveCard';
 
 const cx = classNames.bind(styles);
 
 function CreateBoard() {
+    // xử lí khi thêm board ở popup thành công
+    const [renderPopUp, setRenderPopup] = useState();
+    const handleRenderPopup = () => {
+        setRenderPopup((prev) => !prev);
+    };
     // console.log('render');
     const [onPopupInput, setOnPopupInput] = useState(false);
     const createNewBoard = () => {
         setOnPopupInput(!onPopupInput);
     };
+
+    // xử lí mở card modal
+    const [renderCardModal, setRenderCardModal] = useState();
+    const handleRenderCardModal = () => {
+        setRenderCardModal((prev) => !prev);
+    };
+    // console.log('render');
+    const [onCardModal, setCardModal] = useState(false);
+    const openCardModal = () => {
+        setCardModal(!onCardModal);
+    };
+
     const [searchParams, setSearchParams] = useSearchParams();
     const indexPage = Number(searchParams.get('page')) || 1; // mặc định trang 1 nếu null
 
@@ -48,7 +66,7 @@ function CreateBoard() {
     const [mang, setMang] = useState([]);
     const [totalBoards, setTotalBoards] = useState([]);
 
-    const itemsInPage = 2;
+    const itemsInPage = 12;
     const totalPages = Math.ceil(totalBoards / itemsInPage); // tổng trang
     // const lastIndexInCurrentPage = currentPage * itemsInPage;
     // const firstIndexInCurrentPage = lastIndexInCurrentPage - itemsInPage;
@@ -97,13 +115,13 @@ function CreateBoard() {
             setMang(res.result[0]?.queryBoards || res.result);
             setTotalBoards(res.result[0]?.queryTotalBoards[0]?.total);
         });
-    }, [indexPage]);
+    }, [indexPage, renderPopUp]);
 
     useEffect(() => {
         if (totalBoards > 0) {
             setPaginationArray(caculateClickNextOrPrevPageArray(indexPage, totalPages));
         }
-    }, [totalBoards, indexPage]);
+    }, [totalBoards, indexPage, renderPopUp]);
 
     // console.log(mang);
     const [paginationArray, setPaginationArray] = useState([]);
@@ -188,9 +206,11 @@ function CreateBoard() {
     const colorsRef = randomColor({ count: 5, luminosity: 'bright' });
     const colorMapRef = useRef({});
     // console.log(currentPage);
+
     return (
         <>
-            <PopupInput onPopUp={onPopupInput} closePopup={createNewBoard} />
+            <ActiveCard onCreated={handleRenderCardModal} onPopUp={onCardModal} closePopup={openCardModal} />
+            <PopupInput onCreated={handleRenderPopup} onPopUp={onPopupInput} closePopup={createNewBoard} />
             <div className={cx('wrapper')}>
                 <AppBar />
                 <div className={cx('container')}>
@@ -232,13 +252,13 @@ function CreateBoard() {
                             {mang && mang.length > 0 ? (
                                 mang.map((item) => {
                                     // console.log(item);
-                                    if (!colorMapRef.current[item._id.date]) {
-                                        colorMapRef.current[item._id.date] =
+                                    if (!colorMapRef.current[item._id]) {
+                                        colorMapRef.current[item._id] =
                                             colorsRef[Math.floor(Math.random() * colorsRef.length)];
                                     }
                                     return (
-                                        <div className={cx('board')} key={item._id.date}>
-                                            <h1 style={{ backgroundColor: colorMapRef.current[item._id.date] }}></h1>
+                                        <div className={cx('board')} key={item._id}>
+                                            <h1 style={{ backgroundColor: colorMapRef.current[item._id] }}></h1>
                                             <h3>{item.title}</h3>
                                             <p>{item.description}</p>
                                             <Button

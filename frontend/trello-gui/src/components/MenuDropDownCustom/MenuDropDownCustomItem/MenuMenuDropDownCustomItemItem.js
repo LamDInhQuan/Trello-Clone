@@ -4,6 +4,9 @@ import styles from './MenuDropDownCustomItem.module.scss';
 import classNames from 'classnames/bind';
 import Icons from '~/components/Icons';
 import { Link } from 'react-router-dom';
+import Tippy from '@tippyjs/react';
+import CheckListIcon from '~/components/Icons/CheckListIcon';
+import CheckListIcon2 from '~/components/Icons/CheckListIcon2';
 
 // src
 
@@ -16,15 +19,26 @@ function MenuDropDownCustomItem({
     link,
     classNameWrapper = false,
     classNameItem = false,
+    src = false,
+    avatarName,
+    addMemberAvatarGroup = false,
 }) {
+    // console.log(addMemberAvatarGroup);
     return (
-        <div className={cx('wrapper',classNameWrapper)}>
+        <div className={cx('wrapper', classNameWrapper)}>
             {link ? (
                 <Link to={link}>
                     <Button className={cx('buttonItem')} leftIcon={leftIcon} onClick={onClick}>
                         <span className={cx('buttonLabel')}>{children}</span>
                     </Button>
                 </Link>
+            ) : src ? (
+                <Tippy content={avatarName} arrow={true} placement="bottom" className={cx('tippy')}>
+                    <div className={cx('avatar-wrapper')}>
+                        <img alt="" src={src} className={cx('avatar')} />
+                        {addMemberAvatarGroup && <CheckListIcon2 className={cx('iconMemberAvatarGroup')} />}
+                    </div>
+                </Tippy>
             ) : (
                 <Button className={cx('buttonItem', classNameItem)} leftIcon={leftIcon} onClick={onClick}>
                     <span className={cx('buttonLabel')}>{children}</span>

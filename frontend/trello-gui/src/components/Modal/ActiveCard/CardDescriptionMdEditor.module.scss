@@ -1,0 +1,51 @@
+.wrapper {
+    width: 99%;
+}
+.MDEditor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.saveState {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #958e8ec7;
+    border-radius: 8px;
+    z-index: 999px;
+}
+
+.btnEdit {
+    margin-top: auto;
+    align-self: flex-end; /* nếu muốn nút nằm góc phải */
+    background: #0084ff;
+    color: white;
+    border: none;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transform: translateX(calc(60vw - 26vw)); /* 70% của 60vw = 42vw */
+}
+
+.btnSave {
+    background: #0084ff;
+    color: white;
+    border: none;
+    padding: 6px 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    transform: translateX(calc(60vw - 25vw)); /* 70% của 60vw = 42vw */
+}
+.MDEditor img {
+    width: 50px;
+    height: 50px;
+    border-radius: 999px;
+}
+.MDEditor.edit {
+    transform: translateY(-40px);
+}
+// editIcon
+.editIcon {
+    width: 20px;
+    height: 20px;
+}

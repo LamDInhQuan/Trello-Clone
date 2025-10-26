@@ -104,3 +104,33 @@ export const getListBoardsAPI = async (currentPage) => {
     });
     return response.data;
 };
+
+// add new boards
+export const addNewBoardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/board/create`, data);
+    return response.data;
+};
+
+
+// add new boards
+export const updateTitleColumnAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/column/updateTitle`, data);
+    return response.data;
+};
+
+// update info card 
+export const updateTitleCardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardTitle`, data);
+    return response.data;
+};
+
+
+export const updateDescriptionCardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardDescription`, data);
+    return response.data;
+};
+
+export const updateCoverCardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardCover`, data);
+    return response.data;
+};

@@ -13,6 +13,7 @@ public interface CardMapper {
     @Mapping(target = "createAt", ignore = true)
     @Mapping(target = "updateAt", ignore = true)
     @Mapping(target = "_destroy", ignore = true)
+    @Mapping(target = "cardCover", ignore = true)
     Card toCard(CardRequest cardRequest);
 
     @Mapping(target = "boardId", ignore = true)

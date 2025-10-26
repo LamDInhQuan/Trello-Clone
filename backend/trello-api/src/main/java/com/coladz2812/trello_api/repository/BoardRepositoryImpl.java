@@ -5,6 +5,8 @@ import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.model.Board;
 import com.coladz2812.trello_api.util.PaginationUtil;
 import com.fasterxml.jackson.databind.deser.impl.ObjectIdReader;
+import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CollationStrength;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -84,13 +86,19 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 //    }
 
     @Override
-    public Document getBoardAndColumnByIdBoard(String id) {
+    public Document getBoardAndColumnByIdBoard(String boardId, String userId) {
         // tạo pipeline trực tiếp bằng Document
         // Khi bạn viết "$fieldName" (ví dụ "$name" hay "$columns._id"), dấu $ trước tên field
         // có nghĩa là “lấy giá trị của field đó trong document hiện tại”.
         List<Document> pipeline = Arrays.asList(
                 // nối điều kiện id board
-                new Document("$match", new Document("_id", new ObjectId(id))),
+                new Document("$match", new Document()
+                        .append("_id", new ObjectId(boardId))
+                        .append("$or", Arrays.asList(
+                                new Document("ownerIds", userId),
+                                new Document("memberIds", userId)
+                        ))
+                ),
                 // join bảng board với column
                 new Document("$lookup", new Document()
                         .append("from", "column")
@@ -137,6 +145,48 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         )))
                         .append("columnOrderIds", new Document("$first", "$columnOrderIds"))
                         .append("scope", new Document("$first", "$scope"))
+                        .append("ownerIds", new Document("$first", "$ownerIds"))
+                        .append("memberIds", new Document("$first", "$memberIds"))
+                ),
+                // 1. Ép kiểu string -> ObjectId
+                // $addField
+                new Document("$addFields", new Document()
+                        .append("owners", new Document("$map",
+                                // Mảng đầu vào là ownerIds
+                                new Document("input", "$ownerIds")
+                                        .append("as", "id")
+                                        // "in" : Với mỗi phần tử id, ép kiểu nó sang ObjectId
+                                        .append("in", new Document("$toObjectId", "$$id"))))
+                        .append("members", new Document("$map",
+                                // Mảng đầu vào là ownerIds
+                                new Document("input", "$memberIds")
+                                        .append("as", "id")
+                                        // "in" : Với mỗi phần tử id, ép kiểu nó sang ObjectId
+                                        .append("in", new Document("$toObjectId", "$$id"))))),
+                // query bảng user lấy thông tin
+                new Document("$lookup", new Document()
+                        .append("from", "user")
+                        .append("let", new Document("ownerIds", "$owners"))
+                        .append("pipeline", Arrays.asList(
+                                new Document("$match", new Document("$expr",
+                                        // match khóa của 2 bảng
+                                        new Document("$in", Arrays.asList("$_id", "$$ownerIds")))),
+                                new Document("$project",
+                                        new Document().append("email", 1).append("username", 1).append("avatar", 1).append("_id", 0))
+                        ))
+                        .append("as", "owners")
+                ),
+                new Document("$lookup", new Document()
+                        .append("from", "user")
+                        .append("let", new Document("memberIds", "$members"))
+                        .append("pipeline", Arrays.asList(
+                                new Document("$match", new Document("$expr",
+                                        // match khóa của 2 bảng
+                                        new Document("$in", Arrays.asList("$_id", "$$memberIds")))),
+                                new Document("$project",
+                                        new Document().append("email", 1).append("username", 1).append("avatar", 1).append("_id", 0))
+                        ))
+                        .append("as", "members")
                 )
         );
         // chạy aggregation
@@ -151,8 +201,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         Document document = results.get(0);
 
         // chuyển ObjectId sang String cho board
-        ObjectId boardId = (ObjectId) document.get("_id");
-        document.put("_id", boardId.toString());
+        ObjectId objboardId = (ObjectId) document.get("_id");
+        document.put("_id", objboardId.toString());
 
         // parse ObjectId cho columns và cards
         List<Document> columns = (List<Document>) document.get("columns");
@@ -183,30 +233,35 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Document> getListBoardsByUserId(String userId , int currentPage) {
+    public List<Document> getListBoardsByUserId(String userId, int currentPage) {
         List<Document> pipeline = Arrays.asList(
                 // 1️⃣ Bước lọc board theo userId
                 new Document("$match", new Document("$or", Arrays.asList(
                         new Document("ownerIds", userId),
                         new Document("memberIds", userId)
-                ))) ,
+                ))),
                 // 2️⃣ Sắp xếp theo tiêu đề bảng tăng dần
-                new Document("$sort",new Document("title",1)) ,
+                new Document("$sort", new Document("title", 1)),
                 // 3️⃣ Phân luồng xử lý song song bằng $facet
                 // cú pháp của $facet trong MongoDB yêu cầu mỗi nhánh xử lý phải là một mảng các stages
-                new Document("$facet",new Document()
+                new Document("$facet", new Document()
                         .append("queryBoards", Arrays.asList(
-                                new Document("$skip", PaginationUtil.countBoardsInPrevPages(currentPage,2)),
-                                new Document("$limit",2)// số lượng bản ghi
+                                new Document("$skip", PaginationUtil.countBoardsInPrevPages(currentPage, 12)),
+                                new Document("$limit", 12)// số lượng bản ghi
                         ))
-                        .append("queryTotalBoards",Arrays.asList(
-                                new Document("$count","total")
-                )))
+                        .append("queryTotalBoards", Arrays.asList(
+                                new Document("$count", "total")
+                        )))
 
         );
         // chạy aggregation
         List<Document> results = mongoTemplate.getCollection("board")
                 .aggregate(pipeline)
+                .collation(Collation.builder()
+                        .locale("en") // dùng quy tắc so sánh tiếng Anh
+                        .caseLevel(false) // không phân biệt hoa thường
+                        .collationStrength(CollationStrength.SECONDARY)
+                        .build())
                 .into(new ArrayList<>());
 
 //        List<Document> results2 = new ArrayList<>();
@@ -216,11 +271,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         }
 
         // chuyển ObjectId sang String cho board
-        for(Document doc : results){
-            if(doc.containsKey("queryBoards")){
+        for (Document doc : results) {
+            if (doc.containsKey("queryBoards")) {
                 List<Document> boards = (List<Document>) doc.get("queryBoards");
-                for(Document board : boards){
-                    if(board.containsKey("_id")){
+                for (Document board : boards) {
+                    if (board.containsKey("_id")) {
 //                        log.error("id"+board);
                         ObjectId boardId = (ObjectId) board.get("_id");
                         board.put("_id", boardId.toString());
@@ -239,7 +294,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     // ❌ Không có sẵn (phải viết thủ công):
     //Các toán tử như:
     //
-    //$addFields
+    //$addFields : Thêm trường mới mà không thay đổi dữ liệu gốc
     //$map
     //$cond
     //$reduce

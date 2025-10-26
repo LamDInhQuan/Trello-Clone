@@ -23,6 +23,7 @@ public class Card {
     ObjectId columnId ;
     String title ;
     String description ;
+    String cardCover = null;
     Date createAt = new Date();
     Date updateAt ;
     Boolean _destroy = false ;

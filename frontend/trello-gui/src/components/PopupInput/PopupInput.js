@@ -12,10 +12,12 @@ import { FIELD_REQUIRED_MESSAGE } from '~/utils/validators';
 import ABCCharacterIcon from '../Icons/ABCCharacterIcon';
 import DescriptionIcon from '../Icons/DescriptionIcon';
 import Button from '../Button';
+import { addNewBoardAPI } from '~/apis';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
-function PopupInput({ onPopUp = true, closePopup }) {
+function PopupInput({ onPopUp = true, closePopup, onCreated }) {
     const {
         register,
         handleSubmit,
@@ -27,7 +29,13 @@ function PopupInput({ onPopUp = true, closePopup }) {
     const inputDescription = watch('description');
     const submitCreateBoard = (data) => {
         console.log('data', data);
-        const { email, password } = data;
+        addNewBoardAPI(data).then((res) => {
+            if (!res.error) {
+                toast.success('Thêm board thành công!');
+            }
+            closePopup();
+            onCreated()
+        });
     };
     return (
         <form onSubmit={handleSubmit(submitCreateBoard)}>
@@ -68,7 +76,7 @@ function PopupInput({ onPopUp = true, closePopup }) {
                             {...register('description', {
                                 required: FIELD_REQUIRED_MESSAGE,
                                 minLength: { value: 3, message: 'Min length is 3 characters' },
-                                maxLength: { value: 50, message: 'Max length is 50 characters' },
+                                maxLength: { value: 255, message: 'Max length is 50 characters' },
                             })}
                         />
                         <FieldErrorAlert errors={errors} fieldName={'description'} />
