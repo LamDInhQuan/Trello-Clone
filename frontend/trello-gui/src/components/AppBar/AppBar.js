@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAPIRedux, selectCurrentUser } from '~/redux/user/userSlice';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import Notification from './Notification';
 
 const cx = classNames.bind(styles);
 
@@ -122,10 +123,10 @@ function AppBar() {
                 <div className={cx('search-andMode')}>
                     <InputSearch title={'Search...'} value={inputSearch} onChange={setOnChangeInputSearch} />
                     <ModeSelect />
-                    <Tippy content="inbox" arrow={true}>
-                        <span className={cx('faBell-icon')}>
-                            <FontAwesomeIcon icon={faBell} />
-                        </span>
+                    <Tippy content="notification" arrow={true}>
+                        <div>
+                            <Notification />
+                        </div>
                     </Tippy>
                     <Tippy content="question" arrow={true}>
                         <span className={cx('faQuestion-icon')}>

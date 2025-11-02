@@ -32,7 +32,7 @@ import {
     selectCurrentActiveCard,
     updateCurrentActiveCard,
 } from '~/redux/activeCard/activeCardSlice';
-import { updateCoverCardAPI, updateTitleCardAPI } from '~/apis';
+import { updateCommentCardAPI, updateCoverCardAPI, updateTitleCardAPI } from '~/apis';
 import { toast } from 'react-toastify';
 import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice';
 import { singleFileValidator } from '~/utils/validators';
@@ -93,12 +93,12 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
             .promise(
                 updateCoverCardAPI(reqData).finally(() => {
                     console.log('delete file avatar');
-                    e.target.value = ''
+                    e.target.value = '';
                     // console.log(e.target.files[0]);
                 }),
                 {
                     pending: 'Updating...',
-                    success : 'Update card cover successfully'
+                    success: 'Update card cover successfully',
                 },
             )
             .then((res) => {
@@ -108,9 +108,17 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                 // Lưu ý dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input , nếu không
                 // thì sẽ không thể chọn cùng một file liên tiếp được
                 e.target.value = '';
-                updateCardInBoardRedux(res.result)
+                updateCardInBoardRedux(res.result);
             })
             .catch(() => {});
+    };
+    const onAddCardComment = async (comment) => {
+        console.log(comment);
+        await updateCommentCardAPI(comment).then((res) => {
+            if (!res.error) {
+                updateCardInBoardRedux(res.result);
+            }
+        });
     };
     return (
         <>
@@ -162,7 +170,11 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                                     <CommentIcon className={cx('iconCardActivity')} />
                                     <h3>Activity</h3>
                                 </div>
-                                <CardActivitySection />
+                                <CardActivitySection
+                                    comments={currentActiveCard?.comments}
+                                    onAddCardComment={onAddCardComment}
+                                    cardId={currentActiveCard?.cardId || currentActiveCard?._id}
+                                />
                             </div>
                         </div>
                         <div className={cx('rightContent')}>

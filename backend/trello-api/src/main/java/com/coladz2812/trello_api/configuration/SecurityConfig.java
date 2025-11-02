@@ -60,8 +60,9 @@ public class SecurityConfig { // lớp này xử lí request trước khi đi v�
                 .cors(cors -> {
                 })
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT)
-                                .permitAll().anyRequest().authenticated())
+                        request
+                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
+                                .anyRequest().authenticated())
                 .exceptionHandling(exp -> exp.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         // đặt filter trước UsernamePasswordAuthenticationFilter
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

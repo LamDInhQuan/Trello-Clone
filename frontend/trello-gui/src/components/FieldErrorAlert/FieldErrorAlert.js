@@ -9,14 +9,15 @@ import styles from './FieldErrorAlert.module.scss';
 
 const cx = classNames.bind(styles);
 
-function FieldErrorAlert({ errors, fieldName }) {
+function FieldErrorAlert({ errors, fieldName, className, messageClassName = false, iconClassName }) {
     const message = errors?.[fieldName]?.message;
     // console.log(errors)
-    return !message ? null : 
-    <div className={cx('wrapper')}>
-        <Icons.ErrorOutline className={cx('icon')}/>
-        <p>{ message|| ''}</p>
-    </div>;
+    return !message ? null : (
+        <div className={cx('wrapper', className)}>
+            <Icons.ErrorOutline className={cx('icon', iconClassName)} />
+            <p className={messageClassName}>{message || ''}</p>
+        </div>
+    );
 }
 
 export default FieldErrorAlert;

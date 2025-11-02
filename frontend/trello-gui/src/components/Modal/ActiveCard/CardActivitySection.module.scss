@@ -15,11 +15,11 @@
     border-radius: 999px;
 }
 .hearder > input {
-    border: 0.5px solid rgba(118, 111, 111, 0.427);
+    border: 0.5px solid rgba(75, 67, 67, 0.427);
     border-radius: 5px;
     flex: 1;
     padding-left: 10px;
-    color: var(--color-gray);
+    color: rgba(27, 25, 25, 0.858);
 }
 .content {
     display: flex;
@@ -30,7 +30,7 @@
 .content > p {
     margin-left: 8%;
     font-size: 13px;
-    color: var(--color-gray);
+    color: rgba(27, 25, 25, 0.858);
 }
 .contentActivity {
     display: flex;

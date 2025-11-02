@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ColumnMapper {
     @Mapping(target = "boardId", ignore = true) // bỏ qua ObjectId
-    @Mapping(target = "createAt", ignore = true)
-    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "_destroy", ignore = true)
     Column toColumn(ColumnRequest request);
 

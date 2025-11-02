@@ -38,6 +38,13 @@ public enum ErrorCode {
     COLUMN_TITLE_NOT_NULL(1027,"Tiêu đề column không được để trống ",HttpStatus.BAD_REQUEST),
     CARD_TITLE_NOT_NULL(1028,"Tiêu đề card không được để trống ",HttpStatus.BAD_REQUEST),
     CARD_DESCRIPTION_NOT_NULL(1029,"Mô tả card không được để trống",HttpStatus.BAD_REQUEST),
+    CARD_DISPLAYNAME_NOT_NULL(1030,"Tên hiển thị user không được để trống",HttpStatus.BAD_REQUEST),
+    CARD_CONTENT_COMMENT_NOT_NULL(1031,"Nội dung comment user không được để trống",HttpStatus.BAD_REQUEST),
+    STATUS_INVITATION_ERROR(1032,"Status invitation không hợp lệ!",HttpStatus.BAD_REQUEST) ,
+    INVITATION_ID_NOTNULL(1033,"Invitation Id không được để trống!",HttpStatus.BAD_REQUEST) ,
+    INVITATION_NOT_FOUND(1034,"Invitation không tồn tại!",HttpStatus.BAD_REQUEST) ,
+    USER_EXIST_IN_BOARD(1035,"User đã là thành viên của board!",HttpStatus.BAD_REQUEST) ,
+    INVITATION_ALREADY_UPDATE(1036,"Invitation đã được cập nhật!",HttpStatus.BAD_REQUEST) ,
     SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST) ,
     VERIFY_ACCOUNT_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST),
     TOKEN_IS_EXPIRED(4006,"Token đã hết hạn! Vui lòng refresh token!",HttpStatus.GONE) ,
@@ -51,7 +58,7 @@ public enum ErrorCode {
     IMAGE_MAX_FILE(4010,"Kích thước ảnh quá lớn",HttpStatus.BAD_REQUEST),
     IMAGE_NOT_VALID(4011,"Thuộc tính file không hợp lệ! Chỉ chấp nhận jpg, jpeg và png",HttpStatus.BAD_REQUEST),
     MAX_FILE(4012,"Kích thước file qúa lớn!",HttpStatus.BAD_REQUEST),
-    UPLOAD_AVATAR_FAILED(4013,"Upload avatar thất bại!",HttpStatus.BAD_REQUEST)
+    UPLOAD_AVATAR_FAILED(4013,"Upload avatar thất bại!",HttpStatus.BAD_REQUEST),
     ;
     ;
 

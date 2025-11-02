@@ -3,6 +3,7 @@ package com.coladz2812.trello_api.repository;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.model.Board;
+import com.coladz2812.trello_api.model.Card;
 import com.coladz2812.trello_api.util.PaginationUtil;
 import com.fasterxml.jackson.databind.deser.impl.ObjectIdReader;
 import com.mongodb.client.model.Collation;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.mongodb.core.aggregation.VariableOperators.Let;
 
@@ -111,6 +113,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 new Document("$unwind", new Document("path", "$columns")
                         .append("preserveNullAndEmptyArrays", true)),
                 // Nếu dùng preserveNullAndEmptyArrays: true cho $unwind, board vẫn tồn tại →
+                // Nếu không có option này, MongoDB loại bỏ document nào không có columns.
                 // $group tạo mảng columns gồm null hoặc mảng rỗng.
 
                 // thực hiện join các obj đã tách lẻ với bảng card
@@ -285,6 +288,30 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         }
 
         return results;
+    }
+
+    @Override
+    public Board getBoardByBoardIdAndUserId(String userId, String boardId) {
+        // Query thường (find, findOne, findAll)
+        // Criteria là class trong Spring Data MongoDB dùng để xây dựng điều kiện truy vấn —
+        // giống như WHERE trong SQL. Nó giúp bạn viết truy vấn MongoDB một cách rõ ràng, type-safe và dễ đọc.
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(boardId))
+                .orOperator(
+                        // thằng userId phải là chủ board hoặc thành viên board mới được
+                        Criteria.where("ownerIds").is(userId),
+                        Criteria.where("memberIds").is(userId)
+                )
+        );
+
+
+
+        Board board = mongoTemplate.findOne(query, Board.class);
+
+        if (board == null) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        return board;
     }
 
     // Trong MongoDB, $lookup là stage trong aggregation pipeline dùng để

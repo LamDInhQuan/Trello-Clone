@@ -134,3 +134,16 @@ export const updateCoverCardAPI = async (data) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardCover`, data);
     return response.data;
 };
+
+export const updateCommentCardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardComment`, data);
+    return response.data;
+};
+
+// invitation
+export const addNewInvitationAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/invitation/newInvitation`, data);
+    return response.data;
+};
+
+

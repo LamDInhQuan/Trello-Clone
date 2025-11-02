@@ -12,6 +12,7 @@ import com.coladz2812.trello_api.mapper.CardMapper;
 import com.coladz2812.trello_api.model.Board;
 import com.coladz2812.trello_api.model.Card;
 import com.coladz2812.trello_api.model.Column;
+import com.coladz2812.trello_api.model.Comment;
 import com.coladz2812.trello_api.repository.BoardRepository;
 import com.coladz2812.trello_api.repository.CardRepository;
 import com.coladz2812.trello_api.repository.ColumnRepository;
@@ -22,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +45,13 @@ public class CardService {
     ColumnRepository columnRepository;
     BoardRepository boardRepository;
     Cloudinary cloudinary;
+
+    public void cardMapper(CardResponse cardResponse , Card card){
+        cardResponse.setBoardId(card.getBoardId().toString());
+        cardResponse.setColumnId(card.getColumnId().toString());
+        cardResponse.setCreatedAt(card.getCreatedAt());
+        cardResponse.setUpdatedAt(card.getUpdatedAt());
+    }
 
     public CardResponse addCard(CardRequest request) {
         Card card = cardMapper.toCard(request);
@@ -66,10 +75,8 @@ public class CardService {
         Card savedCard = cardRepository.save(card);
         column.getCardOrderIds().add(savedCard.getCardId());
         columnRepository.save(column);
-        CardResponse cardResponse = cardMapper.toCardResponse(savedCard);
-        cardResponse.setBoardId(card.getBoardId().toString());
-        cardResponse.setColumnId(card.getColumnId().toString());
-        cardResponse.setCreatedAt(new Date());
+        CardResponse cardResponse = cardMapper.toCardResponse(cardRepository.save(card));
+        cardMapper(cardResponse,card);
         return cardResponse;
     }
 
@@ -78,27 +85,24 @@ public class CardService {
         return cardMapper.toCardResponse(card.orElseThrow(() -> new AppException(ErrorCode.BOARD_NOT_FOUND)));
     }
 
-    public CardResponse updateCardInfo(CardRequestUpdate request) {
-        Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> new AppException(ErrorCode.CARD_NOT_FOUND));
+    public CardResponse updateCardInfo(CardRequestUpdate request, String userId) {
+        Card card = cardRepository.findCardDetailById(request.getCardId(),userId);
 //        log.error("card"+card);
         if (request.getTitle() != null && !request.getTitle().isEmpty()) {
             card.setTitle(request.getTitle());
-            card.setUpdateAt(new Date());
+            card.setUpdatedAt(new Date());
         }
         if (request.getDescription() != null && !request.getDescription().isEmpty()) {
             card.setDescription(request.getDescription());
-            card.setUpdateAt(new Date());
+            card.setUpdatedAt(new Date());
         }
         CardResponse cardResponse = cardMapper.toCardResponse(cardRepository.save(card));
-        cardResponse.setBoardId(card.getBoardId().toString());
-        cardResponse.setColumnId(card.getColumnId().toString());
-        cardResponse.setCreatedAt(card.getCreateAt());
-        cardResponse.setUpdatedAt(card.getUpdateAt());
+        cardMapper(cardResponse,card);
         return cardResponse;
     }
 
-    public CardResponse uploadCardCover(String cardId, MultipartFile cardCoverFile) {
-        Card card = cardRepository.findById(cardId).orElseThrow(() -> new AppException(ErrorCode.CARD_NOT_FOUND));
+    public CardResponse uploadCardCover(String cardId,String userId, MultipartFile cardCoverFile) {
+        Card card = cardRepository.findCardDetailById(cardId,userId);
         log.error("cardCoverFile"+cardId);
         // 2. Update avatar
         if (!cardCoverFile.isEmpty()) {
@@ -111,12 +115,9 @@ public class CardService {
 //                log.error("uploadResponse"+uploadResponse);
                 String cardCoverURL = uploadResponse.get("secure_url").toString();
                 card.setCardCover(cardCoverURL);
-                card.setUpdateAt(new Date());
+                card.setUpdatedAt(new Date());
                 CardResponse cardResponse = cardMapper.toCardResponse(cardRepository.save(card));
-                cardResponse.setBoardId(card.getBoardId().toString());
-                cardResponse.setColumnId(card.getColumnId().toString());
-                cardResponse.setCreatedAt(card.getCreateAt());
-                cardResponse.setUpdatedAt(card.getUpdateAt());
+                cardMapper(cardResponse,card);
                 return cardResponse ;
             } catch (IOException e) {
                 throw new AppException(ErrorCode.UPLOAD_AVATAR_FAILED);
@@ -124,5 +125,15 @@ public class CardService {
 
         }
         return null;
+    }
+
+    public CardResponse addCardComment(String cardId, Comment comment) {
+//        log.error("comment"+comment);
+        Card card = cardRepository.findCardDetailById(cardId,comment.getUserId());
+//        log.error("card"+card);
+        card.getComments().add(0,comment);
+        CardResponse cardResponse = cardMapper.toCardResponse(cardRepository.save(card));
+        cardMapper(cardResponse,card);
+        return cardResponse;
     }
 }

@@ -56,6 +56,9 @@ import LabelTagIcon from './LabelTagIcon';
 import CheckListIcon from './CheckListIcon';
 import CustomFieldIcon from './CustomFieldIcon';
 import CheckListIcon2 from './CheckListIcon2';
+import NotificationIcon from './NotificationIcon';
+import TickIcon from './TickIcon';
+import RejectIcon from './RejectIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -92,30 +95,33 @@ const Icons = {
     MailIcon,
     ContactUserIcon,
     ContactUserIcon2,
-    PasswordIcon ,
-    LockResetIcon ,
-    BoardsIcon ,
-    TemplateIcon ,
-    HomeIcon ,
-    ArrowRightIcon ,
-    ArrowRight2Icon , 
-    ArrowLastRightIcon ,
-    ArrowLeftI2Icon ,
-    ArrowLastLeftIcon ,
-    CloseBorderIcon ,
-    ABCCharacterIcon ,
-    DescriptionIcon ,
-    CardIcon , 
-    DescriptionIcon2 ,
-    CommentIcon ,
-    EditNoteIcon ,
-    UserIconOutline ,
-    CoverIcon ,
-    AttachIcon2 ,
-    LabelTagIcon ,
-    CheckListIcon ,
-    CustomFieldIcon ,
-    CheckListIcon2
+    PasswordIcon,
+    LockResetIcon,
+    BoardsIcon,
+    TemplateIcon,
+    HomeIcon,
+    ArrowRightIcon,
+    ArrowRight2Icon,
+    ArrowLastRightIcon,
+    ArrowLeftI2Icon,
+    ArrowLastLeftIcon,
+    CloseBorderIcon,
+    ABCCharacterIcon,
+    DescriptionIcon,
+    CardIcon,
+    DescriptionIcon2,
+    CommentIcon,
+    EditNoteIcon,
+    UserIconOutline,
+    CoverIcon,
+    AttachIcon2,
+    LabelTagIcon,
+    CheckListIcon,
+    CustomFieldIcon,
+    CheckListIcon2,
+    NotificationIcon,
+    TickIcon ,
+    RejectIcon
 };
 
 export default Icons;

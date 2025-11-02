@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
 import Button from '~/components/Button';
 import styles from './BoardBar.module.scss';
+import InviteBoardUser from './InviteBoardUser';
 
 const cx = classNames.bind(styles);
 const avatars = Array.from({ length: 16 }, () => ({
@@ -49,13 +50,7 @@ function BoardBar() {
                     </Button>
                 </div>
                 <div className={cx('avatar-Group')}>
-                    <Button
-                        leftIcon={<Icons.AddGroupIcon className={cx('icon-invite')} />}
-                        outline
-                        avatarGroup={maxAvatarVisible > 0 ? false : true}
-                    >
-                        Invite
-                    </Button>
+                    <InviteBoardUser boardId={board._id}/>
                     <AvatarGroup
                         avatarGroups={board.FeUsersFromBoard}
                         maxAvatarVisible={maxAvatarVisible}

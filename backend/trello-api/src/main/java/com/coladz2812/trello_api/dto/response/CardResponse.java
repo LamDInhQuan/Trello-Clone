@@ -1,5 +1,6 @@
 package com.coladz2812.trello_api.dto.response;
 
+import com.coladz2812.trello_api.model.Comment;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class CardResponse {
     String title;
     String cardCover ;
     String description;
+    List<Comment> comments;
     Date createdAt;
     Date updatedAt;
     Boolean _destroy;

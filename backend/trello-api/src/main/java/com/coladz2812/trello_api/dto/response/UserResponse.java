@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
+    String userId ;
     String email ;
     String username ;
     String displayName ;

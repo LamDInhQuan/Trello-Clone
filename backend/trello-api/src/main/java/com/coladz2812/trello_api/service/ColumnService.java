@@ -70,14 +70,14 @@ public class ColumnService {
     public ColumnResponse updateColumnByCardOrderIdsInTheSameColumn(String columnId , ColumnRequestUpdate request) {
         Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         column.setCardOrderIds(request.getCardOrderIds());
-        column.setUpdateAt(new Date());
+        column.setUpdatedAt(new Date());
         return columnMapper.toColumnResponse(columnRepository.save(column));
     }
 
     public ColumnResponse updateTwoColumnsByCardOrderIds(String columnId , ColumnRequestUpdate request) {
         Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         column.setCardOrderIds(request.getCardOrderIds());
-        column.setUpdateAt(new Date());
+        column.setUpdatedAt(new Date());
         return columnMapper.toColumnResponse(columnRepository.save(column));
     }
 
@@ -87,11 +87,11 @@ public class ColumnService {
         Column nextColumn = columnRepository.findById(request.getNextColumnId()).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         log.error("prevColumn "+prevColumn.getCardOrderIds().size());
         prevColumn.setCardOrderIds(request.getPrevCardOrderIds());
-        prevColumn.setUpdateAt(new Date());
+        prevColumn.setUpdatedAt(new Date());
         log.error("prevColumn "+prevColumn.getCardOrderIds().size());
         log.error("nextColumn "+nextColumn.getCardOrderIds().size());
         nextColumn.setCardOrderIds(request.getNextCardOrderIds());
-        nextColumn.setUpdateAt(new Date());
+        nextColumn.setUpdatedAt(new Date());
         log.error("nextColumn "+nextColumn.getCardOrderIds().size());
         columnRepository.save(prevColumn);
         columnRepository.save(nextColumn);
@@ -105,7 +105,7 @@ public class ColumnService {
         ColumnResponse columnResponse = columnMapper.toColumnResponse(columnRepository.save(column)) ;
         columnResponse.setBoardId(column.getBoardId().toString());
         columnResponse.setUpdatedAt(new Date());
-        columnResponse.setCreatedAt(column.getCreateAt());
+        columnResponse.setCreatedAt(column.getCreatedAt());
         return columnResponse;
     }
 }

@@ -45,7 +45,7 @@ export const userSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(loginUserAPIRedux.fulfilled, (state, action) => {
             // action.payload ở đây chính là response.data trả về ở trên
-            const user = action.payload.result;
+            const user = action.payload.result.user;
             // xử lý dữ liệu nếu cần thiết ....
             // update lại dữ liệu của currentActiveBoard
             state.currentUser = user;

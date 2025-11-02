@@ -33,7 +33,7 @@ function CardDescriptionMdEditor({ value, updateCardInBoardRedux }) {
     const [content, setContent] = useState(value);
 
     const handleSave = () => {
-        console.log({ cardId: currentActiveCard._id || currentActiveCard.cardId, description: content });
+        // console.log({ cardId: currentActiveCard._id, description: content });
         updateDescriptionCardAPI({ cardId: currentActiveCard._id || currentActiveCard.cardId, description: content })
             .then((res) => {
                 if (!res.error) {

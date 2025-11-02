@@ -37,6 +37,8 @@ function ButtonDropDownMenu({
     translateY = 30,
     buttonClassName = false,
     addMemberAvatarGroup = false,
+    dropDownChildrenCustom = false,
+    menuDropDownCustomClassname = false,
 }) {
     const [hide, setHide] = useState(false);
     useEffect(() => {
@@ -89,7 +91,7 @@ function ButtonDropDownMenu({
             </Button>
             {/*  ẩn hiện menumenu */}
             <MenuDropDownCustom
-                className={cx2('wrapper', { active: hide, avatarGroups: avatarGroups })}
+                className={cx2('wrapper', { active: hide, avatarGroups: avatarGroups }, menuDropDownCustomClassname)}
                 ref={dropdownRef}
                 position={imgSrc || calcPosition ? position : false}
             >
@@ -111,6 +113,7 @@ function ButtonDropDownMenu({
                           );
                       })
                     : []}
+                {dropDownChildrenCustom}
             </MenuDropDownCustom>
             {/*  ẩn hiện menumenu */}
         </div>

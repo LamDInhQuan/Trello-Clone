@@ -7,6 +7,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const MenuDropDownCustom = ({ className, children, position = false }, ref) => {
+    // console.log("render");
     let left, top;
     if (position) {
         ({ left, top } = position);

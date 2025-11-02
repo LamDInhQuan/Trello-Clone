@@ -5,27 +5,45 @@ import classNames from 'classnames/bind';
 import styles from './CardActivitySection.module.scss';
 import images from '~/assets/images';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '~/redux/user/userSlice';
 
 const cx = classNames.bind(styles);
-function CardActivitySection() {
-    const activityArray = Array.from({ length: 6 });
+function CardActivitySection({ comments = [], onAddCardComment, cardId }) {
+    const currentUser = useSelector(selectCurrentUser);
+
+    const handelAddComment = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!e.target.value) return;
+            const comment = {
+                cardId: cardId,
+                content: e.target.value,
+            };
+            console.log(comment);
+            onAddCardComment(comment).then(() => {
+                console.log('goi api hoan tat');
+                e.target.value = '';
+            });
+        }
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('hearder')}>
-                <img src={images.noImage2}></img>
-                <input placeholder="Write a comment..." />
+                <img src={currentUser?.avatar}></img>
+                <input placeholder="Write a comment..." onKeyDown={handelAddComment} />
             </div>
             <div className={cx('content')}>
-                {activityArray.length === 0 && <p>No activity found!</p>}
-                {activityArray.map((item, index) => (
+                {comments.length === 0 && <p>No activity found!</p>}
+                {comments.map((item, index) => (
                     <div className={cx('contentActivity')} key={index}>
-                        <img src={images.test}></img>
+                        <img src={item?.userAvatar}></img>
                         <div className={cx('userInfoAndInput')}>
                             <div className={cx('userInfo')}>
-                                <p>Cola deptrai</p>
-                                <p>{moment().format('llll')}</p>
+                                <p>{item?.userDisplayname}</p>
+                                <p>{moment(item?.commentAt).format('llll')}</p>
                             </div>
-                            <input placeholder="This is a comment!" />
+                            <input placeholder={item?.content} />
                         </div>
                     </div>
                 ))}

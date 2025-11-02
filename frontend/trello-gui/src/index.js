@@ -37,14 +37,14 @@ import { persistStore } from 'redux-persist';
 // Kỹ thuật Inject Store : là kỹ thuật khi cần sử dụng biến redux store ở các file ngoài phạm vị
 // component
 import { injectStore } from './utils/authorizeAxios';
-injectStore(store);
 
+injectStore(store);
 const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter basename="/">
-        <Provider store={store}>
-            <PersistGate persistor={persistor}>
+    <Provider store={store}>
+        <PersistGate persistor={persistor}>
+            <BrowserRouter basename="/">
                 <GlobalAppStyle>
                     <ConfirmProvider
                         defaultOptions={{
@@ -62,9 +62,9 @@ root.render(
                         <ToastContainer position="bottom-left" theme="colored" />
                     </ConfirmProvider>
                 </GlobalAppStyle>
-            </PersistGate>
-        </Provider>
-    </BrowserRouter>,
+            </BrowserRouter>
+        </PersistGate>
+    </Provider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

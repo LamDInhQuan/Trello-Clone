@@ -1,0 +1,69 @@
+.menuDropDownCustomClassname {
+    left: -160px !important;
+    top: 40px;
+}
+.inviteForm {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 15px;
+}
+.inviteForm > p {
+    font-size: 13.5px;
+    font-weight: bold;
+}
+.icon-invite {
+    width: 20px;
+}
+.button {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid #007e75;
+    color: #007e75;
+    &:hover {
+        background-color: #e2eaf3;
+    }
+}
+// css input
+.input-username {
+    width: 220px;
+    height: 37px;
+    border: 2px solid var(--color-green);
+    font-size: 13px;
+    color: #48474c;
+}
+
+.label-input-username {
+    font-size: 10.5px !important;
+    background-color: white;
+    color: var(--color-green);
+    transform: translateY(-10px) !important;
+}
+.button-update {
+    width: 60px;
+    background-color: blue;
+    color: white;
+    display: flex;
+    justify-content: center;
+    height: 30px;
+    margin-left: calc(100vw / 9 - 12px);
+}
+// fieldErrorAlert
+.fieldErrorAlert {
+    height: fit-content;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 5px;
+}
+.messageFieldErrorAlert {
+    font-size: 12px !important;
+    margin-bottom: -2px !important;
+}
+.iconFieldErrorAlert {
+    width: 15px !important;
+    height: 15px !important;
+    min-height: 15px !important;
+    min-width: 15px !important;
+}

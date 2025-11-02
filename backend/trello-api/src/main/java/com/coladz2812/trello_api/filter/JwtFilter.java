@@ -54,10 +54,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = extractAccessToken(request);
 
-
+        // Log toàn bộ URL và method
+        // log.error("Request URL: " + request.getRequestURL());
+        //log.error("Request Method: " + request.getMethod());
         if (accessToken != null && !accessToken.isBlank()) {
 
-//            log.error("accesToken : " + accesToken);
+            // log.error("accesToken : " + accessToken);
             try {
                 var jwt = customJwtDecoder.decode(accessToken);
                 var id = jwt.getClaimAsString("sub");
@@ -67,7 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 //  credentials: password hoặc null nếu đã xác thực.
                 //  authorities: danh sách quyền hạn (ROLE_USER, ROLE_ADMIN).
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(id, null, List.of());
-
+                token.setDetails(jwt.getClaimAsString("email")); // set email và ⚠️ setDetails(...) chỉ giữ một giá trị duy nhất
                 // SecurityContextHolder Là lớp trung tâm trong Spring Security, dùng để lưu trữ thông tin bảo mật của request hiện tại.
                 // Nói cách khác, đây là nơi Spring Security biết request này đã đăng nhập chưa, user nào, quyền gì.
                 // khi token hợp lệ và decode thành công thì phải cho authentication thì mới truy cập dc API
