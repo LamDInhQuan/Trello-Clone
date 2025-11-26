@@ -196,8 +196,11 @@ public class UserService {
     public void generateCookie(HttpServletResponse response, String name, String value, int expireDays) {
 
         Cookie cookie = new Cookie(name, value);
-//        cookie.setSecure(true);
-//        cookie.setHttpOnly(true);
+// 2. BẮT BUỘC TRÊN SERVER HTTPS
+        cookie.setSecure(true);
+
+// 3. BẮT BUỘC NẾU FRONTEND VÀ BACKEND KHÁC DOMAIN
+        cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(expireDays * 24 * 60 * 60);   // chuyển ngày sang giâ
         response.addCookie(cookie);
