@@ -124,7 +124,6 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
         setOderredCards(board.columns);
     }, [board]);
 
-    // Custom sensor: click focuses; drag activates after small movement
 
 
     // handelDragStart : bắt đầu kéo 1 phần tửtử
