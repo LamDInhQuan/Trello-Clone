@@ -8,6 +8,8 @@ import {
     rectIntersection,
     pointerWithin,
     closestCenter,
+    useSensor,
+    useSensors,
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import classNames from 'classnames/bind';
@@ -23,6 +25,7 @@ import { mapOrder, sortByIndex } from '~/utils/sorts';
 import styles from './BoardContent.module.scss';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import InputSearch from '~/components/InputSearch';
+import { CustomPointerSensor } from '~/sensors/CustomPointerSensor';
 
 const cx = classNames.bind(styles);
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -87,6 +90,15 @@ function BoardContent({
         // đã sắp xếp columns ở comp cao nhất
         setOderredCards(board.columns);
     }, [board]);
+
+    // Custom sensor: click focuses; drag activates after small movement
+    const sensors = useSensors(
+        useSensor(CustomPointerSensor, {
+            activationConstraint: {
+                distance: 8, // pixels to move before drag starts
+            },
+        }),
+    );
 
     // handelDragStart : bắt đầu kéo 1 phần tửtử
     // bắt đầu kéo , xác định id phần tử kéo , loại ( card , cardItem ) , data của thẻ kéo
@@ -486,6 +498,7 @@ function BoardContent({
 
     return (
         <DndContext
+            sensors={sensors}
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
             // custom lại thuật toán va chạm ko bug ko giật
             onDragStart={handelDragStart}
