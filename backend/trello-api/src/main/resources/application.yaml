@@ -6,7 +6,7 @@ spring:
     mongodb:
       uri: ${MONGO_URI}  # đọc từ biến môi trường
 
-mail:
+  mail:
     host: smtp.gmail.com
     port: 587
     username: ${GMAIL_USER}
@@ -33,13 +33,13 @@ brevo:
     name: ${BREVO_EMAIL}
     senderName: Trello Advance MERN Stack
 
-jwt :
-  signerKeyAccess : ${SIGNER_KEY_ACCESS}
-  signerKeyRefresh : ${SIGNER_KEY_REFRESH}
-  valid-duration : 3600 # in second thơig gian có hiệu lực cùa token
-  refreshable-duration : 7200 #in second thời gian có thể làm mới token
+jwt:
+  signerKeyAccess: ${SIGNER_KEY_ACCESS}
+  signerKeyRefresh: ${SIGNER_KEY_REFRESH}
+  valid-duration: 3600 # in second thơig gian có hiệu lực cùa token
+  refreshable-duration: 7200 #in second thời gian có thể làm mới token
 
-cloudinary :
-  cloudName : ${CLOUDINARY_CLOUD_NAME}
-  cloudApiKey : ${CLOUDINARY_API_KEY}
-  cloudApiSecret : ${CLOUDINARY_API_SECRET}
+cloudinary:
+  cloudName: ${CLOUDINARY_CLOUD_NAME}
+  cloudApiKey: ${CLOUDINARY_API_KEY}
+  cloudApiSecret: ${CLOUDINARY_API_SECRET}
