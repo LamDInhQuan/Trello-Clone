@@ -543,7 +543,6 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
             sensors={sensors}
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
             // custom lại thuật toán va chạm ko bug ko giật
-            sensors={sensors}
             onDragStart={handelDragStart}
             onDragEnd={handelDragEnd}
             onDragOver={handelDragOver}
