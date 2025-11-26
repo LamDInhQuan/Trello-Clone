@@ -203,6 +203,11 @@ public class UserService {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(expireDays * 24 * 60 * 60);   // chuyển ngày sang giâ
+        
+        // Spring không có hàm setSameSite ⇒ bạn phải thêm thủ công
+        String header = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=None",
+                cookie.getName(), cookie.getValue(), cookie.getMaxAge());
+        response.addHeader("Set-Cookie", header);
         response.addCookie(cookie);
     }
 
