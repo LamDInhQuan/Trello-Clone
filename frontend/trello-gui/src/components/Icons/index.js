@@ -59,6 +59,16 @@ import CheckListIcon2 from './CheckListIcon2';
 import NotificationIcon from './NotificationIcon';
 import TickIcon from './TickIcon';
 import RejectIcon from './RejectIcon';
+import CardSizeIcon from './CardSizeIcon';
+import AddIcon from './AddIcon';
+import ArchiveIcon from './ArchiveIcon';
+import ShareIcon from './ShareIcon';
+import ArrowRight3Icon from './ArrowRight3Icon';
+import MagicIcon from './MagicIcon';
+import ArrowLeft3Icon from './ArrowLeft3Icon';
+import UserLeaveIcon from './UserLeaveIcon';
+import SearchIcon from './SearchIcon';
+import LoadingIcon from './LoadingIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -120,8 +130,18 @@ const Icons = {
     CustomFieldIcon,
     CheckListIcon2,
     NotificationIcon,
-    TickIcon ,
-    RejectIcon
+    TickIcon,
+    RejectIcon,
+    CardSizeIcon,
+    AddIcon,
+    ArchiveIcon,
+    ShareIcon,
+    ArrowRight3Icon ,
+    MagicIcon ,
+    ArrowLeft3Icon ,
+    UserLeaveIcon ,
+    SearchIcon ,
+    LoadingIcon
 };
 
 export default Icons;

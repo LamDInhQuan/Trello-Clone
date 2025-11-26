@@ -25,6 +25,7 @@ public class Card {
     String title ;
     String description ;
     String cardCover = null;
+    List<String> memberIds = List.of();
     List<Comment> comments = List.of();
     Date createdAt = new Date();
     Date updatedAt ;

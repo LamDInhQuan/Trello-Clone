@@ -1,9 +1,6 @@
 package com.coladz2812.trello_api.controller;
 
-import com.coladz2812.trello_api.classValidation.CardDescriptionUpdate;
-import com.coladz2812.trello_api.classValidation.CardTitleUpdate;
-import com.coladz2812.trello_api.classValidation.ColumnInfoUpdate;
-import com.coladz2812.trello_api.classValidation.TwoColumnsUpdate;
+import com.coladz2812.trello_api.classValidation.*;
 import com.coladz2812.trello_api.dto.request.CardRequest;
 import com.coladz2812.trello_api.dto.request.CardRequestUpdate;
 import com.coladz2812.trello_api.dto.request.ColumnRequestUpdate;
@@ -92,6 +89,14 @@ public class CardController {
                 .content(request.getContent())
                 .commentAt(new Date()).build();
         var cardResponse = cardService.addCardComment(request.getCardId(), comment);
+        ApiResponse<CardResponse> apiResponse = ApiResponse.<CardResponse>builder().result(cardResponse).build();
+        return apiResponse;
+    }
+
+    @PutMapping("/updateCardMemberIds")
+    public ApiResponse<CardResponse> updateCardMemberIds(
+            @Validated(CardMemberIdsUpdate.class) @RequestBody CardRequestUpdate request , Authentication authentication) {
+        var cardResponse = cardService.updateMemberInCard(request,authentication.getPrincipal().toString());
         ApiResponse<CardResponse> apiResponse = ApiResponse.<CardResponse>builder().result(cardResponse).build();
         return apiResponse;
     }

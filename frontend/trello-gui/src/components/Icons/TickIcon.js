@@ -2,7 +2,7 @@ function TickIcon({ className }) {
     return (
         <>
             <svg
-                class={className}
+                className={className}
                 focusable="false"
                 aria-hidden="true"
                 viewBox="0 0 24 24"

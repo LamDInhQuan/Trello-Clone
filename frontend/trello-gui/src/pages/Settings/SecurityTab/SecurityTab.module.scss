@@ -4,7 +4,6 @@
     align-items: flex-start;
     width: 100%;
     height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) - 50px); /* trừ đi chiều cao header nếu có */
-    
 }
 .account {
     margin-top: 40px;
@@ -15,8 +14,9 @@
     flex-direction: column;
     gap: 18px;
 }
-.account > h1{
+.account > h1 {
     margin-left: 12%;
+    color: var(--color-button-boards) !important;
 }
 .set-avatar {
     width: 100%;
@@ -41,7 +41,7 @@
     align-items: center;
 }
 .user-icon {
-    color: white;
+    color: var(--color-button-boards) !important;
     background-color: #bab9c7;
     width: 55px;
     height: 55px;
@@ -90,7 +90,7 @@
     font-size: 16px;
 }
 .hide-info-icon {
-    color: #4c4b4f;
+    color: var(--color-input-username-account);
     width: 20px;
     height: 20px;
 }
@@ -99,15 +99,18 @@
     height: 45px;
     border: 2px solid#a19eaa;
     font-size: 15px;
-    color: #48474c;
+    color: var(--color-input-username-account);
+}
+.input-username::placeholder {
+    color: var(--color-input-username-account);
 }
 .input-username:hover {
     border-color: #a19eaa;
 }
 .label-input-username {
     font-size: 11px !important;
-    background-color: white;
-    color: #a19eaa;
+    background-color: var(--color-main-boards);
+    color: var(--color-input-username-account);
 }
 .button-update {
     width: 100%;
@@ -118,7 +121,7 @@
     height: 40px;
     width: calc(100vw / 3 - 128px);
 }
-// icon-logout 
+// icon-logout
 .icon-logout {
     width: 20px;
     height: 20px;

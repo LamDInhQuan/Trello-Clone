@@ -14,4 +14,5 @@ import java.util.List;
 public interface CardRepositoryCustom{
     public Card findCardDetailById(String cardId , String userId);
 
+    public Card findCardDetailByUserIdAndMemberId(String cardId, String userId, String memberId);
 }

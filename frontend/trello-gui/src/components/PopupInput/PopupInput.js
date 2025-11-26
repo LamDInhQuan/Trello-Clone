@@ -14,6 +14,7 @@ import DescriptionIcon from '../Icons/DescriptionIcon';
 import Button from '../Button';
 import { addNewBoardAPI } from '~/apis';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -27,6 +28,15 @@ function PopupInput({ onPopUp = true, closePopup, onCreated }) {
     } = useForm(); // dùng các props của useForm thay cho useState
     const inputTitle = watch('title'); // sẽ update liên tục khi gõ
     const inputDescription = watch('description');
+
+      // chuyển vào chi tiết board
+        const navigate = useNavigate();
+        const goToBoardDetail = (boardId) => {
+            console.log(boardId);
+            navigate(`/boards/${boardId}`);
+        };
+    
+
     const submitCreateBoard = (data) => {
         console.log('data', data);
         addNewBoardAPI(data).then((res) => {
@@ -34,7 +44,8 @@ function PopupInput({ onPopUp = true, closePopup, onCreated }) {
                 toast.success('Thêm board thành công!');
             }
             closePopup();
-            onCreated()
+            onCreated();
+            goToBoardDetail(res.result.id);
         });
     };
     return (
@@ -57,6 +68,7 @@ function PopupInput({ onPopUp = true, closePopup, onCreated }) {
                             label_search_className={cx('label-input-username')}
                             hasValue={true}
                             noValueInPlaceHolder={true}
+                            normalInput={true}
                             {...register('title', {
                                 required: FIELD_REQUIRED_MESSAGE,
                                 minLength: { value: 3, message: 'Min length is 3 characters' },
@@ -73,6 +85,7 @@ function PopupInput({ onPopUp = true, closePopup, onCreated }) {
                             label_search_className={cx('label-input-username')}
                             hasValue={true}
                             noValueInPlaceHolder={true}
+                            normalInput={true}
                             {...register('description', {
                                 required: FIELD_REQUIRED_MESSAGE,
                                 minLength: { value: 3, message: 'Min length is 3 characters' },

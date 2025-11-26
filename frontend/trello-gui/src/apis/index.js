@@ -111,19 +111,17 @@ export const addNewBoardAPI = async (data) => {
     return response.data;
 };
 
-
 // add new boards
 export const updateTitleColumnAPI = async (data) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/column/updateTitle`, data);
     return response.data;
 };
 
-// update info card 
+// update info card
 export const updateTitleCardAPI = async (data) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardTitle`, data);
     return response.data;
 };
-
 
 export const updateDescriptionCardAPI = async (data) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardDescription`, data);
@@ -146,4 +144,17 @@ export const addNewInvitationAPI = async (data) => {
     return response.data;
 };
 
+// update card memberIds
+export const updateCardMemberIdsAPI = async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/card/updateCardMemberIds`, data);
+    return response.data;
+};
 
+// get list boards
+export const findListBoardsAPI = async (searchObj) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/board/findListBoards`, {
+        params: searchObj,
+        headers: { 'x-silent': true }, // axios luôn giữ headers
+    });
+    return response.data;
+};

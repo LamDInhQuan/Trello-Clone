@@ -24,10 +24,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -51,6 +48,11 @@ public class BoardService {
 
     public List<Document> getListBoards(String userId, int currentPage) {
         var listBoards = boardRepository.getListBoardsByUserId(userId, currentPage);
+        return listBoards;
+    }
+
+    public List<Document> findListBoards(String userId ,Map<String ,String> searchObjects){
+        var listBoards = boardRepository.findBoardBySearchParam(userId, searchObjects);
         return listBoards;
     }
 

@@ -19,6 +19,7 @@ import { selectCurrentUser, updateInfoUserAPIRedux, uploadAvatarUserAPIRedux } f
 import { useDispatch, useSelector } from 'react-redux';
 import FieldErrorAlert from '~/components/FieldErrorAlert';
 import { toast } from 'react-toastify';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -151,12 +152,13 @@ function AccountTab() {
                     </div>
 
                     <InputSearch
-                        leftIcon={<ContactUserIcon className={cx('hide-info-icon')} />}
+                        leftIcon={<ContactUserIcon className={cx('hide-info-icon','iconInput')} />}
                         title={'Your Display Name'}
                         valueInput={displayName}
                         searchInput_className={cx('input-username')}
                         label_search_className={cx('label-input-username')}
                         autoFocus={true}
+                        normalInput={true}
                         {...register('displayName', {
                             required: FIELD_REQUIRED_MESSAGE,
                         })}

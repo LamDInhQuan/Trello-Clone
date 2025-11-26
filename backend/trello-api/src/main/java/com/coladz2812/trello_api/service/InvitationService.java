@@ -2,8 +2,6 @@ package com.coladz2812.trello_api.service;
 
 
 import com.coladz2812.trello_api.dto.request.InvitationRequest;
-import com.coladz2812.trello_api.dto.response.BoardInvitationResponse;
-import com.coladz2812.trello_api.dto.response.CardResponse;
 import com.coladz2812.trello_api.dto.response.InvitationResponse;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
@@ -12,24 +10,19 @@ import com.coladz2812.trello_api.mapper.InvitationMapper;
 import com.coladz2812.trello_api.mapper.UserMapper;
 import com.coladz2812.trello_api.model.Board;
 
-import com.coladz2812.trello_api.model.Card;
 import com.coladz2812.trello_api.model.Invitation;
 import com.coladz2812.trello_api.model.User;
 import com.coladz2812.trello_api.repository.BoardRepository;
 import com.coladz2812.trello_api.repository.InvitationRepository;
 import com.coladz2812.trello_api.repository.UserRepository;
 
-import com.coladz2812.trello_api.util.BoardInvitationStatus;
+import com.coladz2812.trello_api.util.ConstantsUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -48,9 +41,9 @@ public class InvitationService {
     UserMapper userMapper;
     BoardRepository boardRepository;
     InvitationMapper invitationMapper;
-    BoardMapper boardMapper ;
+    BoardMapper boardMapper;
 
-    public void invitationMapper(InvitationResponse response, Invitation invitation, User inviter, User invitee , Board board) {
+    public void invitationMapper(InvitationResponse response, Invitation invitation, User inviter, User invitee, Board board) {
         var user1 = userMapper.toUserResponse(inviter);
         user1.setUserId(inviter.getId().toString());
         response.setInviter(user1);
@@ -62,19 +55,24 @@ public class InvitationService {
     }
 
 
-    public InvitationResponse createNewInvitation(InvitationRequest request) { // ownerId là authentication
+    public InvitationResponse createNewInvitation(InvitationRequest request, String userLoginId) { // ownerId là authentication
         User inviter = userRepository.findById(request.getInviterId()).orElseThrow(() -> {
             throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
         User invitee = userRepository.findByEmail(request.getInviteeEmail()).orElseThrow(() -> {
             throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
-        Board board = boardRepository.getBoardByBoardIdAndUserId(inviter.getId(), request.getBoardInvitations().getBoardId().toHexString());
-        Invitation invitation = invitationMapper.toInvitation(request);
-        invitation.setInviterId(new ObjectId(inviter.getId()));
-        invitation.setInviteeId(new ObjectId(invitee.getId()));
-        InvitationResponse response = invitationMapper.invitationResponse(invitationRepository.save(invitation));
-        invitationMapper(response, invitation, inviter, invitee , board); // mapper invitation
+        boolean isMember = boardRepository.isUserMemeberInBoard(invitee.getId(), userLoginId, request.getBoardInvitations().getBoardId().toHexString());
+        InvitationResponse response = null;
+        if (!isMember) {
+            Board board = boardRepository.getBoardByBoardIdAndUserId(inviter.getId(), request.getBoardInvitations().getBoardId().toHexString());
+            Invitation invitation = invitationMapper.toInvitation(request);
+            invitation.setInviterId(new ObjectId(inviter.getId()));
+            invitation.setInviteeId(new ObjectId(invitee.getId()));
+            response = invitationMapper.invitationResponse(invitationRepository.save(invitation));
+            invitationMapper(response, invitation, inviter, invitee, board); // mapper invitation
+        }
+
         return response;
     }
 
@@ -88,7 +86,7 @@ public class InvitationService {
             throw new AppException(ErrorCode.INVITATION_NOT_FOUND);
         });
         // nếu trạng thái invitation không phải PENDING thì return ko xử lí
-        if(!invitation.getBoardInvitations().getStatus().equals(BoardInvitationStatus.PENDING.name())){
+        if (!invitation.getBoardInvitations().getStatus().equals(ConstantsUtil.BoardInvitationStatus.PENDING)) {
             throw new AppException(ErrorCode.INVITATION_ALREADY_UPDATE);
         }
         // tìm board
@@ -101,17 +99,17 @@ public class InvitationService {
         log.error("usersInBoard" + usersInBoard);
 
         // nếu account đang đăng nhập không phải thằng user được mời vào board thì return
-        if(!userId.equals(invitation.getInviteeId().toString())){
+        if (!userId.equals(invitation.getInviteeId().toString())) {
             // thêm user vào board
             throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         }
 
         // nếu là thành viên của board return
-        if (request.getStatus().equals(BoardInvitationStatus.SUCCESSED.name()) && usersInBoard.contains(userId)) {
+        if (request.getStatus().equals(ConstantsUtil.BoardInvitationStatus.SUCCESSED) && usersInBoard.contains(userId)) {
             // thêm user vào board
             throw new AppException(ErrorCode.USER_EXIST_IN_BOARD);
         }
-        if ((request.getStatus().equals(BoardInvitationStatus.SUCCESSED.name()))) {
+        if ((request.getStatus().equals(ConstantsUtil.BoardInvitationStatus.SUCCESSED))) {
             board.getMemberIds().add(userId);
             boardRepository.save(board);
         }
@@ -128,7 +126,7 @@ public class InvitationService {
             throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
         // log.error("invitee"+invitee);
-        invitationMapper(response, invitation, inviter, invitee , board); // mapper invitation
+        invitationMapper(response, invitation, inviter, invitee, board); // mapper invitation
 
         return response;
     }

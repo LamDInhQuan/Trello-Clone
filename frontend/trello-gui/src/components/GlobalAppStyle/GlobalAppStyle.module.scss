@@ -8,7 +8,77 @@
     --footer-card: 40px;
     // column
     --menu-height-column: 1px;
-    --color-gray : rgba(128, 121, 121, 0.708)
+    --color-gray: rgba(128, 121, 121, 0.708);
+    --color-blue: #006cff;
+    --color-app-bar: #0057e9;
+    --color-button-title: #fff;
+    // trang boards
+    --color-main-boards: #fff;
+    --color-button-boards: #000000;
+    --color-button-description-boards: rgba(120, 117, 117, 0.904);
+    --color-btn-navigate-boards: rgb(0, 94, 255);
+    --color-hover-btn-sidebar-boards: #eef9ff;
+    --color-icon-boards: #4c4b4f;
+    --color-input-boards: #ffffff;
+    // trang account
+    --color-tab-account-active: #2c46ec;
+    --color-tab-account: #6c6875;
+    --color-input-username-account: #48474c;
+    --color-input-username-border-account: #a19eaa;
+    // component field error
+    --color-fielderror-p: #864141fa;
+    --color-fielderror-icon: #b01f1ffa;
+    --color-fielderror-wrapper: #f3434383;
+    // trang board/id
+    --color-boardId: var(--color-blue);
+    --color-column: #f2f2ff;
+    --color-card: #f2f2ff;
+    --color-create-column: #b8cdff;
+    --color-create-card: var(--color-blue);
+    --color-label-input: #f2f2ff;
+    // trang create card
+    --color-active-card: #fff;
+    --color-input-active-card: rgb(8, 1, 1);
+    --color-comment-des-active-card: #fff;
+    --color-comment-2-active-card: rgba(27, 25, 25, 0.858);
+    --color-comment-3-active-card: rgba(27, 25, 25, 0.605);
+    --color-border-active-card: #a9a6a6b8;
+}
+
+[data-theme='dark'] {
+    --color-button-title: #fff;
+    --color-button-boards: #ffffff;
+    --color-button-description-boards: rgba(240, 234, 234, 0.904);
+    --color-app-bar: #1b2c4b;
+    --color-main-app: #20385c;
+    --color-main-boards: #20385c;
+    --color-btn-navigate-boards: rgb(235, 242, 253);
+    --color-hover-btn-sidebar-boards: #5e7886;
+    --color-icon-boards: #fff;
+    --color-input-boards: #000000;
+    // trang account
+    --color-tab-account-active: #ffffff;
+    --color-tab-account: #a7a7ab;
+    --color-input-username-account: #e8e7ec;
+    --color-input-username-border-account: #e8e7ec;
+    // component field error
+    --color-fielderror-p: #e6d3d3fa;
+    --color-fielderror-icon: #f0d5d5fa;
+    --color-fielderror-wrapper: #ed3131e0;
+    // trang board/id
+    --color-boardId: #20385c;
+    --color-column: #212540;
+    --color-card: #151420;
+    --color-create-column: #34395b;
+    --color-create-card: #e0e1ea;
+    --color-label-input: #212540;
+    // trang create card
+    --color-active-card: #000000;
+    --color-input-active-card: #fff;
+    --color-comment-des-active-card: #333334;
+    --color-comment-2-active-card: #fff;
+    --color-comment-3-active-card: #ffffffb9;
+    --color-border-active-card: #ffffffb8;
 }
 /* Áp box-sizing cho mọi phần tử và cả pseudo-elements */
 *,
@@ -30,6 +100,7 @@ body {
     text-rendering: optimizeSpeed;
     overflow-x: hidden;
     font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: var(--color-main-boards);
 }
 
 button,
@@ -62,14 +133,13 @@ html *::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0);
 }
 :global(.tippy-box) {
-  background-color: #333 !important;
-  color: white !important;
-  padding: 2px 5px;
-  border-radius: 4px;
-  font-size: 13px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: #333 !important;
+    color: white !important;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 /* React-Toastify custom */
 /* Custom React-Toastify */
@@ -96,4 +166,3 @@ html *::-webkit-scrollbar-track {
     aria-hidden: false !important;
 }
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-

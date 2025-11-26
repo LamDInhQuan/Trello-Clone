@@ -15,11 +15,14 @@
     border-radius: 999px;
 }
 .hearder > input {
-    border: 0.5px solid rgba(75, 67, 67, 0.427);
+    border: 0.5px solid var(--color-border-active-card);
     border-radius: 5px;
     flex: 1;
     padding-left: 10px;
-    color: rgba(27, 25, 25, 0.858);
+    color: var(--color-comment-2-active-card);
+}
+.hearder > input::placeholder {
+    color: var(--color-comment-2-active-card) !important;
 }
 .content {
     display: flex;
@@ -30,7 +33,7 @@
 .content > p {
     margin-left: 8%;
     font-size: 13px;
-    color: rgba(27, 25, 25, 0.858);
+    color: var(--color-comment-3-active-card);
 }
 .contentActivity {
     display: flex;
@@ -51,14 +54,16 @@
 
 .userInfoAndInput > input {
     width: 100%;
-    border: 0.5px solid rgba(118, 111, 111, 0.427);
+    border: 0.5px solid var(--color-border-active-card);
     border-radius: 5px;
     flex: 1;
     padding-left: 10px;
     color: var(--color-gray);
     height: 35px;
 }
-
+.userInfoAndInput > input::placeholder {
+    color: var(--color-comment-2-active-card) !important;
+}
 .userInfo {
     display: flex;
     gap: 10px;
@@ -67,6 +72,7 @@
 }
 .userInfo > p {
     font-size: 14px;
+    color: var(--color-comment-2-active-card);
 }
 .userInfo > p:nth-of-type(1) {
     font-weight: bold;
@@ -74,4 +80,5 @@
 .userInfo > p:nth-of-type(2) {
     font-size: 12px;
     color: #4d4b4bde;
+    color: var(--color-comment-3-active-card);
 }

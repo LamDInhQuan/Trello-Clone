@@ -21,6 +21,7 @@ public class CardResponse {
     String title;
     String cardCover ;
     String description;
+    List<String> memberIds;
     List<Comment> comments;
     Date createdAt;
     Date updatedAt;

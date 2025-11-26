@@ -22,7 +22,9 @@ function MenuDropDownCustomItem({
     src = false,
     avatarName,
     addMemberAvatarGroup = false,
+    memberId,
 }) {
+    // console.log(onClick);
     // console.log(addMemberAvatarGroup);
     return (
         <div className={cx('wrapper', classNameWrapper)}>
@@ -35,7 +37,16 @@ function MenuDropDownCustomItem({
             ) : src ? (
                 <Tippy content={avatarName} arrow={true} placement="bottom" className={cx('tippy')}>
                     <div className={cx('avatar-wrapper')}>
-                        <img alt="" src={src} className={cx('avatar')} />
+                        <img
+                            alt=""
+                            src={src}
+                            className={cx('avatar')}
+                            onClick={() => {
+                                if (typeof onClick === 'function') {
+                                    memberId ? onClick(memberId) : onClick();
+                                }
+                            }}
+                        />
                         {addMemberAvatarGroup && <CheckListIcon2 className={cx('iconMemberAvatarGroup')} />}
                     </div>
                 </Tippy>

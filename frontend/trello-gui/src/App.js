@@ -9,6 +9,7 @@ import AccountVerification from './pages/Auth/AccountVerification';
 import { selectCurrentUser } from '~/redux/user/userSlice';
 import Settings from './pages/Settings';
 import Board from './pages/Boards/_id';
+import { useEffect } from 'react';
 
 // Giải pháp clean code trong việc xác định route nào cần được truy cập khi đã đăng nhập tài khoản
 // thành công - Sử dụng <Outlet /> để hiển thị các child route
@@ -18,6 +19,26 @@ const ProtectedRoute = ({ user }) => {
 };
 
 function App() {
+    // Khi component mount → effect chạy lần đầu → cleanup chưa chạy.
+    // Khi dependency thay đổi → effect chạy lại: React trước hết chạy cleanup cũ, sau đó chạy effect mới.
+    // Khi component unmount → effect không chạy nữa: React chạy cleanup 1 lần cuối.
+    useEffect(() => {
+        const handleF5 = () => {
+            // performance.getEntriesByType('navigation') sẽ trả về mảng các “navigation entries”,
+            // tức các bản ghi về cách trang web được load hoặc chuyển hướng.
+            const navigationEntries = performance.getEntriesByType('navigation');
+            if (navigationEntries[0]?.type === 'reload') {
+                console.log('F5 detected!');
+                localStorage.removeItem('allBoardAndColor');
+            }
+        };
+
+        window.addEventListener('load', handleF5);
+
+        return () => {
+            window.removeEventListener('load', handleF5);
+        };
+    }, []);
     const currentUser = useSelector(selectCurrentUser);
     return (
         <Routes>
@@ -38,7 +59,7 @@ function App() {
             <Route element={<ProtectedRoute user={currentUser} />}>
                 {/* <Outlet /> của React-router-dom sẽ chạy vào các child route trong này */}
                 {/* Board Details  */}
-                 <Route path="/boards" element={<Boards />} />
+                <Route path="/boards" element={<Boards />} />
                 <Route path="/boards/:boardId" element={<Board />} />
                 {/* User Settings   */}
                 <Route path="/settings/account" element={<Settings />}></Route>

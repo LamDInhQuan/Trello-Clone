@@ -38,8 +38,8 @@ export const activeBoardSlice = createSlice({
             // current() chỉ dùng để xem state thực — chứ không nên dùng để sửa state, vì object
             // trả ra bởi current() là bản copy tĩnh, không còn liên kết với Redux state nữa.
             const currentCard = action.payload;
-            // console.log('currentCard:', currentCard); // xem trạng thái state
-            // console.log('current(state.currentActiveBoard):', current(state.currentActiveBoard)); // xem trạng thái state
+            console.log('currentCard:', currentCard); // xem trạng thái state
+            console.log('current(state.currentActiveBoard):', current(state.currentActiveBoard)); // xem trạng thái state
             const currentBoard = state.currentActiveBoard;
             const column = currentBoard.columns.find((col) => col._id === currentCard.columnId);
             if (column) {
@@ -53,6 +53,10 @@ export const activeBoardSlice = createSlice({
                     cardFinded.title = currentCard.title;
                     cardFinded.description = currentCard.description;
                     cardFinded.cardCover = currentCard?.cardCover;
+                    // console.log(currentCard.memberIds);
+                    cardFinded.comments = currentCard?.comments;
+                    cardFinded.memberIds = currentCard.memberIds;
+                    // console.log(cardFinded.memberIds);
                 }
             }
         },
@@ -62,7 +66,7 @@ export const activeBoardSlice = createSlice({
         builder.addCase(fetchBoardDetailAPIRedux.fulfilled, (state, action) => {
             // action.payload ở đây chính là response.data trả về ở trên
             let board = action.payload.result;
-            board.FeUsersFromBoard = board.owners.concat(board.members)
+            board.FeUsersFromBoard = board.owners.concat(board.members);
             // console.log(board);
             // xử lý dữ liệu nếu cần thiết ....
             // sắp xếp luôn các columns trước khi đưa xuống các component con

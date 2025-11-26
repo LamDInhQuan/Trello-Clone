@@ -37,6 +37,7 @@ import { persistStore } from 'redux-persist';
 // Kỹ thuật Inject Store : là kỹ thuật khi cần sử dụng biến redux store ở các file ngoài phạm vị
 // component
 import { injectStore } from './utils/authorizeAxios';
+import ThemeProvider from './CreateContext/ThemeContext';
 
 injectStore(store);
 const persistor = persistStore(store);
@@ -45,23 +46,25 @@ root.render(
     <Provider store={store}>
         <PersistGate persistor={persistor}>
             <BrowserRouter basename="/">
-                <GlobalAppStyle>
-                    <ConfirmProvider
-                        defaultOptions={{
-                            dialogProps: {
-                                maxWidth: 'xs',
-                                disableEnforceFocus: true, // 🔥 tắt ép focus
-                                disableAutoFocus: true, // 🔥 tắt tự động focus
-                                disableRestoreFocus: true,
-                            },
-                            confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
-                            allowClose: false,
-                        }}
-                    >
-                        <App />
-                        <ToastContainer position="bottom-left" theme="colored" />
-                    </ConfirmProvider>
-                </GlobalAppStyle>
+                <ThemeProvider>
+                    <GlobalAppStyle>
+                        <ConfirmProvider
+                            defaultOptions={{
+                                dialogProps: {
+                                    maxWidth: 'xs',
+                                    disableEnforceFocus: true, // 🔥 tắt ép focus
+                                    disableAutoFocus: true, // 🔥 tắt tự động focus
+                                    disableRestoreFocus: true,
+                                },
+                                confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+                                allowClose: false,
+                            }}
+                        >
+                            <App />
+                            <ToastContainer position="bottom-left" theme="colored" />
+                        </ConfirmProvider>
+                    </GlobalAppStyle>
+                </ThemeProvider>
             </BrowserRouter>
         </PersistGate>
     </Provider>,

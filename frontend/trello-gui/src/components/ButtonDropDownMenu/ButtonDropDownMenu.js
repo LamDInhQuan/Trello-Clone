@@ -39,7 +39,9 @@ function ButtonDropDownMenu({
     addMemberAvatarGroup = false,
     dropDownChildrenCustom = false,
     menuDropDownCustomClassname = false,
+    isMemberInCard,
 }) {
+    // console.log(menuItems);
     const [hide, setHide] = useState(false);
     useEffect(() => {
         if (hideFromParent) {
@@ -98,6 +100,8 @@ function ButtonDropDownMenu({
                 {menuItems
                     ? menuItems.map((item, key) => {
                           const Icon = item.icon;
+                          const isMember = isMemberInCard?.(item?._id);
+                          //   console.log(isMember);
                           return (
                               <MenuDropDownCustomItem
                                   key={key}
@@ -106,7 +110,8 @@ function ButtonDropDownMenu({
                                   link={item.link}
                                   src={item?.avatar}
                                   avatarName={item?.username}
-                                  addMemberAvatarGroup={addMemberAvatarGroup}
+                                  addMemberAvatarGroup={isMember}
+                                  memberId={item._id || null}
                               >
                                   {item?.label}
                               </MenuDropDownCustomItem>

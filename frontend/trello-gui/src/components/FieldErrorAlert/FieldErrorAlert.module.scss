@@ -1,7 +1,7 @@
 .wrapper {
     height: fit-content;
     width: 100%;
-    background-color: #ff8c8c83; /* hồng nhạt */
+    background-color: var(--color-fielderror-wrapper); /* hồng nhạt */
     display: flex;
     justify-content: flex-start;
     align-items: flex-start; /* chữ và icon bám theo đỉnh */
@@ -9,7 +9,7 @@
     gap: 10px;
 }
 .wrapper > p {
-    color: #864141fa;
+    color: var(--color-fielderror-p);
     font-size: 14px;
     line-height: 1.4; /* chữ thoáng hơn, không cần margin-top */
     margin: 0;
@@ -17,7 +17,7 @@
 .icon {
     width: 20px;
     height: 20px;
-    color: #b01f1ffa;
+    color: var(--color-fielderror-icon);
     min-height: 20px;
     min-width: 20px;
 }

@@ -1,5 +1,5 @@
 .wrapper {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--color-main-boards);
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -26,12 +26,13 @@
     padding-top: 3px;
 }
 .menuitemWrapper:hover {
-    background-color: #eef9ff;
+    background-color: var(--color-hover-btn-sidebar-boards);
 }
 .menuitem {
     width: calc(100vw - 79vw) !important ;
     padding: 5px !important;
     font-size: 15px !important;
+    color: var(--color-button-boards) !important;
 }
 .menuitem:hover {
     color: rgb(0, 94, 255);
@@ -42,7 +43,7 @@
 .create-board-icon {
     width: 20px;
     height: 20px;
-    color: black;
+    color: var(--color-button-boards) !important;
 }
 .sidebar > span {
     width: 100%;
@@ -58,6 +59,7 @@
 }
 .content > h1 {
     margin-left: 10px;
+    color: var(--color-button-boards) !important;
 }
 .list-boards {
     margin-left: 10px;
@@ -89,15 +91,16 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--color-button-boards) !important;
 }
 .board > p {
     margin-left: 15px;
     font-size: 12px;
-    color: rgba(120, 117, 117, 0.904);
     width: 88%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--color-button-description-boards) !important;
 }
 .btn-goto-board {
     width: 110px !important;
@@ -106,12 +109,12 @@
     margin-left: 85px;
     font-size: 13.5px;
     font-weight: normal !important;
-    color: rgb(0, 94, 255);
+    color: var(--color-btn-navigate-boards) !important;
 }
 .icon-goto-board {
     width: 20px;
     height: 20px;
-    color: rgb(0, 94, 255);
+    color: var(--color-btn-navigate-boards) !important;
     margin-top: 3px;
     transform: translateX(-6px) !important;
 }
@@ -128,6 +131,7 @@
     cursor: pointer;
     width: 25px !important;
     height: 25px !important;
+    color: var(--color-button-boards) !important;
 }
 .pagination > p {
     font-size: 15px;
@@ -140,14 +144,13 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
+    color: var(--color-button-boards) !important;
 }
 .pagination > p:hover {
-    background-color: rgba(212, 168, 241, 0.705);
+    background-color: rgba(168, 186, 241, 0.705);
 }
 .currentPage {
-    background-color: rgb(153, 0, 255);
-    color: white;
+    background-color: rgb(144, 175, 222);
+    color: var(--color-button-title) !important;
 }
-.currentPage:hover {
-    background-color: rgb(153, 0, 255) !important;
-}
+

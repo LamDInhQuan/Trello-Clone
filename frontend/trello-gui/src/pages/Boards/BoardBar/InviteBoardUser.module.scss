@@ -19,25 +19,27 @@
 .button {
     padding-top: 15px;
     padding-bottom: 15px;
-    border: 1px solid #007e75;
-    color: #007e75;
+    border: 1px solid #fff;
+    color: #fff;
     &:hover {
-        background-color: #e2eaf3;
+        background-color: #e2eaf369;
     }
 }
 // css input
 .input-username {
     width: 220px;
     height: 37px;
-    border: 2px solid var(--color-green);
+    border: 2px solid var(--color-blue);
     font-size: 13px;
     color: #48474c;
 }
-
+.input-username:hover {
+    border: 2px solid var(--color-blue);
+}
 .label-input-username {
     font-size: 10.5px !important;
     background-color: white;
-    color: var(--color-green);
+    color: var(--color-blue);
     transform: translateY(-10px) !important;
 }
 .button-update {

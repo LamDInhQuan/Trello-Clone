@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 
 function useDropDownPosition(triggerRef, dropdownRef, hide, magin = 0, translateY = 30) {
     // trigger là nút nhấn để hiện dropdown
+    // console.log("magin",magin);
     const [position, setPosition] = useState({ left: magin, top: translateY });
     // console.log(translateY);
     // đổi position khi menu tràn ra ngoài

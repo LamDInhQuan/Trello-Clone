@@ -3,13 +3,13 @@
     width: 20px !important;
     height: 20px !important;
     position: relative;
-    color: #007e75;
+    color: #FFF;
 }
 
 .button {
     transform: translateY(2px);
     padding: 0;
-    color: #007e75;
+    color: #FFF;
 }
 .button.notification::after {
     content: '';
@@ -71,6 +71,7 @@
     justify-content: flex-end;
     font-size: 12px;
     padding-bottom: 10px;
+    color: rgb(66, 64, 64);
 }
 .notificationItem.borderBottom {
     border-bottom: 2px solid rgb(238, 233, 237);
@@ -93,6 +94,7 @@
 }
 .notificationTitle > p {
     font-size: 13.5px;
+    color: rgb(66, 64, 64);
 }
 .icon-invite {
     width: 22px !important;
@@ -143,4 +145,5 @@
     gap: 1px;
     font-size: 13px;
     font-weight: normal;
+    color: black;
 }

@@ -4,16 +4,16 @@
 }
 .tab-button {
     display: flex;
-    border-bottom: 2px solid #9ccbcc;
+    border-bottom: 2px solid #9ca4cc;
     width: 100%;
 }
 .tab-icon {
     width: 23px;
     height: 23px;
-    color: #6c6875;
+    color: var(--color-tab-account);
 }
 .button {
-    color: #6c6875;
+    color: var(--color-tab-account);
     border-radius: 0%;
     padding-bottom: 8px;
     transform: translateY(1px);
@@ -27,16 +27,16 @@
     bottom: 0;
     width: 0%;
     height: 1px;
-    background-color: #499e98;
+    background-color: #495a9e;
     transition: width 0.3s ease;
 }
 // active button
 .activeItem {
-    color: #499e98;
+    color: var(--color-tab-account-active);
 }
 .activeButton {
-    color: #499e98;
-    border-bottom: 2px solid #499e98;
+    color: var(--color-tab-account-active);
+    border-bottom: 2px solid var(--color-tab-account-active);
 }
 .button.activeButton::after {
     width: 100%;

@@ -3,7 +3,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { API_ROOT } from './constants';
 
-//  với STOMP/WebSocket + Spring, quy trình chuẩn là: 
+//  với STOMP/WebSocket + Spring, quy trình chuẩn là:
 //  Frontend: gửi JSON string
 //      Không gửi object JS trực tiếp.
 //      Luôn JSON.stringify() trước khi gửi qua STOMP:
@@ -15,14 +15,20 @@ export const socketStompClient = new Client({
     },
     onDisconnect: () => {
         console.log('❌ STOMP disconnected');
-    },  
+    },
+    onStompError: (frame) => {
+        console.error('STOMP error:', frame);
+    },
+    onWebSocketError: (event) => {
+        console.error('WebSocket error:', event);
+    },
 });
 // Hàm khởi tạo socket
 export const connectStomp = () => {
-  if (!socketStompClient.active) socketStompClient.activate();
+    if (!socketStompClient.active) socketStompClient.activate();
 };
 
 // Hàm ngắt kết nối
 export const disconnectStomp = () => {
-  if (socketStompClient.active) socketStompClient.deactivate();
+    if (socketStompClient.active) socketStompClient.deactivate();
 };

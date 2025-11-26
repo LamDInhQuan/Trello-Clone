@@ -43,7 +43,7 @@ function CardActivitySection({ comments = [], onAddCardComment, cardId }) {
                                 <p>{item?.userDisplayname}</p>
                                 <p>{moment(item?.commentAt).format('llll')}</p>
                             </div>
-                            <input placeholder={item?.content} />
+                            <input placeholder={item?.content} disabled={true} />
                         </div>
                     </div>
                 ))}

@@ -1,0 +1,165 @@
+/* Background tổng thể */
+.container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0b0d12, #12141c, #0b0c11);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* Noise overlay */
+.bgNoise {
+    position: absolute;
+    inset: 0;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/5f/Noise_texture.png");
+    mix-blend-mode: overlay;
+    opacity: 0.04;
+    pointer-events: none;
+}
+
+/* Vòng tròn glow */
+.circle1,
+.circle2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(180px);
+    opacity: 0.4;
+}
+
+.circle1 {
+    background: #0057ff;
+    top: -80px;
+    left: -120px;
+}
+
+.circle2 {
+    background: #ff008c;
+    bottom: -120px;
+    right: -100px;
+}
+
+/* Orb bay */
+.orb {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    background: linear-gradient(135deg, #00aaff, #0066ff);
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.25;
+    animation: orbMove 9s infinite ease-in-out alternate;
+}
+
+@keyframes orbMove {
+    0% {
+        transform: translate(-80px, -40px);
+    }
+    100% {
+        transform: translate(120px, 130px);
+    }
+}
+
+/* Hiệu ứng particle bay */
+.particles span {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: floatParticle 6s infinite linear;
+}
+
+@for $i from 1 through 25 {
+    .particles span:nth-child(#{$i}) {
+        left: random(100) * 1%;
+        top: random(100) * 1%;
+        animation-delay: -#{$i * 0.3}s;
+        animation-duration: #{5 + random(5)}s;
+    }
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-80px) scale(0.6);
+        opacity: 0;
+    }
+}
+
+/* CHỮ 404 – Neon 3D */
+.title {
+    font-size: 150px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 10px;
+    position: relative;
+
+    text-shadow:
+        0 0 25px rgba(0, 140, 255, 0.9),
+        0 0 60px rgba(0, 140, 255, 0.7),
+        0 0 120px rgba(0, 140, 255, 0.4);
+
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+
+    animation: pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        text-shadow:
+            0 0 20px rgba(0, 140, 255, 0.8),
+            0 0 50px rgba(0, 140, 255, 0.6);
+    }
+    50% {
+        text-shadow:
+            0 0 35px rgba(0, 140, 255, 1),
+            0 0 100px rgba(0, 140, 255, 0.9);
+    }
+    100% {
+        text-shadow:
+            0 0 20px rgba(0, 140, 255, 0.8),
+            0 0 50px rgba(0, 140, 255, 0.6);
+    }
+}
+
+.subtitle {
+    color: #c8c9cc;
+    font-size: 22px;
+    margin-top: 10px;
+    max-width: 480px;
+    text-align: center;
+}
+
+/* Nút */
+.homeBtn {
+    margin-top: 35px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #0066ff, #0094ff);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: 0.25s ease;
+    box-shadow: 0 5px 18px rgba(0, 132, 255, 0.35);
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 150, 255, 0.5);
+    }
+
+    &:active {
+        transform: translateY(0px);
+    }
+}

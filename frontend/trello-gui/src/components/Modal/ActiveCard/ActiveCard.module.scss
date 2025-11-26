@@ -15,7 +15,7 @@
 }
 /* Áp dụng cho phần overlay (popup) */
 .overlay::-webkit-scrollbar {
-    width: 8px;              /* độ rộng thanh cuộn dọc */
+    width: 8px; /* độ rộng thanh cuộn dọc */
 }
 
 .overlay::-webkit-scrollbar-track {
@@ -33,7 +33,7 @@
 }
 
 .wrapper {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--color-active-card);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     width: 60%;
@@ -42,6 +42,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-bottom: 20px;
 }
 .header {
     display: flex;
@@ -93,7 +94,7 @@
     font-size: 20px;
     font-weight: bold;
     margin-left: 15px;
-    color: rgb(8, 1, 1);
+    color: var(--color-input-active-card);
     cursor: pointer;
     font-family: 'Times New Roman', Times, serif;
     width: 80%;
@@ -109,6 +110,7 @@
 .iconCardActivity {
     width: 22px;
     height: 22px;
+    color: var(--color-input-active-card);
 }
 // content
 .content {
@@ -150,6 +152,10 @@
     display: flex;
     gap: 10px;
 }
+.descriptionCardHeader > h3,
+.activityCardHeader > h3 {
+    color: var(--color-button-boards) !important;
+}
 .rightContent {
     width: 25%;
     display: flex;
@@ -158,7 +164,7 @@
 }
 .rightContent > span {
     display: block;
-    width: 90%; 
+    width: 90%;
     height: 0.5px;
     background-color: rgba(222, 215, 215, 0.708);
 }
@@ -182,17 +188,18 @@
     height: 20px;
 }
 // css thẻ p
-.menuItemP , .menuItemButton {
+.menuItemP,
+.menuItemButton {
     font-size: 13px;
     font-weight: bold;
-    color: rgba(0, 0, 0, 0.696);
+    color: var(--color-comment-2-active-card) !important;
 }
 .menuItemButton {
     padding-top: 4px;
     padding-bottom: 12px;
 }
 .menuItemButton:hover {
-    color: #4891ee;
+    color: #4891ee !important;
 }
 .menuAddCard:not(:nth-of-type(1)) {
     margin-top: 20px;

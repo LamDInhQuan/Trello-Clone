@@ -25,6 +25,7 @@ function Button(
     },
     ref,
 ) {
+    // console.log(onClick);
     // xử lí click file
     const fileRef = useRef();
     const handleClick = () => fileRef.current.click();

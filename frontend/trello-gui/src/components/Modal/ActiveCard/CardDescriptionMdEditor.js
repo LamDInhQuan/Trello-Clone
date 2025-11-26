@@ -75,11 +75,12 @@ function CardDescriptionMdEditor({ value, updateCardInBoardRedux }) {
                     <MDEditor.Markdown
                         source={content}
                         style={{
+                            color: 'var(--color-button-boards)',
                             border: '1.5px solid #a9a6a6b8',
                             borderRadius: 6,
                             paddingBottom: '40px',
                             paddingLeft: '10px',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-comment-des-active-card)',
                         }}
                     />
                 </div>

@@ -92,7 +92,7 @@ public class UserController {
         Cookie cookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
                 .filter(e -> "accessToken".equals(e.getName())).findFirst().orElse(null);
         if (cookie == null || cookie.getValue().isBlank()) {
-            throw new AppException(ErrorCode.COOKIE_NOT_FOUND);
+            return ApiResponse.<String>builder().result("Vui lòng đăng nhập lần đầu để sử dụng web!").build();
         }
         String token = cookie.getValue();
         userService.logout(httpServletResponse, token);

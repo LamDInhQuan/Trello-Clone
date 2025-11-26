@@ -48,7 +48,7 @@ function RegisterForm() {
         toast
             .promise(registerUserAPI({ email, password }), { pending: 'Registration is in progress...' })
             .then((user) => navigate(`/login?registerEmail=${email}`))
-            .catch(() => {} );
+            .catch(() => {});
     };
 
     return (
@@ -66,6 +66,7 @@ function RegisterForm() {
                         searchInput_className={errors['email'] && cx('searchInputError')}
                         autoFocus={true}
                         valueInput={inputEmail}
+                        normalInput={true}
                         {...register('email', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {
@@ -80,6 +81,7 @@ function RegisterForm() {
                         label_search_className={!!errors['password'] ? cx('labelSearchError') : cx('labelSearch')}
                         searchInput_className={errors['password'] && cx('searchInputError')}
                         valueInput={inputPassword}
+                        normalInput={true}
                         {...register('password', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {
@@ -97,6 +99,7 @@ function RegisterForm() {
                         }
                         searchInput_className={errors['confirmPassword'] && cx('searchInputError')}
                         valueInput={inputConfirmPassword}
+                        normalInput={true}
                         {...register('confirmPassword', {
                             required: FIELD_REQUIRED_MESSAGE,
                             validate: (value) => {

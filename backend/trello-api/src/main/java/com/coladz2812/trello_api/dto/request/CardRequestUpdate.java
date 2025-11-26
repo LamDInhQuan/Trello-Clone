@@ -1,6 +1,8 @@
 package com.coladz2812.trello_api.dto.request;
 
 import com.coladz2812.trello_api.classValidation.*;
+import com.coladz2812.trello_api.util.ConstantsUtil;
+import com.coladz2812.trello_api.validator.ValueIn;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -28,12 +30,19 @@ import java.util.List;
 
 public class CardRequestUpdate {
 
-    @NotNull(groups = {CardTitleUpdate.class, CardDescriptionUpdate.class}, message = "CARDID_NOT_NULL")
+    @NotNull(groups = {CardTitleUpdate.class, CardDescriptionUpdate.class, CardMemberIdsUpdate.class}, message = "CARDID_NOT_NULL")
     String cardId;
     @NotNull(groups = CardTitleUpdate.class, message = "CARD_TITLE_NOT_NULL")
     @Size(min = 3, max = 20, message = "CARD_TITLE_CHARACTER", groups = CardTitleUpdate.class)
     String title;
+
     @NotNull(groups = CardDescriptionUpdate.class, message = "CARD_DESCRIPTION_NOT_NULL")
     @Size(min = 3, max = 1000, message = "CARD_DESCRIPTION_CHARACTER", groups = CardDescriptionUpdate.class)
     String description;
+
+    @NotNull(groups = CardMemberIdsUpdate.class, message = "USER_ID_NOT_NULL")
+    String userId;
+    @ValueIn(groups = CardMemberIdsUpdate.class, values =
+            {ConstantsUtil.CardMemberActions.ADD, ConstantsUtil.CardMemberActions.REMOVE}, message = "SCOPE_ERROR_MEMBER_STATUS")
+    String cardMemberAction;
 }

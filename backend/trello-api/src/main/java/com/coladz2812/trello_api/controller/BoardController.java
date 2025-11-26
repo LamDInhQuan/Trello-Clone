@@ -5,6 +5,7 @@ import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
 import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.filter.RequestContext;
+import com.coladz2812.trello_api.model.Board;
 import com.coladz2812.trello_api.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -16,6 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequestMapping("/board")
@@ -29,15 +33,27 @@ public class BoardController {
 //    RequestContext requestContext;
 
     @PostMapping("/create")
-    public ApiResponse<BoardResponse> createNewBoard(@RequestBody @Valid BoardRequest request , Authentication authentication ) {
-        var boardResponse = boardService.createNewBoard(request,authentication.getPrincipal().toString());
+    public ApiResponse<BoardResponse> createNewBoard(@RequestBody @Valid BoardRequest request, Authentication authentication) {
+        var boardResponse = boardService.createNewBoard(request, authentication.getPrincipal().toString());
         ApiResponse<BoardResponse> apiResponse = ApiResponse.<BoardResponse>builder().result(boardResponse).build();
         return apiResponse;
     }
 
     @GetMapping("/getListBoards")
-    public ApiResponse<List<Document>> getListBoards(Authentication authentication , @RequestParam("page") int currentPage) {
-        var boardResponse = boardService.getListBoards(authentication.getPrincipal().toString(),currentPage);
+    public ApiResponse<List<Document>> getListBoards(Authentication authentication, @RequestParam("page") int currentPage) {
+        var boardResponse = boardService.getListBoards(authentication.getPrincipal().toString(), currentPage);
+        ApiResponse<List<Document>> apiResponse = ApiResponse.<List<Document>>builder().result(boardResponse).build();
+        return apiResponse;
+    }
+
+    @GetMapping("/findListBoards")
+    public ApiResponse<List<Document>> findListBoards(Authentication authentication,
+                                                           @RequestParam Map<String, String> allSearchParams) {
+        // log.error("allSearchParams" + allSearchParams);
+        Map<String, String> searchObject = allSearchParams.entrySet().stream().filter(item -> item.getKey().startsWith("q["))
+                .collect(Collectors.toMap(item -> item.getKey().toString().substring(2, item.getKey().toString().length() - 1), Map.Entry::getValue));
+        // log.error("searchObject" + searchObject);
+        var boardResponse = boardService.findListBoards(authentication.getPrincipal().toString(),searchObject);
         ApiResponse<List<Document>> apiResponse = ApiResponse.<List<Document>>builder().result(boardResponse).build();
         return apiResponse;
     }
@@ -58,9 +74,9 @@ public class BoardController {
 
 
     @GetMapping("/getBoardAndColumnByIdBoard/{id}")
-    public ApiResponse<Document> getListBoardAndColumn(Authentication authentication ,@PathVariable String id) {
+    public ApiResponse<Document> getListBoardAndColumn(Authentication authentication, @PathVariable String id) {
         log.error("get board ");
-        Document boardResponse = boardService.getBoardAndColumnByIdBoard(id,authentication.getPrincipal().toString());
+        Document boardResponse = boardService.getBoardAndColumnByIdBoard(id, authentication.getPrincipal().toString());
         ApiResponse<Document> apiResponse = ApiResponse.<Document>builder().result(boardResponse).build();
         return apiResponse;
     }

@@ -576,6 +576,7 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
                                         autoFocus={true}
                                         valueInput={newColumnTitle}
                                         hasValue={newColumnTitle !== ''}
+                                        normalInput={true}
                                         {...register('columnTitleInput')}
                                     />
                                     <div className={cx('wrapper-button-add-column2')}>

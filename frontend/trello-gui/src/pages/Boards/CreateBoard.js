@@ -18,7 +18,7 @@ import ArrowRight2Icon from '~/components/Icons/ArrowRight2Icon';
 import { useEffect, useRef, useState } from 'react';
 import randomColor from 'randomcolor';
 import { useSearchParam } from 'react-use';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import PopupInput from '~/components/PopupInput';
 import { getListBoardsAPI } from '~/apis';
 import ActiveCard from '~/components/Modal/ActiveCard';
@@ -54,6 +54,7 @@ function CreateBoard() {
     // chuyển vào chi tiết board
     const navigate = useNavigate();
     const goToBoardDetail = (boardId) => {
+        console.log(boardId);
         navigate(`/boards/${boardId}`);
     };
 
@@ -108,12 +109,56 @@ function CreateBoard() {
         return mang;
     };
 
-    // xử lí phân mục
+    // xử lí màu board
+    const [boardColors, setBoardColors] = useState([]);
+
+    // xử lí phân mục ( ko f5 mà dùng route điều hướng trang web )
+    const location = useLocation();
+    const isBoardsPage = location.pathname === '/boards';
 
     useEffect(() => {
+        if (isBoardsPage) {
+            localStorage.removeItem('allBoardAndColor');
+        }
+    }, [isBoardsPage]);
+
+    useEffect(() => {
+        let boards = [];
         getListBoardsAPI(indexPage).then((res) => {
             setMang(res.result[0]?.queryBoards || res.result);
             setTotalBoards(res.result[0]?.queryTotalBoards[0]?.total);
+            boards = res.result[0]?.queryBoards || res.result;
+
+            // xử lí màu board
+            const colorsRef = randomColor({ count: 12, luminosity: 'bright' }); // tạo ra một mảng 10 màu sáng (bright).
+            const boardAndColorFromStorage = JSON.parse(localStorage.getItem('allBoardAndColor')) || {};
+            // Lưu vào localStorage
+            const boardAndColor = boards.map((board, index) => {
+                if (boardAndColorFromStorage[board._id]) {
+                    console.log('p1');
+                    return {
+                        _id: board._id,
+                        color: boardAndColorFromStorage[board._id].color,
+                    };
+                } else {
+                    console.log('p2');
+                    return {
+                        _id: board._id,
+                        color: colorsRef[index],
+                    };
+                }
+            });
+            // console.log(boardAndColor);
+            if (boardAndColorFromStorage.length !== 0) {
+                boardAndColor.forEach((item) => {
+                    // console.log(boardAndColorFromStorage);
+                    if (!boardAndColorFromStorage[item._id]) {
+                        boardAndColorFromStorage[item._id] = item;
+                    }
+                });
+                localStorage.setItem('allBoardAndColor', JSON.stringify(boardAndColorFromStorage));
+            }
+            setBoardColors(boardAndColor.map((b) => b.color));
         });
     }, [indexPage, renderPopUp]);
 
@@ -203,14 +248,20 @@ function CreateBoard() {
         setSearchParams({ page: prevPage }); // thêm vào url '?page=n'
     };
 
-    const colorsRef = randomColor({ count: 5, luminosity: 'bright' });
-    const colorMapRef = useRef({});
+    const colorMapRef = useRef({}); // mảng ref color dưới dạng obj
     // console.log(currentPage);
 
     return (
         <>
             <ActiveCard onCreated={handleRenderCardModal} onPopUp={onCardModal} closePopup={openCardModal} />
-            <PopupInput onCreated={handleRenderPopup} onPopUp={onPopupInput} closePopup={createNewBoard} />
+            {onPopupInput && (
+                <PopupInput
+                    onCreated={handleRenderPopup}
+                    onPopUp={onPopupInput}
+                    closePopup={createNewBoard}
+                />
+            )}
+
             <div className={cx('wrapper')}>
                 <AppBar />
                 <div className={cx('container')}>
@@ -250,11 +301,10 @@ function CreateBoard() {
                         <h1>Your boards: </h1>
                         <div className={cx('list-boards')}>
                             {mang && mang.length > 0 ? (
-                                mang.map((item) => {
+                                mang.map((item, index) => {
                                     // console.log(item);
                                     if (!colorMapRef.current[item._id]) {
-                                        colorMapRef.current[item._id] =
-                                            colorsRef[Math.floor(Math.random() * colorsRef.length)];
+                                        colorMapRef.current[item._id] = boardColors[index];
                                     }
                                     return (
                                         <div className={cx('board')} key={item._id}>

@@ -81,44 +81,46 @@ authorizedAxiosInstance.interceptors.response.use(
             // Kiểm tra xem nếu chưa có refresh token thì thực hiện gán việc gọi Api Refresh_token
             // đồng thời gán vào cho cái refreshTokenPromise
             if (!refreshTokenPromise) {
-                // Lần đầu gặp lỗi 410 → thấy refreshTokenPromise === null → gọi refreshTokenAPI() 
+                // Lần đầu gặp lỗi 410 → thấy refreshTokenPromise === null → gọi refreshTokenAPI()
                 // → gán vào refreshTokenPromise.
                 // Các request khác cũng gặp 410 cùng lúc → thấy refreshTokenPromise !== null →
                 //  không gọi API refresh nữa mà chỉ .then đợi kết quả từ promise kia.
                 // Khi API refresh xong (hoặc lỗi) → .finally đặt lại refreshTokenPromise = null.
                 refreshTokenPromise = refreshTokenAPI()
                     .then((data) => {
-                        return data.result 
+                        return data.result;
                     })
                     .catch((_error) => {
                         // axiosReduxStore.dispatch(logoutUserAPIRedux(false));
                         // Nếu nhận bất kì lỗi gì từ api refresh token thì logout luôn ( ko cần )
-                        return Promise.reject(_error)
+                        return Promise.reject(_error);
                     })
-                    .finally(()=>{
+                    .finally(() => {
                         // dù Api có thành công hay lỗi thì vẫn luôn gán lại refreshTokenPromise
-                        // về null như ban đầu 
-                        refreshTokenPromise = null 
+                        // về null như ban đầu
+                        refreshTokenPromise = null;
                     });
             }
 
-            // cần return trường hợp refreshTokenPromise chạy thành công và thêm xử lí ở đây : 
-            return refreshTokenPromise.then(accessToken => {
-                // đối với trường hợp nếu dự án cần lưu accessToken vào localstorage hoặc đâu đó 
-                // thì viết code xử lí ở đây 
-                // ko cần hiện tại vì ta đưa token vào cookie 
+            // cần return trường hợp refreshTokenPromise chạy thành công và thêm xử lí ở đây :
+            return refreshTokenPromise
+                .then((accessToken) => {
+                    // đối với trường hợp nếu dự án cần lưu accessToken vào localstorage hoặc đâu đó
+                    // thì viết code xử lí ở đây
+                    // ko cần hiện tại vì ta đưa token vào cookie
 
-                // bước 2 : quan trọng : return lại axios instance của chúng ta kết hợp với các 
-                // originalRequest để gọi lại những API ban đâu bị lỗi 
-                return authorizedAxiosInstance(originalRequests)
-            }).catch(err => {
-                 toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
-            })
+                    // bước 2 : quan trọng : return lại axios instance của chúng ta kết hợp với các
+                    // originalRequest để gọi lại những API ban đâu bị lỗi
+                    return authorizedAxiosInstance(originalRequests);
+                })
+                .catch((err) => {
+                    toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');
+                });
         }
 
-            // Quan trọng : Xử lí Refresh Token tự động
+        // Quan trọng : Xử lí Refresh Token tự động
         // Trường hợp 1 : Nếu như nhận mã 401 từ BE , thì gọi APi đăng xuất luôn
-        // nghĩa là refresh token hết hạn 
+        // nghĩa là refresh token hết hạn
         if (error.response?.status === 401) {
             // ko xác thực được token => đăng xuất luôn
             console.log('call api');
@@ -130,8 +132,12 @@ authorizedAxiosInstance.interceptors.response.use(
         if (error.response?.data?.message) {
             errorMessage = error.response?.data?.message;
         }
+        // xử lí ko hiện log 
+        // console.log(error.config);
+        const silent = error.config?.headers?.['x-silent'];
+        // console.log(silent);
         // hiển thị react toastify cho mọi lỗi
-        if (error.response?.status !== 410 && refreshTokenPromise === null) {
+        if (error.response?.status !== 410 && refreshTokenPromise === null && !silent) {
             toast.error(errorMessage);
         }
         return Promise.reject(error);

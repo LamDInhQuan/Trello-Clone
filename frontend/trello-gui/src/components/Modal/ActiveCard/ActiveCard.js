@@ -32,23 +32,54 @@ import {
     selectCurrentActiveCard,
     updateCurrentActiveCard,
 } from '~/redux/activeCard/activeCardSlice';
-import { updateCommentCardAPI, updateCoverCardAPI, updateTitleCardAPI } from '~/apis';
+import { updateCardMemberIdsAPI, updateCommentCardAPI, updateCoverCardAPI, updateTitleCardAPI } from '~/apis';
 import { toast } from 'react-toastify';
-import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice';
+import { selectCurrentActiveBoard, updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice';
 import { singleFileValidator } from '~/utils/validators';
+import ArrowRightIcon from '~/components/Icons/ArrowRightIcon';
+import DriveIcon from '~/components/Icons/DriveIcon';
+import ArrowRight2Icon from '~/components/Icons/ArrowRight2Icon';
+import ArrowLastRightIcon from '~/components/Icons/ArrowLastRightIcon';
+import AddIcon from '~/components/Icons/AddIcon';
+import ArrowRight3Icon from '~/components/Icons/ArrowRight3Icon';
+import CardSizeIcon from '~/components/Icons/CardSizeIcon';
+import ShareIcon from '~/components/Icons/ShareIcon';
+import ArchiveIcon from '~/components/Icons/ArchiveIcon';
+import CopyIcon from '~/components/Icons/CopyIcon';
+import MagicIcon from '~/components/Icons/MagicIcon';
+import { selectCurrentUser } from '~/redux/user/userSlice';
+import ArrowLeft3Icon from '~/components/Icons/ArrowLeft3Icon';
+import UserLeaveIcon from '~/components/Icons/UserLeaveIcon';
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants';
 
 const cx = classNames.bind(styles);
-const avatars = Array.from({ length: 16 }, () => ({
-    src: 'https://randomuser.me/api/portraits/men/32.jpg',
-    title: 'nguyen van a',
-}));
+
 const maxAvatarVisible = 8;
 function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
     const dispatch = useDispatch();
     const currentActiveCard = useSelector(selectCurrentActiveCard);
-
+    const currentUser = useSelector(selectCurrentUser);
+    // console.log(currentActiveCard);
     const [editTitleColumn, setEditTitleColumn] = useState(false); // kiểm tra focus title column
     const [updateColumnTitle, setUpdateColumnTitle] = useState('Coladeptrai');
+
+    // Đoạn này ấy activeBoard từ Redux để mục đích lấy được toàn bộ thông tin của những thành
+    // viên trong board
+    const memberIds = currentActiveCard?.memberIds;
+    const board = useSelector(selectCurrentActiveBoard);
+    const FeUsersFromBoard = board?.FeUsersFromBoard;
+    // console.log('FeUsersFromBoard', FeUsersFromBoard);
+    const Fe_MemberInCard = FeUsersFromBoard?.filter((user) => memberIds?.some((mem) => mem === user._id)) || [];
+    // check user login có phải thành viên card ko
+    const isMemberInCardByCurrentUser = memberIds?.includes(currentUser.userId);
+    //console.log("isMemberInCardByCurrentUser",isMemberInCardByCurrentUser);
+    // console.log(Fe_MemberInCard);
+    const isMemberInCard = (userId) => {
+        // console.log(userId);
+        // console.log(FeUsersFromBoard);
+        return Fe_MemberInCard.some((user) => user._id === userId);
+    };
+    // console.log('Fe_MemberInCard', Fe_MemberInCard);
 
     const updateCardInBoardRedux = (card) => {
         dispatch(updateCurrentActiveCard(card));
@@ -120,6 +151,57 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
             }
         });
     };
+
+    const onUpdateMemberIds = (data) => {
+        data.cardId = currentActiveCard._id || currentActiveCard.cardId;
+        updateCardMemberIdsAPI(data)
+            .then((res) => {
+                const isMemberInCard = res.result.memberIds.some((id) => id === data.userId);
+                // console.log(isMemberInCard);
+                if (!res.error && isMemberInCard) {
+                    toast.success('Thêm thành viên vào card thành công!');
+                } else if (!res.error && !isMemberInCard) {
+                    toast.success('Xóa thành viên khỏi card thành công!');
+                }
+
+                updateCardInBoardRedux(res.result);
+            })
+            .catch(() => {});
+    };
+
+    const onUpdateMemberIdsIsAddMember = () => {
+        const addMemberInfo = {
+            userId: currentUser.userId,
+            cardMemberAction: CARD_MEMBER_ACTIONS.ADD,
+            cardId: currentActiveCard._id || currentActiveCard.cardId,
+        };
+        updateCardMemberIdsAPI(addMemberInfo)
+            .then((res) => {
+                // console.log(isMemberInCard);
+                if (!res.error) {
+                    toast.success('Tham gia vào card thành công!');
+                }
+                updateCardInBoardRedux(res.result);
+            })
+            .catch(() => {});
+    };
+
+    const onUpdateMemberIdsIsRemoveMember = () => {
+        const removeMemberInfo = {
+            userId: currentUser.userId,
+            cardMemberAction: CARD_MEMBER_ACTIONS.REMOVE,
+            cardId: currentActiveCard._id || currentActiveCard.cardId,
+        };
+        updateCardMemberIdsAPI(removeMemberInfo)
+            .then((res) => {
+                // console.log(isMemberInCard);
+                if (!res.error) {
+                    toast.success('Rời khỏi card thành công!');
+                }
+                updateCardInBoardRedux(res.result);
+            })
+            .catch(() => {});
+    };
     return (
         <>
             <div className={cx('overlay', { onPopUp: onPopUp })}>
@@ -149,10 +231,13 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                                 <p>Members</p>
                                 <AvatarGroup
                                     classname={cx('avatarGroup')}
-                                    avatarGroups={avatars}
+                                    avatarGroups={Fe_MemberInCard}
                                     maxAvatarVisible={maxAvatarVisible}
                                     hidePosition={maxAvatarVisible > 0 ? false : true}
                                     addMember={true}
+                                    membersInBoard={FeUsersFromBoard}
+                                    isMemberInCard={isMemberInCard}
+                                    onUpdateMemberIds={onUpdateMemberIds}
                                 />
                             </div>
                             <div className={cx('descriptionCard')}>
@@ -181,12 +266,24 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                             <div className={cx('menuAddCard')}>
                                 <p>Add To Card</p>
                                 <div className={cx('menuAddCardItems')}>
-                                    <MenuDropDownCustomItem
-                                        leftIcon={<UserIconOutline className={cx('menuItemIcon')} />}
-                                        classNameItem={cx('menuItemP')}
-                                    >
-                                        Join
-                                    </MenuDropDownCustomItem>
+                                    {!isMemberInCardByCurrentUser && (
+                                        <MenuDropDownCustomItem
+                                            leftIcon={<UserIconOutline className={cx('menuItemIcon')} />}
+                                            classNameItem={cx('menuItemP','menuItemButton')}
+                                            onClick={onUpdateMemberIdsIsAddMember}
+                                        >
+                                            Join
+                                        </MenuDropDownCustomItem>
+                                    )}
+                                    {isMemberInCardByCurrentUser && (
+                                        <MenuDropDownCustomItem
+                                            leftIcon={<UserLeaveIcon className={cx('menuItemIcon')} />}
+                                             classNameItem={cx('menuItemP','menuItemButton')}
+                                            onClick={onUpdateMemberIdsIsRemoveMember}
+                                        >
+                                            Leave
+                                        </MenuDropDownCustomItem>
+                                    )}
                                     <Button
                                         inputFile={true}
                                         leftIcon={<CoverIcon className={cx('menuItemIcon')} />}
@@ -232,22 +329,22 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                                 <p>Power-Ups</p>
                                 <div className={cx('menuAddCardItems')}>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<CheckListIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<CardSizeIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Checklist
+                                        Card Size
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<DateIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<DriveIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Dates
+                                        Google Drive
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<CustomFieldIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<AddIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Custom Fields
+                                        Add Power-Ups
                                     </MenuDropDownCustomItem>
                                 </div>
                             </div>
@@ -256,34 +353,34 @@ function ActiveCard({ onPopUp = true, closePopup, onCreated }) {
                                 <p>Actions</p>
                                 <div className={cx('menuAddCardItems')}>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<AttachIcon2 className={cx('menuItemIcon')} />}
+                                        leftIcon={<ArrowRight3Icon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Attachment
+                                        Move
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<LabelTagIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<CopyIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Labels
+                                        Copy
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<CheckListIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<MagicIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Checklist
+                                        Make Template
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<DateIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<ArchiveIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Dates
+                                        Archive
                                     </MenuDropDownCustomItem>
                                     <MenuDropDownCustomItem
-                                        leftIcon={<CustomFieldIcon className={cx('menuItemIcon')} />}
+                                        leftIcon={<ShareIcon className={cx('menuItemIcon')} />}
                                         classNameItem={cx('menuItemP')}
                                     >
-                                        Custom Fields
+                                        Share
                                     </MenuDropDownCustomItem>
                                 </div>
                             </div>

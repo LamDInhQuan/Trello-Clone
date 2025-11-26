@@ -95,6 +95,7 @@ function AccountTab() {
                         searchInput_className={cx('input-username')}
                         label_search_className={cx('label-input-username')}
                         autoFocus={true}
+                        normalInput={true}
                         {...register('currentPassword', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {
@@ -112,6 +113,7 @@ function AccountTab() {
                         valueInput={inputNewPassword}
                         searchInput_className={cx('input-username')}
                         label_search_className={cx('label-input-username')}
+                        normalInput={true}
                         {...register('newPassword', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {
@@ -129,6 +131,7 @@ function AccountTab() {
                         valueInput={inputConfirmPassword}
                         searchInput_className={cx('input-username')}
                         label_search_className={cx('label-input-username')}
+                        normalInput={true}
                         {...register('newPasswordConfirm', {
                             required: FIELD_REQUIRED_MESSAGE,
                             validate: (value) => {

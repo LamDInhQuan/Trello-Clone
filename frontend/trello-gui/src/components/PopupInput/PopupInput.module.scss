@@ -15,7 +15,7 @@
     height: fit-content;
     width: 33%;
     min-height: 40%;
-    background-color: rgb(255, 255, 255);
+    background-color: var(--color-active-card);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     display: flex;
@@ -32,10 +32,12 @@
     font-size: 17px;
     font-weight: 600;
     width: 90%;
+    color: var(--color-button-boards) !important;
 }
 .iconCreate {
     width: 20px;
     height: 20px;
+    color: var(--color-button-boards) !important;
 }
 .iconClose {
     width: 20px;
@@ -59,19 +61,20 @@
     height: 45px;
     border: 1px solid#a19eaa8e;
     font-size: 15px;
-    color: #48474c;
+    color: var(--color-button-boards);
 }
 .input-username:hover {
-    border: 1px solid#a19eaa8e;
+    border: 1px solid var(--color-border-active-card);
 }
 .label-input-username {
     transform: translateY(-8px) translateX(5px) !important;
     font-size: 11px !important;
-    background-color: white;
+    background-color: var(--color-input-boards);
     color: #a19eaa;
+    z-index: 999;
 }
 .hide-info-icon {
-    color: #4c4b4f;
+    color: var(--color-icon-boards);
     width: 20px;
     height: 20px;
 }
@@ -88,6 +91,7 @@
 }
 .scope-radio div > label {
     font-size: 15px;
+    color: var(--color-button-boards) !important;
 }
 .scope-radio div > input[type='radio'] {
     accent-color: rgb(0, 4, 255); /* đổi màu chấm tròn */

@@ -54,7 +54,7 @@ function LoginForm() {
                 // kiểm tra đăng nhập không có lỗi điều hướng về route ("/")
                 // console.log(res);
                 if (!res.error) {
-                    toast.success('Đăng nhập thành công!')
+                    toast.success('Đăng nhập thành công!');
                     navigate('/');
                 }
             })
@@ -103,6 +103,7 @@ function LoginForm() {
                         searchInput_className={errors['email'] && cx('searchInputError')}
                         autoFocus={true}
                         valueInput={inputEmail}
+                        normalInput={true}
                         {...register('email', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {
@@ -117,6 +118,7 @@ function LoginForm() {
                         label_search_className={!!errors['password'] ? cx('labelSearchError') : cx('labelSearch')}
                         searchInput_className={errors['password'] && cx('searchInputError')}
                         valueInput={inputPassword}
+                        normalInput={true}
                         {...register('password', {
                             required: FIELD_REQUIRED_MESSAGE,
                             pattern: {

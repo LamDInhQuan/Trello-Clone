@@ -45,6 +45,7 @@ public enum ErrorCode {
     INVITATION_NOT_FOUND(1034,"Invitation không tồn tại!",HttpStatus.BAD_REQUEST) ,
     USER_EXIST_IN_BOARD(1035,"User đã là thành viên của board!",HttpStatus.BAD_REQUEST) ,
     INVITATION_ALREADY_UPDATE(1036,"Invitation đã được cập nhật!",HttpStatus.BAD_REQUEST) ,
+    SCOPE_ERROR_MEMBER_STATUS(1037,"Trạng thái cập nhật phải là ADD/REMOVE",HttpStatus.BAD_REQUEST) ,
     SEND_EMAIL_FAILED(4004,"Gửi email thất bại",HttpStatus.BAD_REQUEST) ,
     VERIFY_ACCOUNT_TOKEN_NOT_VALID(4005,"Token Verify không hợp lệ hoặc sai định dạng !",HttpStatus.BAD_REQUEST),
     TOKEN_IS_EXPIRED(4006,"Token đã hết hạn! Vui lòng refresh token!",HttpStatus.GONE) ,
@@ -59,6 +60,11 @@ public enum ErrorCode {
     IMAGE_NOT_VALID(4011,"Thuộc tính file không hợp lệ! Chỉ chấp nhận jpg, jpeg và png",HttpStatus.BAD_REQUEST),
     MAX_FILE(4012,"Kích thước file qúa lớn!",HttpStatus.BAD_REQUEST),
     UPLOAD_AVATAR_FAILED(4013,"Upload avatar thất bại!",HttpStatus.BAD_REQUEST),
+    USER_ALREADY_IS_OWNER_BOARD(4014,"Bạn không thể tự thêm chính mình vào board!",HttpStatus.BAD_REQUEST),
+    USER_ALREADY_IS_MEMBER_BOARD(4015,"User đã là thành viên của board!",HttpStatus.BAD_REQUEST),
+    USER_ID_NOT_NULL(4016,"UserId không được để trống!",HttpStatus.BAD_REQUEST),
+    CARD_NOT_FOUND_BY_USER_ID(4017,"Card không được tìm thấy bởi user update , có thể user chưa nằm trong board có card này!",HttpStatus.BAD_REQUEST),
+    BOARD_NOT_FOUND2(1038,"Không tìm thấy board bằng search params ",HttpStatus.NOT_FOUND),
     ;
     ;
 

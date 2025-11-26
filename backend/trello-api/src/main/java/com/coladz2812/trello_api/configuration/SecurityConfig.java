@@ -62,6 +62,7 @@ public class SecurityConfig { // lớp này xử lí request trước khi đi v�
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
+                                .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(exp -> exp.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         // đặt filter trước UsernamePasswordAuthenticationFilter

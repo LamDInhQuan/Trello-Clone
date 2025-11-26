@@ -2,17 +2,12 @@ package com.coladz2812.trello_api.controller;
 
 import com.coladz2812.trello_api.classValidation.InvitationUpdateStatus;
 import com.coladz2812.trello_api.dto.request.BoardInvitationRequest;
-import com.coladz2812.trello_api.dto.request.BoardRequest;
-import com.coladz2812.trello_api.dto.request.BoardRequestUpdate;
 import com.coladz2812.trello_api.dto.request.InvitationRequest;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
-import com.coladz2812.trello_api.dto.response.BoardResponse;
 import com.coladz2812.trello_api.dto.response.InvitationResponse;
 import com.coladz2812.trello_api.model.BoardInvitation;
-import com.coladz2812.trello_api.service.BoardService;
 import com.coladz2812.trello_api.service.InvitationService;
-import com.coladz2812.trello_api.util.BoardInvitationStatus;
-import com.coladz2812.trello_api.util.InvitationType;
+import com.coladz2812.trello_api.util.ConstantsUtil;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +37,12 @@ public class InvitationController {
         InvitationRequest invitationRequest = InvitationRequest.builder()
                 .inviterId(authentication.getPrincipal().toString())
                 .inviteeEmail(request.getInviteeEmail())
-                .type(InvitationType.BOARD_INVITATION.name())
+                .type(ConstantsUtil.InvitationType.BOARD_INVITATION)
                 .boardInvitations(BoardInvitation.builder()
                         .boardId(new ObjectId(request.getBoardId().toString()))
-                        .status(BoardInvitationStatus.PENDING.name()).build())
+                        .status(ConstantsUtil.BoardInvitationStatus.PENDING).build())
                 .build();
-        var invitationResponse = invitationService.createNewInvitation(invitationRequest);
+        var invitationResponse = invitationService.createNewInvitation(invitationRequest,authentication.getPrincipal().toString());
         ApiResponse<InvitationResponse> apiResponse = ApiResponse.<InvitationResponse>builder().result(invitationResponse).build();
         return apiResponse;
     }

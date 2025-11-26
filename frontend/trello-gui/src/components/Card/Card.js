@@ -230,7 +230,11 @@ function Card({ title = 'Column Title', id, items }) {
                     }}
                     hideFromParent={menuDropDownHide}
                 ></ButtonDropDownMenu>
-                <div className={cx('wrapper', { titleh3: !editTitleColumn })} data-column-id={items._id}>
+                <div
+                    className={cx('wrapper', { titleh3: !editTitleColumn })}
+                    data-column-id={items._id}
+                    style={openNewCardForm ? { paddingBottom: '10px' } : {}}
+                >
                     <div className={cx('scroll-inner')} {...listeners} {...attributes}>
                         {/* Title */}
                         <div className={cx('column-title')}>
@@ -273,6 +277,7 @@ function Card({ title = 'Column Title', id, items }) {
                                     autoFocus={true}
                                     hasValue={newColumnTitle !== ''}
                                     valueInput={newColumnTitle}
+                                    normalInput={true}
                                     {...register('columnTitleInput')}
                                 />
                                 <div className={cx('wrapper-button-add-column2')}>

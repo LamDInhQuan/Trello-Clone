@@ -1,12 +1,11 @@
 .wrapper {
     width: 100%;
-    height: var( --board-bar-height) ;
-    background-color: rgb(255, 255, 255);
+    height: var(--board-bar-height);
     align-items: center;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #9ccbcc;
+    background-color: var( --color-boardId);
 }
 .chip-Group {
     height: 45px;
@@ -23,5 +22,5 @@
 // board-icon
 .icon {
     width: 24px;
-    color: var(--color-green);
+    color: #fff;
 }

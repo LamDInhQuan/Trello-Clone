@@ -2,7 +2,10 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from './InputSearch.module.scss';
 import classNames from 'classnames/bind';
-import { faL } from '@fortawesome/free-solid-svg-icons';
+import { faL, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import LoadingIcon from '../Icons/LoadingIcon';
+import CloseIcon from '../Icons/CloseIcon';
 
 // src
 
@@ -20,6 +23,10 @@ const InputSearch = forwardRef(
             hasValue = false,
             valueInput = '',
             typeInput = 'text',
+            isSeach,
+            onFocus,
+            setValueInput,
+            normalInput = false ,
             ...rest
         },
         ref,
@@ -41,8 +48,9 @@ const InputSearch = forwardRef(
                     })}
                     ref={ref} // ✅ rất quan trọng
                     {...rest}
-                    onFocus={() => {
+                    onFocus={(e) => {
                         setPlaceholder('');
+                        if (onFocus) onFocus(e); // chạy thêm onFocus do cha truyền vào
                     }}
                     onBlur={() => {
                         setPlaceholder(title);
@@ -51,6 +59,8 @@ const InputSearch = forwardRef(
                     autoFocus={autoFocus}
                     value={valueInput}
                 />
+                {!normalInput && isSeach && <LoadingIcon className={cx('loadingIcon')} />}
+                {!normalInput && !isSeach && valueInput && <CloseIcon className={cx('closeIcon')} onClick={() => setValueInput('')} />}
                 <label className={cx('label-search', label_search_className)}>{title}</label>
             </div>
         );

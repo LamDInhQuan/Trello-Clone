@@ -36,14 +36,14 @@
     align-items: center;
 }
 .user-icon {
-    color: white;
+    color: var(--color-button-boards) !important;
     background-color: #bab9c7;
     width: 55px;
     height: 55px;
     border-radius: 999px;
 }
 .user-icon2 {
-    color: white;
+    color: var(--color-button-boards) !important;
     background-color: #bab9c7;
     width: 70px;
     height: 70px;
@@ -58,6 +58,10 @@
 .user-name > p:nth-child(1) {
     font-size: 20px;
     font-weight: bold;
+    color: var(--color-button-boards) !important;
+}
+.user-name > p:nth-child(2) {
+    color: var(--color-button-boards) !important;
 }
 .icon-upload {
     width: 16px;
@@ -96,20 +100,26 @@
     width: 20px;
     height: 20px;
 }
+.hide-info-icon.iconInput{
+    color: var(--color-input-username-account) !important;
+}
 .input-username {
     width: 100%;
     height: 45px;
-    border: 2px solid#a19eaa;
+    border: 2px solid var(--color-input-username-border-account);
     font-size: 15px;
-    color: #48474c;
+    color: var(--color-input-username-account);
+}
+.input-username::placeholder{
+     color: var(--color-input-username-account);
 }
 .input-username:hover {
     border-color: #a19eaa;
 }
 .label-input-username {
     font-size: 11px !important;
-    background-color: white;
-    color: #a19eaa;
+    background-color: var(--color-main-boards);
+    color: var(--color-input-username-account);
 }
 .button-update {
     width: calc(100vw / 3 - 128px);

@@ -137,6 +137,7 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> {
             throw new AppException(ErrorCode.USER_EMAIL_NOT_FOUND);
         });
+        // log.error("userID "+user.getId());
         // check lỗi tài khoản email chưa được xác thực
         if (!user.getIsActive()) {
             throw new AppException(ErrorCode.USER_ACCOUNT_NOT_ACTIVE);
@@ -155,6 +156,7 @@ public class UserService {
         String refreshToken = generateToken(user.getId(), user.getEmail(), signerKeyRefresh, durationRefresh);
         generateCookie(response, "refreshToken", refreshToken, 14);
         var userResponse = userMapper.toUserResponse(user);
+        userResponse.setUserId(user.getId()); // set id user
         var loginResponse = new LoginResponse(accessToken, refreshToken, userResponse);
         return loginResponse;
     }

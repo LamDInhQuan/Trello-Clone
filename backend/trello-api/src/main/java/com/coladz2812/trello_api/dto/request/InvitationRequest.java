@@ -2,15 +2,12 @@ package com.coladz2812.trello_api.dto.request;
 
 import com.coladz2812.trello_api.classValidation.InvitationUpdateStatus;
 import com.coladz2812.trello_api.model.BoardInvitation;
-import com.coladz2812.trello_api.util.BoardInvitationStatus;
 import com.coladz2812.trello_api.validator.ValueIn;
-import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Data
