@@ -125,6 +125,7 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
     }, [board]);
 
 
+
     // handelDragStart : bắt đầu kéo 1 phần tửtử
     // bắt đầu kéo , xác định id phần tử kéo , loại ( card , cardItem ) , data của thẻ kéo
 
