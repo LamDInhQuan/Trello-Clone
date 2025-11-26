@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document
 @Data
@@ -23,7 +24,10 @@ public class Card {
     ObjectId columnId ;
     String title ;
     String description ;
-    Date createAt = new Date();
-    Date updateAt ;
+    String cardCover = null;
+    List<String> memberIds = List.of();
+    List<Comment> comments = List.of();
+    Date createdAt = new Date();
+    Date updatedAt ;
     Boolean _destroy = false ;
 }

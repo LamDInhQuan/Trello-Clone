@@ -1,10 +1,10 @@
 .wrapper {
     width: 100%;
-    background-color: rgb(255, 255, 255);
-    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height) );
+    height: calc(100vh - var(--app-bar-height) - var(--board-bar-height));
     padding-bottom: 5px;
     padding-left: 13px;
     padding-right: 13px;
+    background-color: var(--color-boardId);
 }
 .scroll-inner {
     width: 100%;
@@ -26,20 +26,20 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.2); /* màu thanh kéo */
+        background-color: rgba(239, 234, 234, 0.475); /* màu thanh kéo */
         border-radius: 4px;
         transition: background-color 0.3s;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(230, 226, 226, 0.4);
     }
 }
 // icon
 .add-column {
     margin-top: 20px;
     height: 40px;
-    background-color: #7ccfc4;
+    background-color: var(--color-create-column);
     border-radius: 6px;
     display: flex;
     flex-direction: column;
@@ -81,15 +81,13 @@
     justify-content: flex-start;
     flex-direction: column;
     align-items: center;
-    gap : 10px ;
-
+    gap: 10px;
 }
-.wrapper-button-add-column2{
+.wrapper-button-add-column2 {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     margin-right: 45px;
-    
 }
 // css cho input add column ( input search )
 .label-search {
@@ -98,7 +96,7 @@
     top: -11px;
     left: 16px;
     font-size: 14px;
-    background: #7ccfc4;
+    background: var(--color-create-column);
     padding: 0 6px;
     color: #fff;
     pointer-events: none;
@@ -146,12 +144,12 @@
 .button-add-column2 {
     background-color: #3806de;
     color: #fff;
-  /* Box shadow */
-  box-shadow: 0 4px 6px rgba(54, 54, 50, 0.2);
-  transition: box-shadow 0.3s ease;
+    /* Box shadow */
+    box-shadow: 0 4px 6px rgba(54, 54, 50, 0.2);
+    transition: box-shadow 0.3s ease;
 }
 .button-add-column2:hover {
-    background-color: #f7db85;
+    background-color: #859af7;
 }
 .icon2 {
     width: 18px;
@@ -161,7 +159,7 @@
     color: rgb(241, 73, 73);
 }
 
-// css focus cho add column 
+// css focus cho add column
 .searchInput.hasValue + .label-search {
     opacity: 1;
     top: -17px;

@@ -25,7 +25,7 @@ public class Column {
     ObjectId boardId ;
     String title ;
     List<String> cardOrderIds = List.of() ;
-    Date createAt = new Date();
-    Date updateAt ;
+    Date createdAt = new Date();
+    Date updatedAt ;
     Boolean _destroy = false ;
 }

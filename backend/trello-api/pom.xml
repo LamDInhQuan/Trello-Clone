@@ -82,7 +82,64 @@
             <version>3.0.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.brevo</groupId>
+            <artifactId>brevo</artifactId>
+            <version>1.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Gửi mail của google     -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+
+
+        <!--     session    -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+
+        <!-- spring security        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44 -->
+        <!--     cloudinary -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.39.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <!--   commons-io : Thư viện này giúp xử lý file/stream dễ dàng
+        (ví dụ chuyển MultipartFile sang File, đọc/ghi file…)   -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+
+        <!-- spring websocket + messaging -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+
     </dependencies>
+
 
     <!--    phải viết theo code build bên dưới
     <build>

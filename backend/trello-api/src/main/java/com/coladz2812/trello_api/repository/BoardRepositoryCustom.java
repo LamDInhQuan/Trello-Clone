@@ -6,12 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface BoardRepositoryCustom {
-    public List<Board> findBoardByScope(String scope,String title);
+    public List<Board> findBoardByScope(String scope, String title);
 
-    public List<Document> getListBoardAndStudentInBoard();
+    public Document getBoardAndColumnByIdBoard(String boardId, String userId);
 
-    public Document getBoardAndColumnByIdBoard(String id);
+    public List<Document> getListBoardsByUserId(String userId, int currentPage);
+
+    public Board getBoardByBoardIdAndUserId(String userId, String boardId);
+
+    public boolean isUserMemeberInBoard(String userId, String userLoginId , String boardId);
+
+    public List<Document> findBoardBySearchParam(String userId, Map<String,String> searchObjects);
 }

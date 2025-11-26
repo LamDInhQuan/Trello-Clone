@@ -1,12 +1,14 @@
 .wrapper {
     width: 100%;
     height: var(--app-bar-height);
-    background-color: rgb(250, 250, 250);
+    color: var(--color-button-title);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #9ccbcc;
+    border-bottom: var(--color-app-bar);
+    background: var(--color-app-bar);
 }
+
 .box {
     margin-left: 10px;
     display: flex;
@@ -22,19 +24,19 @@
 // icon
 .icon {
     width: 21px;
-    color: var(--color-green);
+    color: var(--color-button-title);
 }
 .menuBar-Icon {
     width: 30px;
-    color: #007e75;
+    color: var(--color-button-title);
 }
 .trelloLogo-Icon {
     width: 22px;
-    color: #007e75;
+    color: var(--color-button-title);
 }
 .logo-name {
     font-size: 22px;
-    color: #007e75;
+    color: var(--color-button-title);
 }
 // search-andMode
 .search-andMode {
@@ -47,7 +49,7 @@
 // faBell-icon
 .faBell-icon {
     position: relative;
-    color: #007e75;
+    color: var(--color-button-title);
     &::after {
         content: ''; // con trỏ thông báo
         position: absolute; // cho phép đặt top/right
@@ -59,5 +61,158 @@
     }
 }
 .faQuestion-icon {
-    color: #007e75;
+    color: var(--color-button-title);
+    transform: translateX(-10px);
+}
+// icon input search
+.hide-info-icon {
+    color: var(--color-button-title);
+    width: 23px;
+    height: 23px;
+    transform: translateY(-8px);
+}
+.input-username {
+    width: 300px !important;
+    height: 33px;
+    border: 2px solid#FFF;
+    font-size: 15px;
+    color: var(--color-button-title);
+}
+.input-username::placeholder {
+    color: var(--color-button-title);
+}
+.input-username:hover {
+    border-color: #fff;
+}
+.label-input-username {
+    font-size: 11px !important;
+    color: var(--color-button-title);
+    background-color: var(--color-app-bar) !important;
+}
+// search-board
+.search-board {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    position: relative;
+}
+.search-board-result {
+    position: absolute;
+    top: 100%; /* ngay dưới input */
+    margin-top: 5px;
+    width: 300px;
+    height: fit-content;
+    max-height: 380px;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-button-title);
+    z-index: 999;
+    /* thêm viền */
+    border: 1px solid #ccc; /* màu xám nhạt */
+    /* bo góc */
+    border-radius: 6px;
+    /* thêm shadow */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 7px;
+    background-color: #FFF;
+}
+// custom scroll
+.search-board-result::-webkit-scrollbar {
+    width: 6px; /* hoặc 4px nếu bạn muốn nhỏ hơn */
+}
+
+.search-board-result::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search-board-result::-webkit-scrollbar-thumb {
+    background-color: rgba(219, 214, 214, 0.683); /* màu thanh kéo */
+    border-radius: 4px;
+}
+
+.search-board-result::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(230, 226, 226, 0.4);
+}
+//
+.search-board-result > h5 {
+    padding: 10px 0px 0px 10px;
+    color: black;
+}
+.result-detail {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 300px;
+    padding: 5px 10px 5px 10px;
+}
+.result-detail:hover {
+    background-color: #e7e3e35f;
+}
+.span-result {
+    height: 30px;
+    border-radius: 3px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.767);
+}
+.span-result > span {
+    width: 45px;
+    height: 10px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.result-detail > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.result-detail-content > h5 {
+    font-size: 14px;
+    word-break: break-word; /* ngắt chữ dài để xuống dòng */
+     color: black;
+}
+.result-detail-content > p {
+    font-size: 13px;
+    color: rgb(139, 133, 133);
+}
+// css no result board
+.no-results {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    padding: 40px 20px;
+    color: #888;
+    font-size: 16px;
+    text-align: center;
+    background-color: white;
+    z-index: 999;
+    /* thêm viền */
+    border: 1px solid #ccc; /* màu xám nhạt */
+    /* bo góc */
+    border-radius: 6px;
+    /* thêm shadow */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    margin-top: 40px;
+}
+
+.no-results-icon {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-results-icon svg {
+    width: 48px;
+    height: 48px;
+    stroke: #ccc;
+}
+
+.no-results p {
+    margin: 0;
+    font-weight: 500;
 }

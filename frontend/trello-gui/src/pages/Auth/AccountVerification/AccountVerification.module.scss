@@ -1,0 +1,61 @@
+.wrapper {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #0079bf, #5067c5);
+}
+
+.verify-card {
+    background: #fff;
+    padding: 40px 35px;
+    border-radius: 16px;
+    width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+}
+
+.app-logo {
+    font-size: 40px;
+    color: #0079bf;
+    margin-bottom: 15px;
+}
+
+.verify-card h2 {
+    margin: 10px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.verify-card p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.verify-btn {
+    background: #0079bf;
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 6px 15px rgba(0, 121, 191, 0.4);
+    transform: translateX(50%);
+}
+
+.verify-btn:hover {
+    background: #026aa7;
+    transform: translateX(50%) translateY(-2px);
+}
+strong {
+    color: #099feb;
+}

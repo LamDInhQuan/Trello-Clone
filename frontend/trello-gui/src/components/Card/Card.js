@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useConfirm } from 'material-ui-confirm';
 // src
 import styles from './Card.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import ButtonDropDownMenu from '../ButtonDropDownMenu/ButtonDropDownMenu';
 import Button from '../Button';
 import Icons from '../Icons';
@@ -15,10 +16,27 @@ import CardItem from './CardItem';
 import { mapOrder } from '~/utils/sorts';
 import InputSearch from '../InputSearch';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
+import { createNewCardApi, deleteColumnInBoard, updateTitleColumnAPI } from '~/apis';
+import { useForm } from 'react-hook-form';
+import ToggleFocusInput from '../ToggleFocusInput';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 
-function Card({ title = 'Column Title', id, items = [], createNewCard, deleteColumnDetails }) {
+function Card({ title = 'Column Title', id, items }) {
+    // console.log('render card');
+
+    // lấy nội dung form input add column
+    const { register, watch, setValue } = useForm();
+    const newColumnTitle = watch('columnTitleInput'); // sẽ update liên tục khi gõ
+
+    const dispatch = useDispatch();
+    // Không dùng state của component nữa mà dùng state của Redux
+    // const [board, setBoard] = useState();
+    const board = useSelector(selectCurrentActiveBoard);
+
     //  Khi bạn gọi useSortable() trong mỗi Card, tức là:
     //✅ Card đó đã đăng ký vào hệ thống kéo-thả của DndKit, và được phép tham gia kéo-thả.
     // DndKit context (SortableContext)	Xác định phần tử để theo dõi vị trí, thứ tự
@@ -42,12 +60,12 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
 
     // state lưu trạng thái của UI add card
     const [openNewCardForm, setOpenNewCardForm] = useState(false);
-    const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
+    const toggleOpenNewCardForm = () => {
+        setValue('columnTitleInput', '');
+        setOpenNewCardForm(!openNewCardForm);
+    };
 
-    // lấy nội dung form input add column
-    const [newColumnTitle, setNewColumnTitle] = useState('');
-
-    const addNewColumn = () => {
+    const addNewColumn = async () => {
         console.log('value : ', newColumnTitle);
         if (!newColumnTitle) {
             toast.error('Please enter card title !', {
@@ -55,17 +73,46 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
             });
             return;
         }
-        createNewCard({
-            boardId: items.boardId,
-            columnId: items._id,
-            title: newColumnTitle,
-        });
+        let createdCard;
+        try {
+            createdCard = await createNewCardApi({
+                boardId: items.boardId,
+                columnId: items._id,
+                title: newColumnTitle,
+            });
+        } catch (error) {
+            return;
+        }
+        // clone board và các array bên trong
+        const newBoard = {
+            ...board,
+            columns: board.columns.map((col) => ({
+                ...col,
+                cards: [...col.cards],
+                cardOrderIds: [...col.cardOrderIds], // clone array column
+            })),
+            columnOrderIds: [...board.columnOrderIds], // clone array columnOrderIds
+        };
+        console.log(newBoard);
+        // gán _id cho card mới nếu cần
+        createdCard.result._id = createdCard.result?.cardId;
+        // tìm cột chứa card
+        const columnOfCard = newBoard.columns.find((col) => col._id === createdCard.result.columnId);
+        if (!columnOfCard.cards) columnOfCard.cards = [];
+        if (!columnOfCard.cardOrderIds) columnOfCard.cardOrderIds = [];
+        if (columnOfCard) {
+            if (columnOfCard.cards.some((card) => card.FE_PlaceHolderCard)) {
+                columnOfCard.cards = [createdCard.result];
+                columnOfCard.cardOrderIds = [createdCard.result.cardId];
+            } else {
+                columnOfCard.cards.push(createdCard.result);
+                columnOfCard.cardOrderIds.push(createdCard.result.cardId);
+            }
+        }
+        console.log(columnOfCard);
+        dispatch(updateCurrentActiveBoard(newBoard));
         toggleOpenNewCardForm();
-        setNewColumnTitle('');
-    };
-    const setInputChangeAddColumn = (e) => {
-        const val = e.target.value;
-        setNewColumnTitle(val);
+        setValue('columnTitleInput', '');
     };
 
     const confirmDeleteColumn = useConfirm();
@@ -84,7 +131,22 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
             })
                 .then(() => {
                     console.log('confirmed delete', id);
-                    deleteColumnDetails(id);
+                    const newBoard = {
+                        ...board,
+                    };
+                    newBoard.columns = newBoard.columns.filter((col) => col._id !== id);
+                    newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== id);
+                    dispatch(updateCurrentActiveBoard(newBoard));
+                    // Gọi API xoá trên server
+                    deleteColumnInBoard(newBoard._id, id)
+                        .then((result) => {
+                            console.log('Xoá column thành công:', result.result);
+                            toast.success(result.result, { position: 'bottom-right' });
+                            // cập nhật state board nếu cần
+                        })
+                        .catch((err) => {
+                            console.error('API xoá thất bại:', err);
+                        });
                 })
                 .catch(() => {});
         }, 0);
@@ -125,6 +187,32 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
         },
     ];
 
+    const [editTitleColumn, setEditTitleColumn] = useState(false); // kiểm tra focus title column
+    const [updateColumnTitle, setUpdateColumnTitle] = useState(title);
+    // console.log(editTitleColumn);
+    const onUpdateColumnTitle = (title) => {
+        console.log({ columnId: items._id, title: title });
+        setUpdateColumnTitle(title);
+        updateTitleColumnAPI({ columnId: items._id, title: title })
+            .then((res) => {
+                if (!res.error) {
+                    toast.success('Cập nhật tiêu đề cột thành công!');
+                }
+                const newBoard = {
+                    ...board,
+                    columns: board.columns.map((col) => (col._id === items._id ? { ...col, title } : { ...col })),
+                };
+                // clone lại cả obj title của column để sửa
+                // tìm cột chứa card
+                const columnOfCard = newBoard.columns.find((col) => col._id === items._id);
+                if (columnOfCard) {
+                    columnOfCard.title = title;
+                }
+                console.log(columnOfCard);
+                dispatch(updateCurrentActiveBoard(newBoard));
+            })
+            .catch(() => {});
+    };
     return (
         <>
             {/* Overlay */}
@@ -142,19 +230,27 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
                     }}
                     hideFromParent={menuDropDownHide}
                 ></ButtonDropDownMenu>
-
-                <div className={cx('wrapper')} data-column-id={items._id}>
-                    <div className={cx('scroll-inner')} {...attributes} {...listeners}>
+                <div
+                    className={cx('wrapper', { titleh3: !editTitleColumn })}
+                    data-column-id={items._id}
+                    style={openNewCardForm ? { paddingBottom: '10px' } : {}}
+                >
+                    <div className={cx('scroll-inner')} {...listeners} {...attributes}>
+                        {/* Title */}
                         <div className={cx('column-title')}>
-                            <h4 className={cx('title')} onClick={addNewColumn}>
-                                {title}
-                            </h4>
+                            <ToggleFocusInput
+                                className={cx('titleInput', { active: editTitleColumn })}
+                                value={updateColumnTitle}
+                                onFocusChange={setEditTitleColumn}
+                                onUpdateColumnTitle={onUpdateColumnTitle}
+                            />
                         </div>
+
                         <SortableContext items={orderArray} strategy={verticalListSortingStrategy}>
                             <div className={cx('list-card')}>
-                                {orderredArray.map((item) => {
-                                    return <CardItem key={item._id} card={item} />;
-                                })}
+                                {orderredArray.map((item) => (
+                                    <CardItem key={item._id} card={item} />
+                                ))}
                             </div>
                         </SortableContext>
                     </div>
@@ -180,12 +276,15 @@ function Card({ title = 'Column Title', id, items = [], createNewCard, deleteCol
                                     searchInput_className={cx('searchInput')}
                                     autoFocus={true}
                                     hasValue={newColumnTitle !== ''}
-                                    onChange={setInputChangeAddColumn}
-                                    value={newColumnTitle}
+                                    valueInput={newColumnTitle}
+                                    normalInput={true}
+                                    {...register('columnTitleInput')}
                                 />
                                 <div className={cx('wrapper-button-add-column2')}>
-                                    {/* // onMouseDown xảy ra trước blur input */}
-                                    <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                    <Button
+                                        className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`}
+                                        onClick={addNewColumn}
+                                    >
                                         Add Card
                                     </Button>
                                     <Button

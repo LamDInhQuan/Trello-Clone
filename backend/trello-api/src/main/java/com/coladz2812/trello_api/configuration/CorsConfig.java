@@ -61,12 +61,15 @@ public class CorsConfig {
                     corsConfiguration.addAllowedOrigin(orgin.get());
                 } else {
                     log.error("Blocked CORS request from origin: {}", orgin.get());
-                    return null ;
+                    throw  new AppException(ErrorCode.DOMAIN_CORS_BLOCK);
                 }
 
 
                 corsConfiguration.addAllowedMethod("*"); // GET, POST, PUT, DELETE, OPTIONS...
                 corsConfiguration.addAllowedHeader("*"); // mọi header
+                // withCredentials = true/false
+                // Khi true → browser sẽ tự động gửi cookie, authorization headers hoặc client-side SSL certificates cùng request.
+                // Khi false → browser không gửi cookie hoặc thông tin xác thực, request trở thành “stateless”.
                 corsConfiguration.setAllowCredentials(true);
                 return corsConfiguration;
             }

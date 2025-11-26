@@ -1,5 +1,5 @@
 .wrapper {
-    min-width: 20px;
+    min-width: 40px;
     padding: 4px 13px;
     font-weight: 600;
     border-radius: 4px;
@@ -12,9 +12,11 @@
     + .wrapper {
         margin-left: 10px;
     }
+    width: fit-content;
+    color: #FFF;
 }
 .wrapper:hover {
-  cursor: pointer; /* đổi thành con trỏ bàn tay */
+    cursor: pointer; /* đổi thành con trỏ bàn tay */
 }
 
 // css khi avatar group = 0
@@ -22,8 +24,8 @@
     transform: translateX(30px);
 }
 .outline {
-    border: 1px solid #007e75;
-    color: #007e75;
+    border: 1px solid #FFF;
+    color: #FFF;
     &:hover {
         background-color: #e2eaf3;
     }
@@ -44,9 +46,18 @@
 .chipHover {
     height: 31px;
     &:hover {
-        background-color: #e2eaf3;
+        background-color: #6da9ed;
         cursor: pointer; /* đổi thành con trỏ bàn tay */
     }
     font-weight: 500;
-    color: var(--color-green);
+    color: #FFF;
+}
+// css input file
+.hidden-input {
+    display: none;
+}
+.button-wrapper {
+    display: flex;
+    width: fit-content;
+    white-space: nowrap;
 }

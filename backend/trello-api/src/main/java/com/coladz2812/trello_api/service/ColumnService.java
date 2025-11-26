@@ -40,7 +40,7 @@ public class ColumnService {
 
     // @Transactional là annotation trong Spring dùng để quản lý transaction (giao dịch) cho các thao tác với cơ sở dữ liệu.
     //
-    //Nói một cách dễ hiểu: nó đảm bảo rằng tất cả các thao tác trong một phương thức được thực hiện “cùng nhau”.
+    // Nói một cách dễ hiểu: nó đảm bảo rằng tất cả các thao tác trong một phương thức được thực hiện “cùng nhau”.
     // Nếu có bước nào thất bại, toàn bộ các thay đổi trước đó sẽ bị rollback (khôi phục), để database không bị
     // trạng thái “một nửa”.
     @Transactional
@@ -59,6 +59,7 @@ public class ColumnService {
         boardRepository.save(board);
         ColumnResponse columnResponse = columnMapper.toColumnResponse(savedColumn) ;
         columnResponse.setBoardId(column.getBoardId().toString());
+        columnResponse.setCreatedAt(new Date());
         return columnResponse ;
     }
 
@@ -69,14 +70,14 @@ public class ColumnService {
     public ColumnResponse updateColumnByCardOrderIdsInTheSameColumn(String columnId , ColumnRequestUpdate request) {
         Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         column.setCardOrderIds(request.getCardOrderIds());
-        column.setUpdateAt(new Date());
+        column.setUpdatedAt(new Date());
         return columnMapper.toColumnResponse(columnRepository.save(column));
     }
 
     public ColumnResponse updateTwoColumnsByCardOrderIds(String columnId , ColumnRequestUpdate request) {
         Column column = columnRepository.findById(columnId).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         column.setCardOrderIds(request.getCardOrderIds());
-        column.setUpdateAt(new Date());
+        column.setUpdatedAt(new Date());
         return columnMapper.toColumnResponse(columnRepository.save(column));
     }
 
@@ -86,11 +87,11 @@ public class ColumnService {
         Column nextColumn = columnRepository.findById(request.getNextColumnId()).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
         log.error("prevColumn "+prevColumn.getCardOrderIds().size());
         prevColumn.setCardOrderIds(request.getPrevCardOrderIds());
-        prevColumn.setUpdateAt(new Date());
+        prevColumn.setUpdatedAt(new Date());
         log.error("prevColumn "+prevColumn.getCardOrderIds().size());
         log.error("nextColumn "+nextColumn.getCardOrderIds().size());
         nextColumn.setCardOrderIds(request.getNextCardOrderIds());
-        nextColumn.setUpdateAt(new Date());
+        nextColumn.setUpdatedAt(new Date());
         log.error("nextColumn "+nextColumn.getCardOrderIds().size());
         columnRepository.save(prevColumn);
         columnRepository.save(nextColumn);
@@ -98,5 +99,13 @@ public class ColumnService {
         return cardRepository.save(card);
     }
 
-
+    public ColumnResponse updateTitleColumn(ColumnRequestUpdate request){
+        Column column = columnRepository.findById(request.getColumnId()).orElseThrow(()-> new AppException(ErrorCode.COLUMN_NOT_FOUND));
+        column.setTitle(request.getTitle());
+        ColumnResponse columnResponse = columnMapper.toColumnResponse(columnRepository.save(column)) ;
+        columnResponse.setBoardId(column.getBoardId().toString());
+        columnResponse.setUpdatedAt(new Date());
+        columnResponse.setCreatedAt(column.getCreatedAt());
+        return columnResponse;
+    }
 }

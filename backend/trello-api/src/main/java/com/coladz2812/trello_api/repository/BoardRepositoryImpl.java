@@ -3,7 +3,9 @@ package com.coladz2812.trello_api.repository;
 import com.coladz2812.trello_api.exception.AppException;
 import com.coladz2812.trello_api.exception.ErrorCode;
 import com.coladz2812.trello_api.model.Board;
-import com.fasterxml.jackson.databind.deser.impl.ObjectIdReader;
+import com.coladz2812.trello_api.util.PaginationUtil;
+import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CollationStrength;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -11,14 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.mongodb.core.aggregation.VariableOperators.Let;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 // cách đặt tên lớp class custom
@@ -64,32 +66,38 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     // lấy danh sách board và student có trong board
+//    @Override
+//    public List<Document> getListBoardAndStudentInBoard() {
+//        // lọc dữ liệu
+//
+//        // join 2 bảng
+//        LookupOperation lookupOperation = Aggregation.lookup("student", "_id", "boardId", "board_Student");
+//        // Lấy các trường quan trọng
+//        ProjectionOperation projectionOperation = Aggregation.project("_id", "title", "scope", "columnOrderIds", "board_Student");
+//
+//        // tạo đường ống
+//        Aggregation aggregation = Aggregation.newAggregation(lookupOperation, projectionOperation);
+//
+//        // lấy kết quả
+//        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(aggregation, "board", Document.class);
+//
+//        return aggregationResults.getMappedResults();
+//    }
+
     @Override
-    public List<Document> getListBoardAndStudentInBoard() {
-        // lọc dữ liệu
-
-        // join 2 bảng
-        LookupOperation lookupOperation = Aggregation.lookup("student", "_id", "boardId", "board_Student");
-        // Lấy các trường quan trọng
-        ProjectionOperation projectionOperation = Aggregation.project("_id", "title", "scope", "columnOrderIds", "board_Student");
-
-        // tạo đường ống
-        Aggregation aggregation = Aggregation.newAggregation(lookupOperation, projectionOperation);
-
-        // lấy kết quả
-        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(aggregation, "board", Document.class);
-
-        return aggregationResults.getMappedResults();
-    }
-
-    @Override
-    public Document getBoardAndColumnByIdBoard(String id) {
+    public Document getBoardAndColumnByIdBoard(String boardId, String userId) {
         // tạo pipeline trực tiếp bằng Document
         // Khi bạn viết "$fieldName" (ví dụ "$name" hay "$columns._id"), dấu $ trước tên field
         // có nghĩa là “lấy giá trị của field đó trong document hiện tại”.
         List<Document> pipeline = Arrays.asList(
                 // nối điều kiện id board
-                new Document("$match", new Document("_id", new ObjectId(id))),
+                new Document("$match", new Document()
+                        .append("_id", new ObjectId(boardId))
+                        .append("$or", Arrays.asList(
+                                new Document("ownerIds", userId),
+                                new Document("memberIds", userId)
+                        ))
+                ),
                 // join bảng board với column
                 new Document("$lookup", new Document()
                         .append("from", "column")
@@ -102,6 +110,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 new Document("$unwind", new Document("path", "$columns")
                         .append("preserveNullAndEmptyArrays", true)),
                 // Nếu dùng preserveNullAndEmptyArrays: true cho $unwind, board vẫn tồn tại →
+                // Nếu không có option này, MongoDB loại bỏ document nào không có columns.
                 // $group tạo mảng columns gồm null hoặc mảng rỗng.
 
                 // thực hiện join các obj đã tách lẻ với bảng card
@@ -136,6 +145,48 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         )))
                         .append("columnOrderIds", new Document("$first", "$columnOrderIds"))
                         .append("scope", new Document("$first", "$scope"))
+                        .append("ownerIds", new Document("$first", "$ownerIds"))
+                        .append("memberIds", new Document("$first", "$memberIds"))
+                ),
+                // 1. Ép kiểu string -> ObjectId
+                // $addField
+                new Document("$addFields", new Document()
+                        .append("owners", new Document("$map",
+                                // Mảng đầu vào là ownerIds
+                                new Document("input", "$ownerIds")
+                                        .append("as", "id")
+                                        // "in" : Với mỗi phần tử id, ép kiểu nó sang ObjectId
+                                        .append("in", new Document("$toObjectId", "$$id"))))
+                        .append("members", new Document("$map",
+                                // Mảng đầu vào là ownerIds
+                                new Document("input", "$memberIds")
+                                        .append("as", "id")
+                                        // "in" : Với mỗi phần tử id, ép kiểu nó sang ObjectId
+                                        .append("in", new Document("$toObjectId", "$$id"))))),
+                // query bảng user lấy thông tin
+                new Document("$lookup", new Document()
+                        .append("from", "user")
+                        .append("let", new Document("ownerIds", "$owners"))
+                        .append("pipeline", Arrays.asList(
+                                new Document("$match", new Document("$expr",
+                                        // match khóa của 2 bảng
+                                        new Document("$in", Arrays.asList("$_id", "$$ownerIds")))),
+                                new Document("$project",
+                                        new Document().append("email", 1).append("username", 1).append("avatar", 1).append("_id", 1))
+                        ))
+                        .append("as", "owners")
+                ),
+                new Document("$lookup", new Document()
+                        .append("from", "user")
+                        .append("let", new Document("memberIds", "$members"))
+                        .append("pipeline", Arrays.asList(
+                                new Document("$match", new Document("$expr",
+                                        // match khóa của 2 bảng
+                                        new Document("$in", Arrays.asList("$_id", "$$memberIds")))),
+                                new Document("$project",
+                                        new Document().append("email", 1).append("username", 1).append("avatar", 1).append("_id", 1))
+                        ))
+                        .append("as", "members")
                 )
         );
         // chạy aggregation
@@ -150,9 +201,21 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         Document document = results.get(0);
 
         // chuyển ObjectId sang String cho board
-        ObjectId boardId = (ObjectId) document.get("_id");
-        document.put("_id", boardId.toString());
+        ObjectId objboardId = (ObjectId) document.get("_id");
+        document.put("_id", objboardId.toString());
 
+        List<Document> owners = (List<Document>) document.get("owners");
+        for (Document own : owners) {
+            if (own.containsKey("_id")) {
+                own.put("_id", own.getObjectId("_id").toString());
+            }
+        }
+        List<Document> members = (List<Document>) document.get("members");
+        for (Document mem : members) {
+            if (mem.containsKey("_id")) {
+                mem.put("_id", mem.getObjectId("_id").toString());
+            }
+        }
         // parse ObjectId cho columns và cards
         List<Document> columns = (List<Document>) document.get("columns");
         for (Document col : columns) {
@@ -181,21 +244,209 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return document;
     }
 
-    // Trong MongoDB, $lookup là stage trong aggregation pipeline dùng để
-    // join hai collection lại với nhau, tương tự như JOIN trong SQL.
+    @Override
+    public List<Document> getListBoardsByUserId(String userId, int currentPage) {
+        List<Document> pipeline = Arrays.asList(
+                // 1️⃣ Bước lọc board theo userId
+                new Document("$match", new Document("$or", Arrays.asList(
+                        new Document("ownerIds", userId),
+                        new Document("memberIds", userId)
+                ))),
+                // 2️⃣ Sắp xếp theo tiêu đề bảng tăng dần
+                new Document("$sort", new Document("title", 1)),
+                // 3️⃣ Phân luồng xử lý song song bằng $facet
+                // cú pháp của $facet trong MongoDB yêu cầu mỗi nhánh xử lý phải là một mảng các stages
+                new Document("$facet", new Document()
+                        .append("queryBoards", Arrays.asList(
+                                new Document("$skip", PaginationUtil.countBoardsInPrevPages(currentPage, 12)),
+                                new Document("$limit", 12)// số lượng bản ghi
+                        ))
+                        .append("queryTotalBoards", Arrays.asList(
+                                new Document("$count", "total")
+                        )))
+
+        );
+        // chạy aggregation
+        List<Document> results = mongoTemplate.getCollection("board")
+                .aggregate(pipeline)
+                .collation(Collation.builder()
+                        .locale("en") // dùng quy tắc so sánh tiếng Anh
+                        .caseLevel(false) // không phân biệt hoa thường
+                        .collationStrength(CollationStrength.SECONDARY)
+                        .build())
+                .into(new ArrayList<>());
+
+//        List<Document> results2 = new ArrayList<>();
+
+        if (results.isEmpty()) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND);
+        }
+
+        // chuyển ObjectId sang String cho board
+        for (Document doc : results) {
+            if (doc.containsKey("queryBoards")) {
+                List<Document> boards = (List<Document>) doc.get("queryBoards");
+                for (Document board : boards) {
+                    if (board.containsKey("_id")) {
+//                        log.error("id"+board);
+                        ObjectId boardId = (ObjectId) board.get("_id");
+                        board.put("_id", boardId.toString());
+                    }
+                }
+            }
+        }
+
+        return results;
+    }
+
+    @Override
+    public Board getBoardByBoardIdAndUserId(String userId, String boardId) {
+        // Query thường (find, findOne, findAll)
+        // Criteria là class trong Spring Data MongoDB dùng để xây dựng điều kiện truy vấn —
+        // giống như WHERE trong SQL. Nó giúp bạn viết truy vấn MongoDB một cách rõ ràng, type-safe và dễ đọc.
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(boardId))
+                .orOperator(
+                        // thằng userId phải là chủ board hoặc thành viên board mới được
+                        Criteria.where("ownerIds").is(userId),
+                        Criteria.where("memberIds").is(userId)
+                )
+        );
 
 
-    // ❌ Không có sẵn (phải viết thủ công):
-    //Các toán tử như:
-    //
-    //$addFields
-    //$map
-    //$cond
-    //$reduce
-    //$mergeObjects
-    //$filter
-    //… không có class đại diện riêng trong Spring Aggregation.
+        Board board = mongoTemplate.findOne(query, Board.class);
+
+        if (board == null) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        return board;
+    }
+
+    @Override
+    public boolean isUserMemeberInBoard(String userId, String userLoginId, String boardId) { // check user la chu board hoac la memeber board chua
+        // Query thường (find, findOne, findAll)
+        // Criteria là class trong Spring Data MongoDB dùng để xây dựng điều kiện truy vấn —
+        // giống như WHERE trong SQL. Nó giúp bạn viết truy vấn MongoDB một cách rõ ràng, type-safe và dễ đọc.
+
+
+        Board board = mongoTemplate.findById(new ObjectId(boardId), Board.class);
+
+        if (board == null) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND);
+        }
+        // log.error("Board : " + board);
+        boolean isOwner = board.getOwnerIds().stream()
+                .anyMatch(user -> user.equals(userId));
+        // log.error("isOwner : " + isOwner);
+        if (isOwner && userId.equals(userLoginId)) {
+            throw new AppException(ErrorCode.USER_ALREADY_IS_OWNER_BOARD);
+        } else if (isOwner && !userId.equals(userLoginId)) {
+            throw new AppException(ErrorCode.USER_ALREADY_IS_MEMBER_BOARD);
+        }
+        boolean isMember = board.getMemberIds().stream()
+                .anyMatch(user -> user.equals(userId));
+        // log.error("isMember : " + isMember);
+        if (isMember && !userId.equals(userLoginId)) {
+            throw new AppException(ErrorCode.USER_ALREADY_IS_MEMBER_BOARD);
+        } else if (isMember && userId.equals(userLoginId)) {
+            throw new AppException(ErrorCode.USER_ALREADY_IS_OWNER_BOARD);
+        }
+        return false;
+    }
+
+    @Override
+    public List<Document> findBoardBySearchParam(String userId, Map<String, String> searchObjects) {
+        // Tạo điều kiện search động
+        if (searchObjects.isEmpty()) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND2);
+        }
+        Document searchMatch = new Document();
+        searchObjects.forEach((key, value) -> {
+            // $regex: biểu thức cần tìm
+            // $options: tùy chọn tìm kiếm
+            //  "i": không phân biệt chữ hoa/thường
+            //  "m": multiline
+            //  "s": dotAll
+            //  "x": verbose
+            searchMatch.append(key, new Document("$regex", value).append("$options", "i"));
+
+        });
+        String keywordTitle = searchObjects.get("title");
+
+        List<Document> pipeline = Arrays.asList(
+                // 1️⃣ Bước lọc board theo userId
+                new Document("$match", new Document("$or", Arrays.asList(
+                        new Document("ownerIds", userId),
+                        new Document("memberIds", userId)
+                ))),
+
+
+                // thêm field mới để quyết định thứ tự xuất hiện của board
+                new Document("$addFields", new Document("titleSTT",
+                        new Document("$cond", Arrays.asList(
+                                new Document("$regexMatch", new Document()
+                                        .append("input", "$title") // lấy giá trị cột title trong db
+                                        .append("regex", "^" + keywordTitle)
+                                        .append("options", "i")),
+                                0,  // match từ đầu → ưu tiên
+                                1   // không match → xếp sau
+                        )))),
+
+                // 2️⃣ Apply search filter nếu có
+                new Document("$match", searchMatch),
+                // 2️⃣ Sắp xếp theo tiêu đề bảng tăng dần
+                // 1 → sắp xếp tăng dần (ascending)
+                // -1 → sắp xếp giảm dần (descending)
+                // 0 không hợp lệ trong $sort.
+                new Document("$sort", new Document("titleSTT", 1).append("title", 1)),
+                new Document("$project",
+                        new Document().append("_id", 1).append("title", 1).append("description", 1).append("titleSTT", 1))
+
+
+        );
+        // chạy aggregation
+        List<Document> results = mongoTemplate.getCollection("board")
+                .aggregate(pipeline)
+                .collation(Collation.builder()
+                        .locale("en") // dùng quy tắc so sánh tiếng Anh
+                        .caseLevel(false) // không phân biệt hoa thường
+                        .collationStrength(CollationStrength.SECONDARY)
+                        .build())
+                .into(new ArrayList<>());
+
+//        List<Document> results2 = new ArrayList<>();
+
+        if (results.isEmpty()) {
+            throw new AppException(ErrorCode.BOARD_NOT_FOUND2);
+        }
+
+        // chuyển ObjectId sang String cho board
+        for (Document board : results) {
+            if (board.containsKey("_id")) {
+//                        log.error("id"+board);
+                ObjectId boardId = (ObjectId) board.get("_id");
+                board.put("_id", boardId.toString());
+            }
+        }
+        return results;
+    }
 }
+
+// Trong MongoDB, $lookup là stage trong aggregation pipeline dùng để
+// join hai collection lại với nhau, tương tự như JOIN trong SQL.
+
+
+// ❌ Không có sẵn (phải viết thủ công):
+//Các toán tử như:
+//
+//$addFields : Thêm trường mới mà không thay đổi dữ liệu gốc
+//$map
+//$cond $cond: [ <if>, <then>, <else> ]
+//$reduce
+//$mergeObjects
+//$filter
+//… không có class đại diện riêng trong Spring Aggregation.
+
 // 1️⃣ Stage cơ bản
 // Lệnh	    Mục đích	                                         Ví dụ
 // $match	Lọc document, tương đương WHERE             	match(eq("_id", new ObjectId(id)))

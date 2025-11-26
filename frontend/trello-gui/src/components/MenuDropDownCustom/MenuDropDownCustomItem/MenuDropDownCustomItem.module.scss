@@ -1,20 +1,48 @@
 .wrapper {
     height: 40px;
     width: 100%;
-}
-.wrapper:hover {
-    background-color: #e6e5ea;
+    z-index: 999;
+    padding-right: 5px;
 }
 .buttonItem {
-    width: max-content;
+    width: 100%;
     font-weight: 300;
     padding-right: 50px;
     font-size: 14px;
     color: #585561;
 }
+
+.buttonLabel {
+    flex: 1; /* chiếm hết không gian còn lại */
+    text-align: left; /* chữ sát trái */
+    white-space: nowrap; /* không cho xuống dòng */
+    overflow: hidden; /* ẩn phần dư */
+    text-overflow: ellipsis; /* hiển thị ... nếu chữ dài quá */
+}
+
 // icon
 .icon {
     width: 18px;
     color: #585561;
     margin-right: 8px;
+}
+.avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 999px;
+    z-index: 998;
+}
+.iconMemberAvatarGroup {
+    width: 20px;
+    height: 20px;
+    color: #00B951;
+    position: absolute;
+    bottom: -4px; /* hoặc top: 0; tuỳ bạn muốn icon nằm đâu */
+    right: -8px;
+}
+// Tippy Css
+.avatar-wrapper {
+    position: relative;
+  
 }

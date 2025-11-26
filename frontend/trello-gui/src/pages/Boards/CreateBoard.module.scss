@@ -1,0 +1,156 @@
+.wrapper {
+    background-color: var(--color-main-boards);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+.sidebar {
+    padding: 5px 5px 5px 16px;
+    width: 22%;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 25px;
+}
+.menuitemWrapper {
+    width: 100%;
+    border-radius: 3px;
+    padding-top: 3px;
+}
+.menuitemWrapper:hover {
+    background-color: var(--color-hover-btn-sidebar-boards);
+}
+.menuitem {
+    width: calc(100vw - 79vw) !important ;
+    padding: 5px !important;
+    font-size: 15px !important;
+    color: var(--color-button-boards) !important;
+}
+.menuitem:hover {
+    color: rgb(0, 94, 255);
+    .create-board-icon {
+        color: rgb(0, 94, 255);
+    }
+}
+.create-board-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-button-boards) !important;
+}
+.sidebar > span {
+    width: 100%;
+    height: 0.5px;
+    background-color: rgba(222, 215, 215, 0.708);
+}
+.content {
+    margin-top: 25px;
+    width: 72%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.content > h1 {
+    margin-left: 10px;
+    color: var(--color-button-boards) !important;
+}
+.list-boards {
+    margin-left: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); // 5 cột chia đều
+    gap: 16px; // khoảng cách giữa các ô
+}
+.board {
+    width: 215px;
+    height: 130px;
+    border-radius: 8px;
+    border-bottom: 0.5px solid rgba(222, 215, 215, 0.708);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* đẩy nút xuống cuối */
+    align-self: flex-end;
+    gap: 10px;
+}
+.board > h1 {
+    flex: 0 0 30%; /* ✨ cách tốt nhất khi dùng flex */
+    background-color: aqua;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.board > h3 {
+    margin-left: 15px;
+    font-size: 17px;
+    width: 88%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-button-boards) !important;
+}
+.board > p {
+    margin-left: 15px;
+    font-size: 12px;
+    width: 88%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-button-description-boards) !important;
+}
+.btn-goto-board {
+    width: 110px !important;
+    height: 25px;
+    transform: translateY(-5px) translateX(10px);
+    margin-left: 85px;
+    font-size: 13.5px;
+    font-weight: normal !important;
+    color: var(--color-btn-navigate-boards) !important;
+}
+.icon-goto-board {
+    width: 20px;
+    height: 20px;
+    color: var(--color-btn-navigate-boards) !important;
+    margin-top: 3px;
+    transform: translateX(-6px) !important;
+}
+// phân trang pagination
+.pagination {
+    padding-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 650px;
+}
+.icon-pagination {
+    cursor: pointer;
+    width: 25px !important;
+    height: 25px !important;
+    color: var(--color-button-boards) !important;
+}
+.pagination > p {
+    font-size: 15px;
+    width: 20px;
+    height: 20px;
+    padding: 15px;
+    border-radius: 999px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    color: var(--color-button-boards) !important;
+}
+.pagination > p:hover {
+    background-color: rgba(168, 186, 241, 0.705);
+}
+.currentPage {
+    background-color: rgb(144, 175, 222);
+    color: var(--color-button-title) !important;
+}
+

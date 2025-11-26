@@ -1,0 +1,84 @@
+.wrapper {
+    width: 99%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 70px;
+}
+.hearder {
+    display: flex;
+    gap: 5px;
+}
+.hearder > img {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+}
+.hearder > input {
+    border: 0.5px solid var(--color-border-active-card);
+    border-radius: 5px;
+    flex: 1;
+    padding-left: 10px;
+    color: var(--color-comment-2-active-card);
+}
+.hearder > input::placeholder {
+    color: var(--color-comment-2-active-card) !important;
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 1%;
+}
+.content > p {
+    margin-left: 8%;
+    font-size: 13px;
+    color: var(--color-comment-3-active-card);
+}
+.contentActivity {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.contentActivity > img {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+}
+
+.userInfoAndInput {
+    flex: 1;
+    min-width: 0; /* BẮT BUỘC để nó co giãn đúng */
+}
+
+.userInfoAndInput > input {
+    width: 100%;
+    border: 0.5px solid var(--color-border-active-card);
+    border-radius: 5px;
+    flex: 1;
+    padding-left: 10px;
+    color: var(--color-gray);
+    height: 35px;
+}
+.userInfoAndInput > input::placeholder {
+    color: var(--color-comment-2-active-card) !important;
+}
+.userInfo {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 5px;
+    align-items: center;
+}
+.userInfo > p {
+    font-size: 14px;
+    color: var(--color-comment-2-active-card);
+}
+.userInfo > p:nth-of-type(1) {
+    font-weight: bold;
+}
+.userInfo > p:nth-of-type(2) {
+    font-size: 12px;
+    color: #4d4b4bde;
+    color: var(--color-comment-3-active-card);
+}

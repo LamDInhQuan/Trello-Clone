@@ -6,11 +6,11 @@
 }
 .avatar-visible {
     width: 34px;
+    height: 34px;
     border-radius: 999px;
     object-fit: cover;
     margin-left: -5px;
     padding: 2px;
-    background-color: rgb(255, 255, 255);
     position: relative;
 
 }
@@ -22,11 +22,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: white !important;
     margin-left: -5px;
     font-size: 13px;
 }
 .hidePosition {
     position: absolute;
     right: 1px;
+}
+.buttonDropDown {
+    color: azure !important;
 }

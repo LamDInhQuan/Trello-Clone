@@ -1,14 +1,12 @@
 package com.coladz2812.trello_api.dto.request;
 
-import com.coladz2812.trello_api.model.Column;
-import com.coladz2812.trello_api.validator.ScopeConstraint;
+import com.coladz2812.trello_api.validator.ValueIn;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class BoardRequest {
-    @Size(min = 3, max = 20, message = "BOARD_TITLE_CHARACTER")
+    @Size(min = 3, max = 50, message = "BOARD_TITLE_CHARACTER")
     String title;
     @Size(min = 3, message = "BOARD_SLUG_CHARACTER")
     String slug;
@@ -30,7 +28,8 @@ public class BoardRequest {
     Date createdAt;
     Date updatedAt;
     Boolean _destroy;
-    @ScopeConstraint(message = "SCOPE_ERROR")
+    @ValueIn(values = { "public" , "private"} , message = "SCOPE_ERROR")
     String scope ;
-
+    List<String> ownerIds = List.of();
+    List<String> memberIds = List.of();
 }

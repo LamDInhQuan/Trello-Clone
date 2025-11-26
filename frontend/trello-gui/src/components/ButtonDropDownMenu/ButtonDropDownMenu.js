@@ -33,7 +33,15 @@ function ButtonDropDownMenu({
     menuItems,
     onClickMenu = false,
     hideFromParent = false,
+    avatarGroups = false,
+    translateY = 30,
+    buttonClassName = false,
+    addMemberAvatarGroup = false,
+    dropDownChildrenCustom = false,
+    menuDropDownCustomClassname = false,
+    isMemberInCard,
 }) {
+    // console.log(menuItems);
     const [hide, setHide] = useState(false);
     useEffect(() => {
         if (hideFromParent) {
@@ -59,7 +67,7 @@ function ButtonDropDownMenu({
     const imgRef = useRef();
     // lấy tọa độ menu
 
-    const position = useDropDownPosition(imgRef, dropdownRef, hide, magin);
+    const position = useDropDownPosition(imgRef, dropdownRef, hide, magin, translateY);
 
     // Nếu click bên ngoài dropdownRef, đóng dropdown
     const divRef = useRef();
@@ -76,7 +84,7 @@ function ButtonDropDownMenu({
             <Button
                 ref={imgRef}
                 onClick={handleClickSafe}
-                className={imgSrc ? cx('avatar') : cx('button')}
+                className={cx(imgSrc ? cx('avatar') : cx('button'), buttonClassName)}
                 imgSrc={imgSrc || false}
                 leftIcon={leftIcon}
                 rightIcon={rightIcon}
@@ -85,24 +93,32 @@ function ButtonDropDownMenu({
             </Button>
             {/*  ẩn hiện menumenu */}
             <MenuDropDownCustom
-                className={cx2('wrapper', { active: hide })}
+                className={cx2('wrapper', { active: hide, avatarGroups: avatarGroups }, menuDropDownCustomClassname)}
                 ref={dropdownRef}
                 position={imgSrc || calcPosition ? position : false}
             >
                 {menuItems
                     ? menuItems.map((item, key) => {
                           const Icon = item.icon;
+                          const isMember = isMemberInCard?.(item?._id);
+                          //   console.log(isMember);
                           return (
                               <MenuDropDownCustomItem
                                   key={key}
-                                  leftIcon={<Icon className={cx3('icon')} />}
+                                  leftIcon={Icon ? <Icon className={cx3('icon')} /> : null}
                                   onClick={item.onClick}
+                                  link={item.link}
+                                  src={item?.avatar}
+                                  avatarName={item?.username}
+                                  addMemberAvatarGroup={isMember}
+                                  memberId={item._id || null}
                               >
-                                  {item.label}
+                                  {item?.label}
                               </MenuDropDownCustomItem>
                           );
                       })
                     : []}
+                {dropDownChildrenCustom}
             </MenuDropDownCustom>
             {/*  ẩn hiện menumenu */}
         </div>

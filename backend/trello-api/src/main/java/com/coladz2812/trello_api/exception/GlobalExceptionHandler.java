@@ -1,27 +1,24 @@
 package com.coladz2812.trello_api.exception;
 
-import com.coladz2812.trello_api.dto.request.RequestContext;
-import com.coladz2812.trello_api.dto.request.StudentRequest;
+
+import com.coladz2812.trello_api.filter.RequestContext;
 import com.coladz2812.trello_api.dto.response.ApiResponse;
-import com.mongodb.MongoSocketWriteException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.constraints.Min;
+import com.nimbusds.jose.JOSEException;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.lang.reflect.Field;
-import java.time.Instant;
+import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
@@ -93,6 +90,7 @@ public class GlobalExceptionHandler {
 
 
     public boolean validateSizeConstraints(String fieldError) {
+        log.error("check");
         boolean check = false;
         Object requestObject = requestContext.getRequestContext();
         if(requestObject == null){
@@ -134,4 +132,27 @@ public class GlobalExceptionHandler {
                 message(ex.getErrorCode().getMessageCode()).build();
         return ResponseEntity.status(ex.getErrorCode().getHttpStatusCode()).body(apiResponse);
     }
+
+    // lỗi jwt
+    @ExceptionHandler({ ParseException.class, JOSEException.class, JwtException.class})
+    public ResponseEntity<ApiResponse> handleTokenExceptions(Exception ex) {
+        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessageCode())
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+    }
+
+    // lỗi kích thước file quá lớn
+    @ExceptionHandler({ MaxUploadSizeExceededException.class})
+    public ResponseEntity<ApiResponse> handleMaxUploadSizeExceptions(MaxUploadSizeExceededException ex) {
+        ErrorCode errorCode = ErrorCode.MAX_FILE;
+        ApiResponse apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessageCode())
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+    }
+
 }

@@ -4,16 +4,25 @@
 }
 .wrapper {
     width: 93%;
+    max-width: 290px; /* giữ đồng bộ với column */
     border-radius: 6px;
-    background-color: azure !important;
+    background-color: var(--color-card) !important; /* hoặc #fafafa */
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* tránh bị co khi column hẹp */
+}
+.wrapper:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 .image {
     width: 100%;
     height: auto;
     object-fit: cover;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 .content {
     margin-top: 12px;
@@ -22,19 +31,53 @@
     padding-right: 10px;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    font-family: 'Times New Roman', Times, serif;
+     color: var(--color-button-boards) !important;
 }
 .footer {
-    margin-top: 10px;
-    width: 80%;
+    margin-top: 2px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    color: var(--color-green);
+    color: var(--color-blue);
+}
+.footer > div {
+    margin-right: -12px;
 }
 .icon {
-    width: 20px;
+    width: 19px;
+    margin-right: -3px;
 }
 .icon2 {
-    width: 17px;
+    width: 16px;
     margin-top: 2px;
+    margin-right: -3px;
+}
+// avatarItemGroup
+.avatarGroup {
+    width: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-right: 10px;
+    overflow: hidden;
+}
+.avatarItemGroup {
+    width: 23px;
+    height: 23px;
+    border-radius: 999px;
+    object-fit: cover;
+    margin-left: 0;
+    padding: 0;
+    background-color: none;
+    position: relative;
+    margin-right: 2px;
+}
+.buttonDropDownClassName {
+    width: 23px;
+    height: 23px;
+    margin-left: 1px;
+}
+.avatarTranslate {
+    margin-left: 25px;
 }

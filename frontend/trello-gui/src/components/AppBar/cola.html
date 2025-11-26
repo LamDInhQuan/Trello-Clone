@@ -1,139 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Draggable Column with Dropdown</title>
+  <title>Bảng Trello đầu rộng</title>
   <style>
+    :root {
+      --column-bg: #2c3e50;
+      --card-bg: #3d566e;
+      --card-hover: #4b6a89;
+      --text-color: #ecf0f1;
+      --wood: #a67c52;
+      --chalkboard: #1c1c1c;
+    }
+
     body {
-      font-family: sans-serif;
+      background: linear-gradient(to right, #bdc3c7, #ecf0f1);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .board {
       display: flex;
-      gap: 20px;
-      padding: 30px;
-      background: #f5f5f5;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .column {
-      width: 250px;
-      min-height: 300px;
-      background: #eee;
-      border-radius: 8px;
-      padding: 10px;
+      width: 280px;
+      background: var(--column-bg);
+      border-radius: 12px;
+      color: var(--text-color);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       position: relative;
-      cursor: grab;
-      transition: transform 0.2s ease;
+      overflow: hidden;
     }
 
-    .column.dragging {
-      opacity: 0.6;
-      cursor: grabbing;
+    .column-header {
+      width: 100%;
+      background: var(--chalkboard);
+      border-top: 8px solid var(--wood);
+      border-bottom: 8px solid var(--wood);
+      border-radius: 12px 12px 0 0;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
+      padding: 16px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      position: relative;
     }
 
-    .dropdownBtn {
-      background: #3498db;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .dropdownMenu {
+    .column-header::before {
+      content: '';
       position: absolute;
-      top: 40px;
-      left: 10px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 100;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 60px;
+      background: black;
+      border-radius: 2px;
     }
 
-    .dropdownMenu.active {
-      display: block;
+    .card-list {
+      padding: 12px;
     }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.2);
-      display: none;
-      z-index: 50;
+    .card {
+      background: var(--card-bg);
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: grab;
+      transition: background 0.2s ease;
     }
 
-    .overlay.active {
-      display: block;
+    .card:hover {
+      background: var(--card-hover);
+    }
+
+    .dragging {
+      opacity: 0.6;
+      transform: scale(1.02);
     }
   </style>
 </head>
 <body>
-  <div class="column" draggable="true" id="column1">
-    <div class="dropdownBtn" id="dropdownBtn">Menu ▼</div>
-    <div class="dropdownMenu" id="dropdownMenu">
-      <div>Option 1</div>
-      <div>Option 2</div>
+
+  <div class="board">
+    <div class="column" draggable="true">
+      <div class="column-header">Công việc</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Viết báo cáo</div>
+        <div class="card" draggable="true">Họp nhóm</div>
+        <div class="card" draggable="true">Gọi khách hàng</div>
+      </div>
+    </div>
+
+    <div class="column" draggable="true">
+      <div class="column-header">Đang làm</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Thiết kế giao diện</div>
+      </div>
+    </div>
+
+    <div class="column" draggable="true">
+      <div class="column-header">Hoàn thành</div>
+      <div class="card-list">
+        <div class="card" draggable="true">Gửi email</div>
+      </div>
     </div>
   </div>
 
-  <div class="column" draggable="true" id="column2">
-    <h3>Another Column</h3>
-    <p>Some content here...</p>
-  </div>
-
-  <div class="overlay" id="overlay"></div>
-
   <script>
-    const btn = document.getElementById("dropdownBtn");
-    const menu = document.getElementById("dropdownMenu");
-    const overlay = document.getElementById("overlay");
-    const column1 = document.getElementById("column1");
+    const cards = document.querySelectorAll('.card');
+    const columns = document.querySelectorAll('.column');
 
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("active");
-      overlay.classList.toggle("active");
-    });
-
-    overlay.addEventListener("click", () => {
-      menu.classList.remove("active");
-      overlay.classList.remove("active");
-    });
-
-    // Khi bắt đầu drag → tắt menu
-    column1.addEventListener("dragstart", () => {
-      column1.classList.add("dragging");
-      menu.classList.remove("active");
-      overlay.classList.remove("active");
-    });
-
-    column1.addEventListener("dragend", () => {
-      column1.classList.remove("dragging");
-    });
-
-    // Kéo thả position (giả lập như dnd-kit)
-    const columns = document.querySelectorAll(".column");
-    let dragSrcEl = null;
-
-    columns.forEach(col => {
-      col.addEventListener("dragstart", (e) => {
-        dragSrcEl = col;
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/html", col.outerHTML);
+    cards.forEach(card => {
+      card.addEventListener('dragstart', () => {
+        card.classList.add('dragging');
       });
 
-      col.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
       });
+    });
 
-      col.addEventListener("drop", (e) => {
+    columns.forEach(column => {
+      column.addEventListener('dragover', e => {
         e.preventDefault();
-        if (dragSrcEl !== col) {
-          col.insertAdjacentElement("beforebegin", dragSrcEl);
+        const draggingCard = document.querySelector('.dragging');
+        const cardList = column.querySelector('.card-list');
+        if (draggingCard && cardList) {
+          cardList.appendChild(draggingCard);
         }
       });
     });
   </script>
+
 </body>
 </html>

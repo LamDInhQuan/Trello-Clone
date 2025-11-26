@@ -10,7 +10,7 @@ import CreateIcon from './CreateIcon';
 import AddCardIcon from './AddCardIcon';
 import CutIcon from './CutIcon';
 import CopyIcon from './CopyIcon';
-import PasteIcon from './Paste';
+import PasteIcon from './PasteIcon';
 import RemoveIcon from './RemoveIcon';
 import CloudIcon from './CloudIcon';
 import AddNewColumnIcon from './AddNewColumnIcon';
@@ -18,6 +18,57 @@ import GroupIcon from './GroupIcon';
 import MessageIcon from './MessageIcon';
 import AttachIcon from './AttachIcon';
 import CloseIcon from './CloseIcon';
+import LockIcon from './LockIcon';
+import ErrorOutline from './ErrorOutline';
+import InfoOutline from './InfoOutlineIcon';
+import TickOutlineIcon from './TickOutlineIcon';
+import AccountIcon from './AccountIcon';
+import AddUserIcon from './AddUserIcon';
+import SettingIcon from './SettingIcon';
+import LogoutIcon from './LogoutIcon';
+import UserIcon from './UserIcon';
+import SecurityIcon from './SecurityIcon';
+import CloudUploadIcon from './CloudUploadIcon';
+import MailIcon from './MailIcon';
+import ContactUserIcon from './ContactUserIcon';
+import ContactUserIcon2 from './ContactUserIcon2';
+import PasswordIcon from './PasswordIcon';
+import LockResetIcon from './LockResetIcon';
+import BoardsIcon from './BoardsIcon';
+import TemplateIcon from './TemplateIcon';
+import HomeIcon from './HomeIcon';
+import ArrowRightIcon from './ArrowRightIcon';
+import ArrowRight2Icon from './ArrowRight2Icon';
+import ArrowLastRightIcon from './ArrowLastRightIcon';
+import ArrowLeftI2Icon from './ArrowLeftI2Icon';
+import ArrowLastLeftIcon from './ArrowLastLeftIcon';
+import CloseBorderIcon from './CloseBorderIcon';
+import ABCCharacterIcon from './ABCCharacterIcon';
+import DescriptionIcon from './DescriptionIcon';
+import CardIcon from './CardIcon';
+import DescriptionIcon2 from './DescriptionIcon2';
+import CommentIcon from './CommentIcon';
+import EditNoteIcon from './EditNoteIcon';
+import UserIconOutline from './UserIconOutline';
+import CoverIcon from './CoverIcon';
+import AttachIcon2 from './AttachIcon2';
+import LabelTagIcon from './LabelTagIcon';
+import CheckListIcon from './CheckListIcon';
+import CustomFieldIcon from './CustomFieldIcon';
+import CheckListIcon2 from './CheckListIcon2';
+import NotificationIcon from './NotificationIcon';
+import TickIcon from './TickIcon';
+import RejectIcon from './RejectIcon';
+import CardSizeIcon from './CardSizeIcon';
+import AddIcon from './AddIcon';
+import ArchiveIcon from './ArchiveIcon';
+import ShareIcon from './ShareIcon';
+import ArrowRight3Icon from './ArrowRight3Icon';
+import MagicIcon from './MagicIcon';
+import ArrowLeft3Icon from './ArrowLeft3Icon';
+import UserLeaveIcon from './UserLeaveIcon';
+import SearchIcon from './SearchIcon';
+import LoadingIcon from './LoadingIcon';
 
 const Icons = {
     MenuBarIcon,
@@ -36,10 +87,61 @@ const Icons = {
     RemoveIcon,
     CloudIcon,
     AddNewColumnIcon,
-    GroupIcon ,
-    MessageIcon ,
-    AttachIcon ,
-    CloseIcon
+    GroupIcon,
+    MessageIcon,
+    AttachIcon,
+    CloseIcon,
+    LockIcon,
+    ErrorOutline,
+    InfoOutline,
+    TickOutlineIcon,
+    AccountIcon,
+    AddUserIcon,
+    SettingIcon,
+    LogoutIcon,
+    UserIcon,
+    SecurityIcon,
+    CloudUploadIcon,
+    MailIcon,
+    ContactUserIcon,
+    ContactUserIcon2,
+    PasswordIcon,
+    LockResetIcon,
+    BoardsIcon,
+    TemplateIcon,
+    HomeIcon,
+    ArrowRightIcon,
+    ArrowRight2Icon,
+    ArrowLastRightIcon,
+    ArrowLeftI2Icon,
+    ArrowLastLeftIcon,
+    CloseBorderIcon,
+    ABCCharacterIcon,
+    DescriptionIcon,
+    CardIcon,
+    DescriptionIcon2,
+    CommentIcon,
+    EditNoteIcon,
+    UserIconOutline,
+    CoverIcon,
+    AttachIcon2,
+    LabelTagIcon,
+    CheckListIcon,
+    CustomFieldIcon,
+    CheckListIcon2,
+    NotificationIcon,
+    TickIcon,
+    RejectIcon,
+    CardSizeIcon,
+    AddIcon,
+    ArchiveIcon,
+    ShareIcon,
+    ArrowRight3Icon ,
+    MagicIcon ,
+    ArrowLeft3Icon ,
+    UserLeaveIcon ,
+    SearchIcon ,
+    LoadingIcon
 };
 
 export default Icons;

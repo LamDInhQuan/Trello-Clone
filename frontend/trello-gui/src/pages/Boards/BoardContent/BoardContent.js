@@ -8,8 +8,9 @@ import {
     rectIntersection,
     pointerWithin,
     closestCenter,
-    useSensor,
     useSensors,
+    useSensor,
+    PointerSensor,
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import classNames from 'classnames/bind';
@@ -23,48 +24,80 @@ import CardItem from '~/components/Card/CardItem';
 import Icons from '~/components/Icons';
 import { mapOrder, sortByIndex } from '~/utils/sorts';
 import styles from './BoardContent.module.scss';
+import stylesInterceptorLoading from '~/components/GlobalAppStyle/interceptorLoading.module.scss';
 import { generatePlaceHolderCard } from '~/utils/formatters';
 import InputSearch from '~/components/InputSearch';
-import { CustomPointerSensor } from '~/sensors/CustomPointerSensor';
+import { createNewColumnApi } from '~/apis';
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 const cx = classNames.bind(styles);
+const cx2 = classNames.bind(stylesInterceptorLoading);
 const ACTIVE_DRAG_ITEM_TYPE = {
     COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
     CARD_ITEM: 'ACTIVE_DRAG_ITEM_TYPE_CARD-ITEM',
 };
 
-function BoardContent({
-    board,
-    createNewColumn,
-    createNewCard,
-    moveColumnByColumnOrderIds,
-    moveCardInTheSameColumn,
-    moveCardInTwoColumns,
-    deleteColumnDetails,
-}) {
-    // state lưu trạng thái của UI add column
-    const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
-    const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
+function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, moveCardInTwoColumns }) {
+    const dispatch = useDispatch();
+    // Không dùng state của component nữa mà dùng state của Redux
+    // const [board, setBoard] = useState();
+    const board = useSelector(selectCurrentActiveBoard);
 
     // lấy nội dung form input add column
-    const [newColumnTitle, setNewColumnTitle] = useState('');
+    const { register, watch, setValue } = useForm();
+    const newColumnTitle = watch('columnTitleInput'); // sẽ update liên tục khi gõ
 
-    const addNewColumn = () => {
+    // state lưu trạng thái của UI add column
+    const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
+    const toggleOpenNewColumnForm = () => {
+        setValue('columnTitleInput', '');
+        setOpenNewColumnForm(!openNewColumnForm);
+    };
+
+    const addNewColumn = async () => {
         if (!newColumnTitle) {
             toast.error('Please enter column title !');
             return;
         }
-        createNewColumn({
-            boardId: board._id,
-            title: newColumnTitle,
-        });
+        let createdColumn;
+        try {
+            createdColumn = await createNewColumnApi({
+                boardId: board._id,
+                title: newColumnTitle,
+            });
+        } catch (error) {
+            return;
+        }
+        const newBoard = {
+            ...board,
+            columns: [...board.columns], // clone array column
+            columnOrderIds: [...board.columnOrderIds], // clone array columnOrderIds
+        };
+        const columnNew = {
+            ...createdColumn.result,
+            _id: createdColumn.result.columnId, // dùng cho frontend
+            cards: [],
+            cardOrderIds: [],
+        };
+        delete columnNew.columnId; // xóa columnId
+        const placeHolderCard = generatePlaceHolderCard(columnNew);
+        columnNew.cards = [placeHolderCard];
+        columnNew.cardOrderIds = [placeHolderCard._id];
+        // gán _id cho column mới nếu cần
+        // push cho phép chỉnh sửa phần tử của mảng còn concat cho phép tạo ra một mảng truyền vào
+        // và ghép với mảng cũ thành 1 mảng mới
+        newBoard.columns.push(columnNew);
+        newBoard.columnOrderIds.push(columnNew._id);
+        // hoặc
+        // newBoard.columns = newBoard.columns.concat([columnNew])
+        // newBoard.columnOrderIds = newBoard.columnOrderIds.concat([columnNew._id])
+        dispatch(updateCurrentActiveBoard(newBoard));
         toggleOpenNewColumnForm();
-        setNewColumnTitle('');
+        setValue('columnTitleInput', '');
     };
-    const setInputChangeAddColumn = (e) => {
-        const val = e.target.value;
-        setNewColumnTitle(val);
-    };
+
     // xử lí dữ liệu board
     // clone object và ghi đè field columnIds
 
@@ -105,6 +138,7 @@ function BoardContent({
 
     const handelDragStart = (event) => {
         console.log('kéo');
+        // console.log("event",event);
         setItemDragId(event.active.id);
 
         setItemDragType(
@@ -496,11 +530,20 @@ function BoardContent({
         [itemDragType, oderredCards],
     );
 
+    const pointerSensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 10,
+        },
+    });
+    // Vẫn nhấn (pointer down) bình thường, nhưng chưa kích hoạt drag ngay.
+    // Nó chờ bạn di chuyển con trỏ vượt quá khoảng cách distance (ví dụ 10px) mới bắt đầu drag thực sự.
+    const sensors = useSensors(pointerSensor);
     return (
         <DndContext
             sensors={sensors}
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
             // custom lại thuật toán va chạm ko bug ko giật
+            sensors={sensors}
             onDragStart={handelDragStart}
             onDragEnd={handelDragEnd}
             onDragOver={handelDragOver}
@@ -513,14 +556,7 @@ function BoardContent({
 
                         {oderredCards?.length > 0 &&
                             oderredCards.map((card) => (
-                                <Card
-                                    key={card._id}
-                                    title={card.title}
-                                    items={card}
-                                    createNewCard={createNewCard}
-                                    id={card._id}
-                                    deleteColumnDetails={deleteColumnDetails}
-                                />
+                                <Card key={card._id} title={card.title} items={card} id={card._id} />
                             ))}
 
                         {/* DragOverlay nằm tách chỗ chứa phần tử dc kéo  */}
@@ -548,13 +584,17 @@ function BoardContent({
                                         label_search_className={cx('label-search')}
                                         searchInput_className={cx('searchInput')}
                                         autoFocus={true}
+                                        valueInput={newColumnTitle}
                                         hasValue={newColumnTitle !== ''}
-                                        onChange={setInputChangeAddColumn}
-                                        value={newColumnTitle}
+                                        normalInput={true}
+                                        {...register('columnTitleInput')}
                                     />
                                     <div className={cx('wrapper-button-add-column2')}>
                                         {/* // onMouseDown xảy ra trước blur input */}
-                                        <Button className={cx('button-add-column2')} onClick={addNewColumn}>
+                                        <Button
+                                            className={`${cx('button-add-column2')} ${cx2('interceptor-loading')}`}
+                                            onClick={addNewColumn}
+                                        >
                                             Add Column
                                         </Button>
                                         <Button

@@ -1,1 +1,1 @@
-export { default} from './_id'
+export { default } from './CreateBoard';

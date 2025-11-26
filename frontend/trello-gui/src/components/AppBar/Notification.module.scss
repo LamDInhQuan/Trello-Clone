@@ -1,0 +1,149 @@
+// faBell-icon
+.faBell-icon {
+    width: 20px !important;
+    height: 20px !important;
+    position: relative;
+    color: #FFF;
+}
+
+.button {
+    transform: translateY(2px);
+    padding: 0;
+    color: #FFF;
+}
+.button.notification::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: 1px;
+    left: 14px;
+    background-color: red;
+    border-radius: 50%;
+}
+// notificationForm
+.notificationForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 10px;
+    gap: 10px;
+    max-height: 84vh;
+    overflow-y: auto;
+
+    /* Tùy chỉnh scrollbar */
+    &::-webkit-scrollbar {
+        width: 6px; /* ← độ rộng thanh cuộn */
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(110, 108, 108, 0.2); /* màu thanh kéo */
+        border-radius: 10px; /* bo tròn */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(121, 119, 119, 0.35); /* hover đậm hơn chút */
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent; /* ẩn nền thanh cuộn */
+    }
+}
+.noneNotifications {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.noneNotifications > img {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+}
+.noneNotifications > p {
+    font-size: 14px;
+    font-family:
+        'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.notificationItem > p {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 12px;
+    padding-bottom: 10px;
+    color: rgb(66, 64, 64);
+}
+.notificationItem.borderBottom {
+    border-bottom: 2px solid rgb(238, 233, 237);
+}
+.notificationItem {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.notificationTitle {
+    display: flex;
+    gap: 5px;
+}
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none; /* Ngăn không cho icon bị giãn theo flex */
+}
+.notificationTitle > p {
+    font-size: 13.5px;
+    color: rgb(66, 64, 64);
+}
+.icon-invite {
+    width: 22px !important;
+    height: 25px !important;
+    flex: none; /* Ngăn không cho icon bị giãn theo flex */
+}
+.buttons,
+.buttons2 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+.button-accept {
+    width: 60px;
+    background-color: rgb(21, 143, 5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    height: 27px;
+}
+.button-reject {
+    width: 60px;
+    background-color: rgb(196, 4, 174);
+    color: white;
+    display: flex;
+    justify-content: center;
+    height: 27px;
+}
+.icon-Button {
+    width: 17px;
+    height: 17px;
+    transform: translateX(2px) translateY(2px);
+}
+.button-accept2 {
+    border-radius: 20px;
+    background-color: rgb(21, 143, 5);
+    padding: 0px 8px 0px 6px;
+    gap: 1px;
+    color: white;
+    font-size: 13px;
+    font-weight: normal;
+}
+.button-reject2 {
+    border-radius: 20px;
+    background-color: rgba(238, 233, 237, 0.826);
+    padding: 0px 8px 0px 6px;
+    gap: 1px;
+    font-size: 13px;
+    font-weight: normal;
+    color: black;
+}

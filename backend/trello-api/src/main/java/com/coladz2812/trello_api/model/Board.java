@@ -29,4 +29,6 @@ public class Board {
     Date updatedAt  ;
     Boolean _destroy = false ;
     String scope ;
+    List<String> ownerIds = List.of();
+    List<String> memberIds = List.of();
 }

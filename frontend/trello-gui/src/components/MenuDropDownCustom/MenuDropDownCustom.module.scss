@@ -7,7 +7,7 @@
     background-color: rgb(255, 255, 255);
     box-shadow: rgb(0 0 0 /12%) 0px 2px 12px;
     min-width: 200px;
-    min-height: 150px;
+    min-height: 30px;
     border-radius: 4px;
     z-index: 999;
     /* Mặc định ẩn */
@@ -32,4 +32,10 @@
     transform: scale(1);
     pointer-events: auto;
     background-color: rgb(255, 255, 255);
+}
+.avatarGroups {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 4 cột */
+    gap: 8px; /* khoảng cách giữa các ảnh */
+    padding: 10px;
 }

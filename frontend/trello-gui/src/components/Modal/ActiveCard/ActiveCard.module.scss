@@ -1,0 +1,206 @@
+.overlay {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+    padding-bottom: 5%;
+}
+/* Áp dụng cho phần overlay (popup) */
+.overlay::-webkit-scrollbar {
+    width: 8px; /* độ rộng thanh cuộn dọc */
+}
+
+.overlay::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.8); /* nền rãnh */
+    border-radius: 10px;
+}
+
+.overlay::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #b9c8db, #b3d3f4); /* màu thanh cuộn */
+    border-radius: 10px;
+}
+
+.overlay::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #6fb4ff, #cedded); /* đổi màu khi hover */
+}
+
+.wrapper {
+    background-color: var(--color-active-card);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    width: 60%;
+    height: fit-content;
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+.header {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+.iconCreate {
+    width: 20px;
+    height: 20px;
+}
+.iconClose {
+    width: 20px;
+    height: 20px;
+    color: red;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+// hiện popup
+.onPopUp {
+    display: flex;
+}
+
+// imageHeader
+.imageHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.imageHeader > img {
+    width: 90%;
+    height: fit-content;
+    border-radius: 5px;
+}
+// titleCard
+.titleCard {
+    width: 105%;
+    display: flex;
+    margin-left: 5%;
+    align-items: center;
+}
+// titleInput
+.titleInput {
+    z-index: 99;
+    position: relative;
+    top: 0px;
+    left: -5px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px;
+    color: var(--color-input-active-card);
+    cursor: pointer;
+    font-family: 'Times New Roman', Times, serif;
+    width: 80%;
+    padding: 7px 13px;
+    border-radius: 3px;
+    border: none !important;
+}
+.titleInput.active {
+    border: 1.5px solid var(--color-gray) !important;
+}
+.iconCardTitle,
+.iconCardDescription,
+.iconCardActivity {
+    width: 22px;
+    height: 22px;
+    color: var(--color-input-active-card);
+}
+// content
+.content {
+    width: 90%;
+    margin-left: 5%;
+    display: flex;
+    gap: 15px;
+}
+.leftContent {
+    width: 75%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.member {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.member > p {
+    font-size: 13px;
+    font-weight: bold;
+    color: #4891ee;
+}
+.avatarGroup {
+    gap: 7px;
+    margin-left: 5px;
+}
+// .descriptionCard
+.descriptionCard,
+.activityCard {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.descriptionCardHeader,
+.activityCardHeader {
+    display: flex;
+    gap: 10px;
+}
+.descriptionCardHeader > h3,
+.activityCardHeader > h3 {
+    color: var(--color-button-boards) !important;
+}
+.rightContent {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.rightContent > span {
+    display: block;
+    width: 90%;
+    height: 0.5px;
+    background-color: rgba(222, 215, 215, 0.708);
+}
+.menuAddCard {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.menuAddCard > p {
+    font-size: 13px;
+    font-weight: bold;
+    color: #4891ee;
+}
+
+.menuAddCardItems {
+    display: flex;
+    flex-direction: column;
+}
+.menuItemIcon {
+    width: 20px;
+    height: 20px;
+}
+// css thẻ p
+.menuItemP,
+.menuItemButton {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--color-comment-2-active-card) !important;
+}
+.menuItemButton {
+    padding-top: 4px;
+    padding-bottom: 12px;
+}
+.menuItemButton:hover {
+    color: #4891ee !important;
+}
+.menuAddCard:not(:nth-of-type(1)) {
+    margin-top: 20px;
+}
