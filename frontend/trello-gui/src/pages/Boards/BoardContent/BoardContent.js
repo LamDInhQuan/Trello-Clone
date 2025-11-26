@@ -124,14 +124,6 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
         setOderredCards(board.columns);
     }, [board]);
 
-    // Custom sensor: click focuses; drag activates after small movement
-    const sensors = useSensors(
-        useSensor(CustomPointerSensor, {
-            activationConstraint: {
-                distance: 8, // pixels to move before drag starts
-            },
-        }),
-    );
 
     // handelDragStart : bắt đầu kéo 1 phần tửtử
     // bắt đầu kéo , xác định id phần tử kéo , loại ( card , cardItem ) , data của thẻ kéo
