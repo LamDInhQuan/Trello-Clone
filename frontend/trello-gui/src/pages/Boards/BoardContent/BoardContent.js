@@ -125,13 +125,7 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
     }, [board]);
 
     // Custom sensor: click focuses; drag activates after small movement
-    const sensors = useSensors(
-        useSensor(CustomPointerSensor, {
-            activationConstraint: {
-                distance: 8, // pixels to move before drag starts
-            },
-        }),
-    );
+
 
     // handelDragStart : bắt đầu kéo 1 phần tửtử
     // bắt đầu kéo , xác định id phần tử kéo , loại ( card , cardItem ) , data của thẻ kéo
@@ -543,7 +537,6 @@ function BoardContent({ moveColumnByColumnOrderIds, moveCardInTheSameColumn, mov
             sensors={sensors}
             // collisionDetection={closestCorners} // thuật toán phát hiện va chạm dành cho phần tử to
             // custom lại thuật toán va chạm ko bug ko giật
-            sensors={sensors}
             onDragStart={handelDragStart}
             onDragEnd={handelDragEnd}
             onDragOver={handelDragOver}

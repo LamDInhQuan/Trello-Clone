@@ -18,9 +18,7 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
-
 import org.springframework.security.core.AuthenticationException;
-
 import java.text.ParseException;
 
 @Component
@@ -28,7 +26,8 @@ import java.text.ParseException;
 public class CustomJwtDecoder implements JwtDecoder {
 
     private static final Log log = LogFactory.getLog(CustomJwtDecoder.class);
-
+    @NonFinal
+    @Value("${jwt.signerKeyAccess}")
     String signKey;
 
     @NonFinal
@@ -36,12 +35,9 @@ public class CustomJwtDecoder implements JwtDecoder {
 
     private UserService userService;
     private UserRepository userRepository;
-
-    public CustomJwtDecoder(@Lazy UserService userService, UserRepository userRepository,
-                            @Value("${jwt.signerKeyAccess}") String signKey) {
+    public CustomJwtDecoder(@Lazy UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.signKey = signKey; // Gán giá trị được tiêm
     }
 
     @Override
@@ -50,9 +46,9 @@ public class CustomJwtDecoder implements JwtDecoder {
 //        log.error("goi decoder");
         VerifyTokenResponse isValid = null;
         try {
-            var verified = userService.verifyTokenAccess(token, true);
+            var verified = userService.verifyTokenAccess(token,true);
             var userId = verified.getJWTClaimsSet().getSubject(); // giả sử payload chứa userId
-            log.error("userID" + verified.getJWTClaimsSet().getSubject());
+            log.error("userID"+verified.getJWTClaimsSet().getSubject());
             // check lỗi không đúng email với cookie
             var user = userRepository.findById(userId)
                     .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
