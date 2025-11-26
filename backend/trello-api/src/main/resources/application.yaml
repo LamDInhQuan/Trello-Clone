@@ -6,7 +6,7 @@ spring:
     mongodb:
       uri: ${MONGO_URI}  # đọc từ biến môi trường
 
-mail:
+  mail:
     host: smtp.gmail.com
     port: 587
     username: ${GMAIL_USER}
